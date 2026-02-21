@@ -12,12 +12,15 @@ wor-agentic-architect
 
 ## Estructura
 
-- `agentic/` — source of truth de todas las entidades (workflows, agents, skills, rules, knowledge-base)
-- `.agent/` → symlinks a agentic/ para Antigravity
-- `exports/` — sistemas generados
+- `.agents/` — Directorio real para Google Antigravity
+  - `workflows/` — Workflows (`wor-*`) y Agentes (`age-spe-*`)
+  - `rules/` — Reglas (`rul-*`)
+  - `skills/` — Skills (`ski-*`)
+  - `knowledge-base/` — Base de conocimiento (`kno-*`)
+- `exports/` — Sistemas generados
   - `template/` — base para copiar y renombrar
-  - `{nombre-sistema}/google-antigravity/` — export por defecto (listo para Antigravity)
-  - `{nombre-sistema}/{plataforma}/` — exports opcionales (Claude Code, apps)
+  - `{nombre-sistema}/google-antigravity/` — export por defecto
+  - `{nombre-sistema}/{plataforma}/` — exports opcionales
 
 ## Rules activas
 
