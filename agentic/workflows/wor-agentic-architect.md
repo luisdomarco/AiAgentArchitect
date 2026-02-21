@@ -55,11 +55,14 @@ El usuario trabaja desde `exports/template/`, que puede copiar y renombrar a `ex
 
 ## 7. Knowledge base
 
-| Knowledge base              | **Route**                                       | Description                                      |
-| --------------------------- | ----------------------------------------------- | ------------------------------------------------ |
-| `kno-fundamentals-entities` | `./knowledge-base/kno-fundamentals-entities.md` | Definición y especificaciones de las 6 entidades |
-| `kno-entity-selection`      | `./knowledge-base/kno-entity-selection.md`      | Árbol de decisión y casos límite                 |
-| `kno-system-architecture`   | `./knowledge-base/kno-system-architecture.md`   | Estructura de exportación y mapeo por plataforma |
+| Knowledge base              | **Route**                                       | Description                                                             |
+| --------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------- |
+| `kno-fundamentals-entities` | `./knowledge-base/kno-fundamentals-entities.md` | Definición y especificaciones de las 6 entidades                        |
+| `kno-entity-selection`      | `./knowledge-base/kno-entity-selection.md`      | Árbol de decisión y casos límite                                        |
+| `kno-system-architecture`   | `./knowledge-base/kno-system-architecture.md`   | Estructura de exportación y mapeo por plataforma                        |
+| `kno-evaluation-criteria`   | `./knowledge-base/kno-evaluation-criteria.md`   | QA Layer: criterios, pesos y umbrales de la rúbrica de evaluación       |
+| `kno-qa-layer-template`     | `./knowledge-base/kno-qa-layer-template.md`     | QA Layer: plantillas parametrizables para embeber QA en sistemas nuevos |
+| `kno-qa-dynamic-reading`    | `./knowledge-base/kno-qa-dynamic-reading.md`    | QA Layer: protocolo de lectura dinámica de archivos desde disco         |
 
 ## 8. Workflow Sequence
 
@@ -86,6 +89,22 @@ B) Una entidad concreta (Agent, Skill, Command, Rule) → Modo Express"
 Si el usuario describe directamente lo que quiere, infiere el modo por señales de complejidad. Confirma antes de avanzar: _"Voy a trabajar en Modo [X]. ¿Correcto?"_
 
 Si detectaste un template rellenado, menciona: _"He detectado un template rellenado en %Master - Docs/. Lo usaré como punto de partida."_
+
+---
+
+### Tracking de métricas de proceso
+
+El orquestador mantiene un contador `metricas_fase` por cada Step para alimentar al Evaluador:
+
+- **Regeneración** = opción C de un checkpoint (regenerar desde cero). Incrementar `regeneraciones` en 1.
+- **Iteración** = opción B de un checkpoint (editar/ajustar). Incrementar `iteraciones` en 1.
+- En S3, acumular las métricas de todas las entidades como suma total de la fase.
+
+Este objeto se pasa al Evaluador junto con el contexto de fase:
+
+```json
+{ "regeneraciones": 0, "iteraciones": 0 }
+```
 
 ---
 
@@ -131,14 +150,14 @@ D) ↩️  Volver atrás
 Activar en secuencia:
 
 1. `age-spe-auditor` — Lee desde disco las Rules activas + el JSON de handoff S1. Produce tabla de cumplimiento.
-2. `age-spe-evaluator` — Puntúa la fase S1 con la rúbrica. Crea `exports/{nombre}/qa-report.md` con los bloques [Audit S1] + [Score S1].
+2. `age-spe-evaluator` — Puntúa la fase S1 con la rúbrica. Crea `exports/{nombre}/google-antigravity/qa-report.md` con los bloques [Audit S1] + [Score S1].
 
 Mostrar al usuario (máx. 5 líneas antes de pasar al Step 2):
 
 ```
 🔍 QA S1 — {N} criterios | ✅ {X} / ⚠️ {Y} / ❌ {Z} — Score: {X.X}/10 ({nivel})
 {Si hay alertas: bullet con el criterio más crítico}
-Reporte iniciado en: exports/{nombre}/qa-report.md
+Reporte iniciado en: exports/{nombre}/google-antigravity/qa-report.md
 ```
 
 > `/skip-qa S1` omite el ciclo QA para esta fase.
@@ -192,7 +211,7 @@ Mostrar al usuario (máx. 5 líneas antes de pasar al Step 3):
 
 ```
 🔍 QA S2 — {N} criterios | ✅ {X} / ⚠️ {Y} / ❌ {Z} — Score: {X.X}/10 ({nivel})
-Reporte actualizado en: exports/{nombre}/qa-report.md
+Reporte actualizado en: exports/{nombre}/google-antigravity/qa-report.md
 ```
 
 > `/skip-qa S2` omite el ciclo QA para esta fase.
@@ -225,14 +244,16 @@ Al finalizar todas las entidades, el agente genera `process-overview.md`.
 A) ✅ Aprobar y pasar al empaquetado final
 B) ✏️  Ajustar el process-overview
 C) 🔄 Volver a Step 3 para ajustar alguna entidad
+D) ↩️  Volver al Blueprint
 ```
 
 **→ Tras aprobación del cierre (opción A): Ciclo QA global**
 
 Activar en secuencia:
 
-1. `age-spe-evaluator` — Calcula el scorecard global ponderado (S1×25% + S2×35% + S3×40%). Añade bloque [Evaluación Global] al `qa-report.md`. Añade entrada al `agentic/qa-meta-report.md`.
-2. `age-spe-optimizer` — Lee el `qa-report.md` completo desde disco. Usa `ski-pattern-analyzer`. Añade sección [Optimization Proposals] al `qa-report.md`.
+1. `age-spe-evaluator` — **Score S3:** Calcular el score de S3 como promedio de los Audit Reports de todas las entidades individuales (criterios ✅/⚠️/❌ acumulados). La Completitud y Calidad se evalúan sobre el conjunto de entidades, no individualmente. Las métricas de S3 son la suma acumulada de regeneraciones e iteraciones de todas las entidades.
+2. `age-spe-evaluator` — Calcula el scorecard global ponderado (S1×25% + S2×35% + S3×40%). Añade bloque [Evaluación Global] al `qa-report.md`. Añade entrada al `agentic/qa-meta-report.md`.
+3. `age-spe-optimizer` — Lee el `qa-report.md` completo desde disco. Usa `ski-pattern-analyzer`. Añade sección [Optimization Proposals] al `qa-report.md`.
 
 Mostrar al usuario:
 
@@ -378,11 +399,12 @@ Archivos generados en `exports/{nombre-sistema}/google-antigravity/.agent/`, lis
 
 ### 11.2. Related rules
 
-| Rule                      | **Route**                            | Description                                       |
-| ------------------------- | ------------------------------------ | ------------------------------------------------- |
-| `rul-naming-conventions`  | `./rules/rul-naming-conventions.md`  | Prefijos, kebab-case y límites de caracteres      |
-| `rul-checkpoint-behavior` | `./rules/rul-checkpoint-behavior.md` | Formato de checkpoints y gestión de validaciones  |
-| `rul-interview-standards` | `./rules/rul-interview-standards.md` | Protocolo de entrevista y estándares de discovery |
+| Rule                      | **Route**                            | Description                                                                         |
+| ------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------- |
+| `rul-naming-conventions`  | `./rules/rul-naming-conventions.md`  | Prefijos, kebab-case y límites de caracteres                                        |
+| `rul-checkpoint-behavior` | `./rules/rul-checkpoint-behavior.md` | Formato de checkpoints y gestión de validaciones                                    |
+| `rul-interview-standards` | `./rules/rul-interview-standards.md` | Protocolo de entrevista y estándares de discovery                                   |
+| `rul-audit-behavior`      | `./rules/rul-audit-behavior.md`      | QA Layer: activación del ciclo QA, responsabilidades y comandos /re-audit, /skip-qa |
 
 ## 12. Definition of success
 
@@ -391,3 +413,5 @@ Archivos generados en `exports/{nombre-sistema}/google-antigravity/.agent/`, lis
 - Los archivos se generan correctamente en `exports/{nombre}/google-antigravity/.agent/` sin ajustes manuales.
 - El export a Google Antigravity está listo para usar inmediatamente.
 - Si se solicitan exports adicionales, se generan correctamente en sus rutas respectivas usando `ski-platform-exporter`.
+- El `qa-report.md` se genera completo con bloques de Audit, Score por fase, Evaluación Global y Optimization Proposals.
+- El `agentic/qa-meta-report.md` acumula la entrada de la sesión sin sobreescrituras.

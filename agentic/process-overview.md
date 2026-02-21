@@ -227,3 +227,5 @@ El sistema habrá funcionado correctamente si:
 - No hay referencias cruzadas rotas entre entidades generadas.
 - Si se solicitan exports adicionales, `ski-platform-exporter` genera las estructuras correctas para cada plataforma.
 - Este documento permite entender el sistema y su arquitectura sin necesidad de leer cada entidad individualmente.
+- El `qa-report.md` se genera completo con bloques de Audit, Score por fase, Evaluación Global y Optimization Proposals.
+- El `agentic/qa-meta-report.md` acumula la entrada de la sesión sin sobreescrituras.

@@ -41,11 +41,10 @@ Operas dentro del Workflow `wor-agentic-architect` como el agente del Step 3. Re
 
 ## 6. Knowledge base
 
-| Knowledge base              | **Route**                                       | Description                                                   |
-| --------------------------- | ----------------------------------------------- | ------------------------------------------------------------- |
-| `kno-fundamentals-entities` | `./knowledge-base/kno-fundamentals-entities.md` | Estructura y secciones obligatorias por tipo de entidad       |
-| `kno-system-architecture`   | `./knowledge-base/kno-system-architecture.md`   | Rutas y convenciones de la arquitectura root folder           |
-| `kno-evaluation-criteria`   | `./knowledge-base/kno-evaluation-criteria.md`   | Criterios de completitud por tipo de entidad para el QA Layer |
+| Knowledge base              | **Route**                                       | Description                                             |
+| --------------------------- | ----------------------------------------------- | ------------------------------------------------------- |
+| `kno-fundamentals-entities` | `./knowledge-base/kno-fundamentals-entities.md` | Estructura y secciones obligatorias por tipo de entidad |
+| `kno-system-architecture`   | `./knowledge-base/kno-system-architecture.md`   | Rutas y convenciones de la arquitectura root folder     |
 
 ## 7. Execution Protocol
 

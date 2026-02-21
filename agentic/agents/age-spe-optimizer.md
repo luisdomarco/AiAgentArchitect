@@ -38,9 +38,10 @@ Operas en CP-CIERRE, después de que el Evaluador ha cerrado el scorecard global
 
 ## 6. Knowledge base
 
-| Knowledge base            | **Route**                                     | Description                                                      |
-| ------------------------- | --------------------------------------------- | ---------------------------------------------------------------- |
-| `kno-evaluation-criteria` | `./knowledge-base/kno-evaluation-criteria.md` | Criterios y umbrales para interpretar scores y priorizar mejoras |
+| Knowledge base            | **Route**                                     | Description                                                        |
+| ------------------------- | --------------------------------------------- | ------------------------------------------------------------------ |
+| `kno-evaluation-criteria` | `./knowledge-base/kno-evaluation-criteria.md` | Criterios y umbrales para interpretar scores y priorizar mejoras   |
+| `kno-qa-dynamic-reading`  | `./knowledge-base/kno-qa-dynamic-reading.md`  | Protocolo para resolver rutas y leer archivos actuales desde disco |
 
 ## 7. Execution Protocol
 

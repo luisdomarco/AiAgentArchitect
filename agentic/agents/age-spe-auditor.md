@@ -92,7 +92,7 @@ La skill retorna una tabla de cumplimiento por criterio.
 
 ### 7.5 Escritura en qa-report.md
 
-- Path: `exports/{nombre-sistema}/qa-report.md`
+- Path: `exports/{nombre-sistema}/google-antigravity/qa-report.md` (un nivel arriba de `.agent/`)
 - Si el archivo no existe: crearlo con el frontmatter inicial (ver `kno-qa-dynamic-reading`)
 - Si existe: añadir el bloque al final (append), nunca sobreescribir
 
@@ -104,7 +104,7 @@ Presentar al finalizar (máx. 5 líneas):
 🔍 Audit {fase} completado — {N} criterios verificados
 ✅ {X} cumplidos | ⚠️ {Y} alertas | ❌ {Z} fallos
 {Si hay alertas/fallos: bullet con el criterio más crítico}
-Reporte guardado en: exports/{nombre}/qa-report.md
+Reporte guardado en: exports/{nombre}/google-antigravity/qa-report.md
 ```
 
 ### 7.7 Re-audit bajo demanda
