@@ -1,6 +1,6 @@
 ---
 name: res-input-template
-description: Plantilla base de input.md que el usuario debe completar para iniciar el proceso de documentación.
+description: Plantilla base que el usuario debe completar para iniciar el proceso de documentación.
 tags: [template, input, config]
 ---
 
@@ -20,7 +20,7 @@ Completa los siguientes campos obligatorios para dar contexto al Assistant Docum
 
 ## 3. Documentos Adjuntos
 
-Enumera brevemente los documentos que has colocado en esta misma carpeta y qué contiene cada uno:
+Enumera brevemente los documentos que has colocado en la carpeta `raw-docs/` y qué contiene cada uno:
 
 - **`[nombre-archivo.pdf]`**: [Breve descripción de su contenido]
 - **`[nombre-archivo.docx]`**: [Breve descripción de su contenido]

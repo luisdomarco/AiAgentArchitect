@@ -41,6 +41,7 @@ G1: Extraer toda la información antes de diseñar · G2: Seleccionar entidades 
 | ----------------------- | ------------------------------------------ | ------------------------------------------------------------ |
 | `ski-platform-exporter` | `../skills/ski-platform-exporter.md` | Post-empaquetado: convertir export a otras plataformas       |
 | `ski-qa-embed`          | `../skills/ski-qa-embed.md`          | Post-empaquetado: embeber el QA Layer en el sistema generado |
+| `ski-context-ledger`    | `../skills/ski-context-ledger.md`    | Inicio: inicializar ledger. Tras cada Step: write/read       |
 
 ## 7. Knowledge base
 
@@ -60,6 +61,17 @@ G1: Extraer toda la información antes de diseñar · G2: Seleccionar entidades 
 
 1. **Detectar template:** Si existe `%Master - Docs/template-input-architect.md` o `template-input-express.md` rellenado, usarlo como contexto inicial y mencionarlo al usuario. Si no, proceder con entrevista normal.
 2. **Detectar modo:** Preguntar `"¿Qué quieres crear? A) Proceso completo → Modo Architect · B) Entidad concreta → Modo Express"`. Inferir por complejidad si el usuario describe directamente. Confirmar: _"Voy a trabajar en Modo [X]. ¿Correcto?"_
+3. **Inicializar Context Ledger:** Activar `ski-context-ledger` operación `init` con el nombre del sistema y workflow. El ledger se crea en `{export-path}/context-ledger.md`.
+
+### Context Map
+
+Define qué contexto fluye entre los Steps de este workflow:
+
+| Step destino | Consume de      | Campos / Secciones                                          | Modo     |
+| ------------ | --------------- | ----------------------------------------------------------- | -------- |
+| Step 2       | Step 1 → output | `*` (JSON handoff S1 completo)                              | completo |
+| Step 3       | Step 2 → output | `*` (JSON handoff S2 completo)                              | completo |
+| Step 3       | Step 1 → output | `proceso.nombre`, `proceso.restricciones`, `diagrama_as_is` | parcial  |
 
 ### Documentación de Fases y Lógica de Ejecución
 

@@ -84,3 +84,64 @@ Mantenido por el orquestador y pasado al Evaluador en cada ciclo QA:
 - **regeneraciones:** incrementar 1 cada vez que el usuario elige opción C (regenerar) en un checkpoint.
 - **iteraciones:** incrementar 1 cada vez que el usuario elige opción B (editar/ajustar) en un checkpoint.
 - En S3, las métricas son la suma acumulada de todas las entidades del Step.
+
+---
+
+## 4. Context Ledger Schema
+
+Archivo temporal `context-ledger.md` creado y gestionado por el workflow durante la ejecución. Persiste el output de cada step y permite trazabilidad.
+
+**Ubicación:** `{export-path}/context-ledger.md` (se genera junto al `qa-report.md`).
+
+```markdown
+---
+sistema: { nombre-sistema }
+workflow: { nombre-workflow }
+created: { ISO timestamp }
+last_updated: { ISO timestamp }
+---
+
+## [Step {N}] — {nombre-agent} — {completed|in_progress|pending}
+
+### Input recibido
+
+{contexto filtrado que el workflow le pasó al agente}
+
+### Output generado
+
+{output producido por el agente — handoff JSON, diagrama, archivos, etc.}
+
+### Metadata
+
+- Timestamp: {ISO}
+- Step: {N de M}
+```
+
+**Reglas de escritura:**
+
+- Siempre **append** — nunca sobreescribir bloques anteriores.
+- Un bloque `## [Step N]` por cada invocación de agente.
+- El campo `status` se actualiza in-place (pending → in_progress → completed).
+
+---
+
+## 5. Context Map Schema
+
+El Context Map se define dentro del workflow y declara qué contexto fluye entre steps:
+
+```markdown
+| Step destino | Consume de      | Campos / Secciones | Modo     |
+| ------------ | --------------- | ------------------ | -------- |
+| {step N}     | Step {M} output | {campo1}, {campo2} | parcial  |
+| {step N}     | Step {M} output | \*                 | completo |
+```
+
+**Modos:**
+
+- `completo`: el output íntegro del step referenciado se pasa como input.
+- `parcial`: solo los campos o secciones listados se extraen y pasan.
+
+**Notas:**
+
+- Un step puede consumir de múltiples steps anteriores (varias filas con el mismo destino).
+- El workflow lee el Context Map y construye el input filtrado antes de invocar cada agente.

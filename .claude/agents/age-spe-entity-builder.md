@@ -159,6 +159,7 @@ Durante la generación, mantén un registro interno de las entidades ya aprobada
   - Knowledge-base: `../knowledge-base/[nombre-kb].md`
   - Workflows: `./workflows/[nombre-workflow].md`
 - **Skills reutilizadas:** Si una Skill ya fue creada o es reutilizada, referenciarla con la ruta correcta en todos los Agents que la usen.
+- **Context Ledger:** Si el workflow generado tiene 2+ agentes en secuencia, incluir la sección **Context Map** (ver `kno-fundamentals-entities` §10) y registrar `ski-context-ledger` en su tabla de Skills. Si el sistema destino no incluye `ski-context-ledger`, generarla como entidad adicional.
 
 ---
 

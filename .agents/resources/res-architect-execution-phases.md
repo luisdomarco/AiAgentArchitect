@@ -18,6 +18,8 @@ Mantener el objeto de métricas `{ "regeneraciones", "iteraciones" }` por Step (
 
 **Activa:** `age-spe-process-discovery` con el modo y descripción inicial. El agente conduce la entrevista completa y devuelve el handoff S1→S2 (schema en `kno-handoff-schemas` §1).
 
+**Context Ledger:** Tras obtener el JSON de handoff S1, ejecutar `ski-context-ledger` operación `write` con step=1, agent=`age-spe-process-discovery`, output=JSON S1.
+
 **Checkpoint S1:** A) ✅ Aprobar → Step 2 · B) ✏️ Editar resumen · C) 🔄 Regenerar · D) ↩️ Volver atrás
 
 **QA automático tras aprobación:**
@@ -34,7 +36,11 @@ Mantener el objeto de métricas `{ "regeneraciones", "iteraciones" }` por Step (
 
 ## Step 2 — Architecture Design
 
-**Activa:** `age-spe-architecture-designer` con JSON de S1. El agente diseña el Blueprint y devuelve el handoff S2→S3 (schema en `kno-handoff-schemas` §2).
+**Context Ledger (read):** Antes de invocar al agente, ejecutar `ski-context-ledger` operación `read` con step_destino=2 y el Context Map del workflow. Esto extrae el JSON S1 completo del ledger.
+
+**Activa:** `age-spe-architecture-designer` con el contexto filtrado por el ledger. El agente diseña el Blueprint y devuelve el handoff S2→S3 (schema en `kno-handoff-schemas` §2).
+
+**Context Ledger (write):** Tras obtener el JSON de handoff S2, ejecutar `ski-context-ledger` operación `write` con step=2, agent=`age-spe-architecture-designer`, output=JSON S2.
 
 **Checkpoint S2:** A) ✅ Aprobar Blueprint → Step 3 · B) ✏️ Ajustar entidad · C) 🔄 Rediseñar arquitectura · D) ↩️ Volver a S1
 
@@ -51,7 +57,11 @@ Mantener el objeto de métricas `{ "regeneraciones", "iteraciones" }` por Step (
 
 ## Step 3 — Entity Implementation
 
-**Activa:** `age-spe-entity-builder` con JSON de S2. El agente genera entidades una a una.
+**Context Ledger (read):** Antes de invocar al agente, ejecutar `ski-context-ledger` operación `read` con step_destino=3 y el Context Map del workflow. Esto extrae: JSON S2 completo + campos parciales de S1 (`proceso.nombre`, `proceso.restricciones`, `diagrama_as_is`).
+
+**Activa:** `age-spe-entity-builder` con el contexto filtrado por el ledger. El agente genera entidades una a una.
+
+**Context Ledger (write):** Tras la aprobación final de todas las entidades y el `process-overview.md`, ejecutar `ski-context-ledger` operación `write` con step=3, agent=`age-spe-entity-builder`, output=lista de archivos generados.
 
 **Checkpoint por entidad:** A) ✅ Aprobar → siguiente entidad · B) ✏️ Ajustar · C) 🔄 Regenerar · D) ↩️ Volver al Blueprint
 

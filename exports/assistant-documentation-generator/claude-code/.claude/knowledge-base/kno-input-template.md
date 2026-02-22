@@ -1,15 +1,15 @@
 ---
-description: Documentación de la plantilla input.md y sus campos requeridos (título, objetivo, recursos).
+description: Documentación de la plantilla kno-input-template.md y sus campos requeridos (título, objetivo, recursos).
 tags: [input, template, fields, documentation]
 ---
 
 ## Table of Contents
 
-- [1. Estructura de input.md](#1-estructura-de-inputmd)
+- [1. Estructura de kno-input-template.md](#1-estructura)
 - [2. Campos Obligatorios](#2-campos-obligatorios)
 - [3. Referencia a la Plantilla](#3-referencia-a-la-plantilla)
 
-## 1. Estructura de input.md
+## 1. Estructura
 
 El archivo `kno-input-template.md` es el punto de entrada principal para el Assistant Documentation Generator. Este archivo debe ubicarse transversalmente en la ruta `history/{nombre-proyecto}/kno-input-template.md`, acompañando a la carpeta `raw-docs/` con los documentos brutos del proyecto. Provee el contexto esencial y los metadatos necesarios para que el flujo entienda qué debe generar.
 

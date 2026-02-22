@@ -1,12 +1,9 @@
 ---
-name: res-input-template
-description: Plantilla base de input.md que el usuario debe completar para iniciar el proceso de documentación.
-tags: [template, input, config]
+description: Archivo de contexto requerido para procesar este lote documental.
+tags: [input, config, context]
 ---
 
 # Configuración del Proyecto de Documentación
-
-Copia este archivo como `kno-input-template.md` dentro de la carpeta de tu nuevo proyecto en `history/{nombre-proyecto}/`, junto a la subcarpeta `raw-docs/` con los documentos brutos.
 
 Completa los siguientes campos obligatorios para dar contexto al Assistant Documentation Generator:
 
@@ -20,7 +17,7 @@ Completa los siguientes campos obligatorios para dar contexto al Assistant Docum
 
 ## 3. Documentos Adjuntos
 
-Enumera brevemente los documentos que has colocado en esta misma carpeta y qué contiene cada uno:
+Enumera brevemente los documentos que has colocado en la carpeta `raw-docs/` y qué contiene cada uno:
 
 - **`[nombre-archivo.pdf]`**: [Breve descripción de su contenido]
 - **`[nombre-archivo.docx]`**: [Breve descripción de su contenido]

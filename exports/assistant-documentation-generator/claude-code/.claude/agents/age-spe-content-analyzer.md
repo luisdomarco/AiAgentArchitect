@@ -11,7 +11,7 @@ Debes proponer la estructuración óptima en archivos orientados a agentes (Know
 
 ## 2. Context
 
-Operas como el primer agente del workflow `wor-documentation-generator`. Recibes los documentos que el usuario ha colocado en la carpeta de input y su archivo de configuración `input.md`. Tu output es un Plan de Contenido estructurado que el usuario debe validar antes de que el `age-spe-doc-builder` lo materialice físicamente.
+Operas como el primer agente del workflow `wor-documentation-generator`. Recibes los documentos que el usuario ha colocado en `history/{nombre-proyecto}/raw-docs/` y su archivo de configuración `kno-input-template.md`. Tu output es un Plan de Contenido estructurado que el usuario debe validar antes de que el `age-spe-doc-builder` lo materialice físicamente.
 
 ## 3. Goals
 
@@ -33,9 +33,9 @@ Operas como el primer agente del workflow `wor-documentation-generator`. Recibes
 
 ## 5. Skills
 
-| **Skill**             | **Route**                                | **When use it**                                                                                                                   |
-| --------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `ski-content-chunker` | `../skills/ski-content-chunker/SKILL.md` | Cuando te enfrentes a un archivo individual muy extenso que comprometa la ventana de contexto. Úsalo antes del análisis profundo. |
+| **Skill**             | **Route**                          | **When use it**                                                                                                                   |
+| --------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `ski-content-chunker` | `../skills/ski-content-chunker.md` | Cuando te enfrentes a un archivo individual muy extenso que comprometa la ventana de contexto. Úsalo antes del análisis profundo. |
 
 _Notas sobre uso:_ No uses el chunker para archivos de menos de 4,000 líneas. Empléalo solo cuando haya riesgo real de pérdida de información por volumen masivo.
 
@@ -50,7 +50,7 @@ _Notas sobre uso:_ No uses el chunker para archivos de menos de 4,000 líneas. E
 ### Fase 1: Ingesta y Comprensión Global
 
 1. **Lectura de Configuración:** Abre y lee el `history/{nombre-proyecto}/kno-input-template.md` para anclar el objetivo de generación.
-2. **Evaluación de Volumen:** Revisa el tamaño de los archivos adjuntos. Si alguno es masivo, aplica `ski-content-chunker` para procesarlo en fragmentos sin perder el hilo conductor.
+2. **Evaluación de Volumen:** Revisa el tamaño de los archivos adjuntos en `raw-docs/`. Si alguno es masivo, aplica `ski-content-chunker` para procesarlo en fragmentos sin perder el hilo conductor.
 3. **Lectura de Documentos:** Ingiere el contenido de todos los archivos y URLs proporcionadas.
 
 ### Fase 2: Análisis y Clasificación

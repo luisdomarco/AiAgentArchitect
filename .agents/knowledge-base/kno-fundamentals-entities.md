@@ -30,13 +30,14 @@ tags: [entities, fundamentals, architecture]
 
 **Atributos clave:**
 
-| Atributo      | Descripción                                       |
-| ------------- | ------------------------------------------------- |
-| Conocimiento  | Conoce el flujo completo del proceso              |
-| Función       | Invoca Agents en secuencia                        |
-| Transferencia | Pasa outputs de unos agentes como inputs de otros |
-| Supervisión   | Gestiona checkpoints y aprobaciones humanas       |
-| Restricción   | **No ejecuta tareas directamente**, solo coordina |
+| Atributo           | Descripción                                                          |
+| ------------------ | -------------------------------------------------------------------- |
+| Conocimiento       | Conoce el flujo completo del proceso                                 |
+| Función            | Invoca Agents en secuencia                                           |
+| Transferencia      | Pasa outputs de unos agentes como inputs de otros                    |
+| Supervisión        | Gestiona checkpoints y aprobaciones humanas                          |
+| Context Management | Persiste estado inter-agente en `context-ledger.md` (ver sección 10) |
+| Restricción        | **No ejecuta tareas directamente**, solo coordina                    |
 
 **Prefijo de archivo:** `wor-`
 **Estructura:** Frontmatter YAML + Body Markdown con secciones 1-11.
@@ -241,3 +242,50 @@ Input → Dispatcher →
   ├─ Agent B → → Consolidator → Output
   └─ Agent C →
 ```
+
+---
+
+## 10. Context Management — Context Ledger
+
+En flujos secuenciales multi-agente, el workflow gestiona la transferencia de contexto entre agentes mediante un **Context Ledger**: un archivo temporal `context-ledger.md` que persiste el output de cada step y permite al orquestador filtrar selectivamente qué información pasa al siguiente agente.
+
+### Principio
+
+El **workflow** es la única entidad que conoce el flujo completo y, por tanto, la única que decide **qué contexto fluye y hacia dónde**. Los agentes no leen ni escriben en el ledger directamente — el orquestador lo hace por ellos.
+
+### Flujo
+
+```
+1. Workflow inicializa el context-ledger.md
+2. Workflow invoca Agent A
+3. Workflow escribe el output de Agent A en el ledger
+4. Workflow lee el ledger, filtra según el Context Map, y construye el input para Agent B
+5. Workflow invoca Agent B con el input filtrado
+6. Workflow escribe el output de Agent B en el ledger
+7. [Repite para cada step siguiente]
+```
+
+### Context Map
+
+Cada workflow que usa el patrón debe incluir una sección **Context Map** que define, por cada step, qué campos del output de qué steps anteriores necesita como input:
+
+```markdown
+| Step destino | Consume de      | Campos / Secciones    | Modo     |
+| ------------ | --------------- | --------------------- | -------- |
+| Step 2       | Step 1 → output | proceso, diagrama     | parcial  |
+| Step 3       | Step 2 → output | entidades, orden      | completo |
+| Step 3       | Step 1 → output | nombre, restricciones | parcial  |
+```
+
+- **Modo `completo`**: el output íntegro del step referenciado.
+- **Modo `parcial`**: solo los campos listados en "Campos / Secciones".
+
+### Cuándo aplicar este patrón
+
+- Workflows con **2+ agentes en secuencia** que necesitan datos de agentes anteriores.
+- Workflows donde el contexto debe ser **trazable** (auditoría, debugging).
+- No es necesario en workflows de un solo agente ni en commands.
+
+### Skill de soporte
+
+Para crear y operar el ledger, los workflows pueden usar la skill `ski-context-ledger` (`./skills/ski-context-ledger/SKILL.md`).

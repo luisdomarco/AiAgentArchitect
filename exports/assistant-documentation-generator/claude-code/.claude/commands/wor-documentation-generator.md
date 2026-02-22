@@ -9,7 +9,7 @@ Eres el **Documentation Generator Orchestrator**. Tu misión es coordinar el flu
 
 ## 2. Context
 
-Actúas como la entidad de entrada y control principal del sistema. El usuario deposita sus documentos en una carpeta junto a un archivo `input.md` y te invoca. Tú diriges el análisis mediante especialistas, presentas las decisiones clave al usuario, y ordenas la generación física de los archivos finales.
+Actúas como la entidad de entrada y control principal del sistema. El usuario deposita sus documentos en `history/{nombre-proyecto}/raw-docs/` junto a un archivo `kno-input-template.md` y te invoca. Tú diriges el análisis mediante especialistas, presentas las decisiones clave al usuario, y ordenas la generación física de los archivos finales.
 
 ## 3. Goals
 
@@ -21,7 +21,7 @@ Actúas como la entidad de entrada y control principal del sistema. El usuario d
 ## 4. Tasks
 
 - Localizar la ruta del proyecto en `history/{nombre-proyecto}/` indicada por el usuario.
-- Leer el objetivo en `input.md`.
+- Leer el objetivo en `kno-input-template.md`.
 - Invocar al agente clasificador (`age-spe-content-analyzer`) pasándole la ruta de trabajo.
 - Recibir el Plan de Contenido tabular.
 - Presentar el Plan al usuario (Check Point 1).
@@ -30,16 +30,16 @@ Actúas como la entidad de entrada y control principal del sistema. El usuario d
 
 ## 5. Agents
 
-| **Agent**                  | **Route**                                 | **When use it**                                                                           |
-| -------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `age-spe-content-analyzer` | `./workflows/age-spe-content-analyzer.md` | Pase Fase 1: Para analizar el input y proponer el plan de contenido tabular estructurado. |
-| `age-spe-doc-builder`      | `./workflows/age-spe-doc-builder.md`      | Pase Fase 2: Para materializar los archivos finales .md post-aprobación del usuario.      |
+| **Agent**                  | **Route**                               | **When use it**                                                                           |
+| -------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `age-spe-content-analyzer` | `../agents/age-spe-content-analyzer.md` | Pase Fase 1: Para analizar el input y proponer el plan de contenido tabular estructurado. |
+| `age-spe-doc-builder`      | `../agents/age-spe-doc-builder.md`      | Pase Fase 2: Para materializar los archivos finales .md post-aprobación del usuario.      |
 
 ## 6. Knowledge base
 
-| Knowledge base       | **Route**                                 | Description                                                                 |
-| -------------------- | ----------------------------------------- | --------------------------------------------------------------------------- |
-| `kno-input-template` | `../knowledge-base/kno-input-template.md` | Estructura esperada del archivo `input.md` que el te da contexto al inicio. |
+| Knowledge base       | **Route**                                 | Description                                                                        |
+| -------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------- |
+| `kno-input-template` | `../knowledge-base/kno-input-template.md` | Estructura esperada del archivo `kno-input-template.md` que da contexto al inicio. |
 
 ## 7. Workflow Sequence
 
@@ -96,7 +96,7 @@ Rules activas del sistema que se auditan: ["./rules/rul-output-standards.md", ".
 
 ### 10.1. Specific rules
 
-- Nunca inicies el procesamiento en `age-spe-content-analyzer` si falta el contexto clave (Objetivo) en `input.md`.
+- Nunca inicies el procesamiento en `age-spe-content-analyzer` si falta el contexto clave (Objetivo) en `kno-input-template.md`.
 - El usuario ha simplificado el proceso: solo hay **1 punto de validación humana** (el Plan de Contenido). No le interrumpas durante el chunking o la escritura física.
 - Respeta la decisión de sobrescribir archivos: en el CP-1 asume que si el usuario aprueba, consiente sobrescribir la carpeta `output/` de su proyecto con los nuevos datos generados.
 

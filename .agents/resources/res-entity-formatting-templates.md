@@ -60,9 +60,19 @@ description: [máx. 250 caracteres — objetivo y misión del workflow]
 
 [Cómo actuar ante fallos, contradicciones o casos no esperados.]
 
-### Gestión de información entre agentes
+### Context Map
 
-[Cómo se transfiere el contexto entre agentes. Formato de handoff.]
+Define qué contexto fluye entre los Steps/Agents de este workflow (ver `kno-fundamentals-entities` §10):
+
+| Step destino | Consume de        | Campos / Secciones | Modo               |
+| ------------ | ----------------- | ------------------ | ------------------ |
+| [step N]     | Step [M] → output | [campos o *]       | [parcial/completo] |
+
+> Si el workflow tiene 2+ agentes en secuencia, usar `ski-context-ledger` para persistir y filtrar contexto. Ver `kno-handoff-schemas` §4-5.
+
+### Gestión de errores
+
+[Cómo actuar ante fallos, contradicciones o casos no esperados.]
 
 ## 8. Input
 

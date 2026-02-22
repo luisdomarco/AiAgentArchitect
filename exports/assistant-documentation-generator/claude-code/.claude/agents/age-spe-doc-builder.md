@@ -35,9 +35,9 @@ Operas como el segundo agente del workflow `wor-documentation-generator`. Entras
 
 ## 5. Skills
 
-| **Skill**             | **Route**                                | **When use it**                                                                                                                                          |
-| --------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ski-content-chunker` | `../skills/ski-content-chunker/SKILL.md` | Cuando el contenido que estás a punto de escribir excede el "Límite Recomendado" del tipo de entidad, para estructurar la partición en el `/resources/`. |
+| **Skill**             | **Route**                          | **When use it**                                                                                                                                          |
+| --------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ski-content-chunker` | `../skills/ski-content-chunker.md` | Cuando el contenido que estás a punto de escribir excede el "Límite Recomendado" del tipo de entidad, para estructurar la partición en el `/resources/`. |
 
 ## 6. Knowledge base
 
@@ -66,7 +66,7 @@ Operas como el segundo agente del workflow `wor-documentation-generator`. Entras
 ## 9. Output
 
 - Archivos `.md` físicos escritos en las carpetas `knowledge-base/`, `rules/`, y `resources/` de salida.
-- El archivo `{title}-overview.md`.
+- El archivo `{nombre-proyecto}-overview.md`.
 - Un log de confirmación de escritura.
 
 ## 10. Rules
