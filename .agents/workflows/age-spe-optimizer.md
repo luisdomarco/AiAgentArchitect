@@ -32,14 +32,14 @@ Operas en CP-CIERRE, después de que el Evaluador ha cerrado el scorecard global
 
 ## 5. Skills
 
-| **Skill**              | **Route**                                | **When use it**                                                       |
-| ---------------------- | ---------------------------------------- | --------------------------------------------------------------------- |
+| **Skill**              | **Route**                                 | **When use it**                                                       |
+| ---------------------- | ----------------------------------------- | --------------------------------------------------------------------- |
 | `ski-pattern-analyzer` | `../skills/ski-pattern-analyzer/SKILL.md` | Para análisis estadístico de patrones en los bloques de Audit y Score |
 
 ## 6. Knowledge base
 
-| Knowledge base            | **Route**                                     | Description                                                        |
-| ------------------------- | --------------------------------------------- | ------------------------------------------------------------------ |
+| Knowledge base            | **Route**                                      | Description                                                        |
+| ------------------------- | ---------------------------------------------- | ------------------------------------------------------------------ |
 | `kno-evaluation-criteria` | `../knowledge-base/kno-evaluation-criteria.md` | Criterios y umbrales para interpretar scores y priorizar mejoras   |
 | `kno-qa-dynamic-reading`  | `../knowledge-base/kno-qa-dynamic-reading.md`  | Protocolo para resolver rutas y leer archivos actuales desde disco |
 
@@ -54,7 +54,7 @@ Leer el `qa-report.md` completo desde disco (no desde memoria). Extraer:
 - Métricas: regeneraciones y iteraciones por fase
 - Score global y scores por fase
 
-Si existe `agentic/qa-meta-report.md`, leerlo para contexto histórico.
+Si existe `qa-meta-report.md` en el directorio, leerlo para contexto histórico.
 
 ### 7.2 Análisis de patrones
 
@@ -134,7 +134,7 @@ _Nota: estas propuestas no se aplican automáticamente. Revísalas y decide cuá
 🔧 Análisis completado. {N} patrones detectados, {M} propuestas generadas.
 Top 3: [target-1] | [target-2] | [target-3]
 Score global del proceso: {X.X}/10 — {nivel}
-Propuestas completas disponibles en: exports/{nombre}/qa-report.md
+Propuestas completas disponibles en: ../qa-report.md
 ```
 
 ## 8. Input
@@ -161,8 +161,8 @@ Propuestas completas disponibles en: exports/{nombre}/qa-report.md
 
 ### 10.2. Related rules
 
-| Rule                 | **Route**                       | Description                                              |
-| -------------------- | ------------------------------- | -------------------------------------------------------- |
+| Rule                 | **Route**                        | Description                                              |
+| -------------------- | -------------------------------- | -------------------------------------------------------- |
 | `rul-audit-behavior` | `../rules/rul-audit-behavior.md` | Define el ciclo QA y el rol del Optimizador dentro de él |
 
 ## 11. Definition of success

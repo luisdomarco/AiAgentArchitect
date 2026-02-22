@@ -10,12 +10,14 @@ Genera el contenido completo de archivos de instrucciones para cada tipo de enti
 ## Input / Output
 
 **Input:**
+
 - Tipo de entidad: `workflow | agent-specialist | agent-supervisor | skill | command | rule | knowledge-base`
 - Nivel de intricacy: `simple | medium | complex`
 - Datos de la entidad del JSON de handoff (nombre, descripción, función, input, output, relaciones)
 - Lista de entidades ya creadas en la sesión (para referencias cruzadas correctas)
 
 **Output:**
+
 - Archivo `.md` completo con frontmatter YAML y body Markdown, listo para descargar
 
 ---
@@ -30,313 +32,40 @@ Antes de escribir el archivo, verifica:
 - La descripción del frontmatter no supera 250 caracteres.
 - Las rutas de referencia cruzada usan el formato relativo correcto.
 - El nivel de intricacy determina la densidad del contenido (ver sección 4).
+- El tamaño y densidad esperados: si el contenido proyectado se aproxima o excede el límite de caracteres recomendado para el tipo de entidad (<6000 Workflow/KB, <3000 Agent/Rule, <1500 Skill/Command), prepárate para particionarlo creando documentos en el directorio `/resources` y referenciarlos.
 
 ---
 
 ### 2. Convenciones de nomenclatura por tipo
 
-| Tipo | Prefijo | Ejemplo |
-|---|---|---|
-| Workflow | `wor-` | `wor-customer-onboarding.md` |
+| Tipo             | Prefijo    | Ejemplo                       |
+| ---------------- | ---------- | ----------------------------- |
+| Workflow         | `wor-`     | `wor-customer-onboarding.md`  |
 | Agent Specialist | `age-spe-` | `age-spe-email-classifier.md` |
 | Agent Supervisor | `age-sup-` | `age-sup-output-validator.md` |
-| Skill | `ski-` | `ski-format-output/SKILL.md` |
-| Command | `com-` | `com-quick-translate.md` |
-| Rule | `rul-` | `rul-output-standards.md` |
-| Knowledge-base | `kno-` | `kno-brand-guidelines.md` |
+| Skill            | `ski-`     | `ski-format-output/SKILL.md`  |
+| Command          | `com-`     | `com-quick-translate.md`      |
+| Rule             | `rul-`     | `rul-output-standards.md`     |
+| Knowledge-base   | `kno-`     | `kno-brand-guidelines.md`     |
+| Resources        | `res-`     | `res-security-policies.md`    |
 
 ---
 
 ### 3. Plantillas por tipo de entidad
 
-#### 3.1 Workflow
+Las estructuras base, frontmatters (YAML) e introducciones descriptivas para cada tipo de entidad están externalizadas para optimizar la carga cognitiva.
 
-```markdown
----
-name: wor-[nombre-kebab-case]
-description: [máx. 250 caracteres — objetivo y misión del workflow]
----
+> **Debes inspeccionar y copiar directamente el Baseline Format leyendo el archivo auxiliar:**
+> `../../resources/res-entity-formatting-templates.md`
 
-## 1. Role & Mission
-
-[Quién es este workflow y cuál es su misión principal.]
-
-## 2. Context
-
-[En qué contexto opera. Plataforma, equipo, sistema al que pertenece.]
-
-## 3. Goals
-
-- **G1:** [Objetivo específico con resultado esperado]
-- **G2:** [Objetivo específico con resultado esperado]
-
-## 4. Tasks
-
-- [Tarea principal 1]
-- [Tarea principal 2]
-
-## 5. Agents
-
-| **Agent** | **Route** | **When use it** |
-| --- | --- | --- |
-| `nombre-agent` | `./agents/nombre-agent.md` | [cuándo invocarlo] |
-
-## 6. Knowledge base
-
-| Knowledge base | **Route** | Description |
-| --- | --- | --- |
-| `nombre-kb` | `./knowledge-base/nombre-kb.md` | [qué contiene] |
-
-## 7. Workflow Sequence
-
-[Descripción paso a paso del flujo completo, incluyendo cuándo y cómo invocar cada Agent.]
-
-### Checkpoints
-
-[Puntos donde se requiere aprobación humana explícita y qué opciones se presentan.]
-
-### Gestión de errores
-
-[Cómo actuar ante fallos, contradicciones o casos no esperados.]
-
-### Gestión de información entre agentes
-
-[Cómo se transfiere el contexto entre agentes. Formato de handoff.]
-
-## 8. Input
-
-[Qué recibe, de quién, en qué formato.]
-
-## 9. Output
-
-[Qué produce, a quién va, en qué formato.]
-
-## 10. Rules
-
-### 10.1. Specific rules
-
-- [Regla específica de este workflow]
-
-### 10.2. Related rules
-
-| Rule | **Route** | Description |
-| --- | --- | --- |
-| `nombre-rule` | `./rules/nombre-rule.md` | [qué regula] |
-
-## 11. Definition of success
-
-[Criterios concretos que determinan que el workflow ha funcionado correctamente.]
-```
-
----
-
-#### 3.2 Agent (Specialist y Supervisor)
-
-```markdown
----
-name: age-spe-[nombre] | age-sup-[nombre]
-description: [máx. 250 caracteres — rol y misión del agente]
----
-
-## 1. Role & Mission
-
-[Quién es este agente, su rol y su misión concreta.]
-
-## 2. Context
-
-[En qué contexto opera. De dónde viene su input y adónde va su output.]
-
-## 3. Goals
-
-- **G1:** [Objetivo con resultado esperado]
-- **G2:** [Objetivo con resultado esperado]
-
-## 4. Tasks
-
-- [Tarea 1]
-- [Tarea 2]
-
-## 5. Skills
-
-| **Skill** | **Route** | **When use it** |
-| --- | --- | --- |
-| `nombre-skill` | `./skills/nombre-skill/SKILL.md` | [cuándo activarla] |
-
-## 6. Knowledge base
-
-| Knowledge base | **Route** | Description |
-| --- | --- | --- |
-| `nombre-kb` | `./knowledge-base/nombre-kb.md` | [qué contiene] |
-
-## 7. Execution Protocol
-
-[Cómo ejecutar las tareas paso a paso. Incluir cuándo usar cada Skill y cómo aplicar las Rules.]
-
-## 8. Input
-
-[Qué recibe, de quién, en qué formato.]
-
-## 9. Output
-
-[Qué produce, formato exacto.]
-
-## 10. Rules
-
-### 10.1. Specific rules
-
-- [Regla específica de este agente]
-
-### 10.2. Related rules
-
-| Rule | **Route** | Description |
-| --- | --- | --- |
-| `nombre-rule` | `./rules/nombre-rule.md` | [qué regula] |
-
-## 11. Definition of success
-
-[Criterios concretos de éxito para este agente.]
-```
-
----
-
-#### 3.3 Skill
-
-```markdown
----
-name: ski-[nombre-kebab-case]
-description: [máx. 250 caracteres — qué hace Y cuándo usarla]
----
-
-# [Nombre Legible de la Skill]
-
-[Descripción breve de qué hace esta skill y para qué sirve.]
-
-## Input / Output
-
-**Input:**
-- [Campo 1: tipo y descripción]
-- [Campo 2: tipo y descripción]
-
-**Output:**
-- [Qué produce y en qué formato]
-
----
-
-## Procedure
-
-[Pasos concretos y ordenados para ejecutar la skill.
-Usar numeración clara. Incluir condiciones si aplica.]
-
----
-
-## Examples
-
-[Casos de uso concretos con input de ejemplo y output esperado.
-Incluir razonamiento si el nivel es medium o complex.]
-
----
-
-## Error Handling
-
-- **[Tipo de error]:** [Cómo actuar]
-- **[Tipo de error]:** [Cómo actuar]
-```
-
----
-
-#### 3.4 Command
-
-```markdown
----
-name: com-[nombre-kebab-case]
-description: [máx. 250 caracteres — qué hace y cuándo usarlo]
----
-
-[System prompt estructurado. Usar headings y bullets cuando aplique.
-Debe ser directo y determinista: el mismo comando produce siempre el mismo comportamiento base.]
-
-## Objetivo
-
-[Qué debe hacer cuando se ejecuta este command.]
-
-## Comportamiento
-
-[Cómo debe actuar. Pasos o instrucciones claras.]
-
-## Output esperado
-
-[Qué debe producir y en qué formato.]
-
-## Restricciones
-
-- [Lo que no debe hacer]
-```
-
----
-
-#### 3.5 Rule
-
-```markdown
----
-trigger: always_on | manual | model_decision | glob
-description: [10-20 palabras — solo si trigger es model_decision]
-globs: [lista de patrones — solo si trigger es glob]
-alwaysApply: true | false
-tags: [lista de etiquetas]
----
-
-## Context
-
-[Por qué existe esta rule. Qué problema o riesgo previene.]
-
-## Hard Constraints
-
-[Lo que el modelo NUNCA debe hacer. Redactar en negativo.]
-
-- Nunca [acción prohibida]
-- Nunca [acción prohibida]
-
-## Soft Constraints
-
-[Estilos preferidos, convenciones, buenas prácticas. Redactar en positivo.]
-
-- Siempre [comportamiento preferido]
-- Preferir [opción A] sobre [opción B]
-
-## Examples
-
-[Bloques de código o ejemplos mostrando Input incorrecto vs Output correcto cuando sea útil.]
-```
-
----
-
-#### 3.6 Knowledge-base
-
-```markdown
----
-description: [10-20 palabras para indexación semántica — qué contiene y para qué]
-tags: [lista de etiquetas temáticas]
----
-
-## Table of Contents
-
-- [Sección 1](#sección-1)
-- [Sección 2](#sección-2)
-
-## [Sección 1]
-
-[Contenido estructurado con headings cuando aplique.]
-
-## [Sección 2]
-
-[Contenido estructurado.]
-```
+Extrae de allí la estructura solicitada según el `Tipo de entidad` del Input, y procede a llenarla dinámicamente según la Intricacy correspondiente.
 
 ---
 
 ### 4. Niveles de intricacy
 
 #### `simple`
+
 - Goals: 2-3 objetivos concisos.
 - Tasks: 3-5 bullets sin descripción extensa.
 - Execution Protocol / Workflow Sequence: flujo lineal, sin subsecciones.
@@ -345,6 +74,7 @@ tags: [lista de etiquetas temáticas]
 - Sin ejemplos extendidos.
 
 #### `medium`
+
 - Goals: 3-5 objetivos con resultado esperado explícito.
 - Tasks: 5-8 bullets con descripción breve de cada una.
 - Execution Protocol / Workflow Sequence: pasos numerados, manejo de casos alternativos.
@@ -353,6 +83,7 @@ tags: [lista de etiquetas temáticas]
 - Ejemplos en Skills cuando clarifiquen el uso.
 
 #### `complex`
+
 - Goals: 4-6 objetivos detallados con métrica de éxito.
 - Tasks: 8+ bullets con descripción completa.
 - Execution Protocol / Workflow Sequence: subsecciones por etapa, gestión de errores, loops, condiciones.
@@ -370,14 +101,25 @@ Antes de incluir cualquier referencia a otra entidad, verifica que:
 - El nombre usado coincide exactamente con el nombre en el frontmatter de esa entidad.
 - La ruta relativa es correcta según la arquitectura root folder:
 
-| Tipo | Ruta relativa desde cualquier entidad |
-|---|---|
-| Skill | `./skills/[nombre-skill]/SKILL.md` |
-| Agent | `./agents/[nombre-agent].md` |
-| Workflow | `./workflows/[nombre-workflow].md` |
-| Rule | `./rules/[nombre-rule].md` |
-| Knowledge-base | `./knowledge-base/[nombre-kb].md` |
-| Command | `./commands/[nombre-command].md` |
+| Tipo           | Ruta relativa desde cualquier entidad |
+| -------------- | ------------------------------------- |
+| Skill          | `./skills/[nombre-skill]/SKILL.md`    |
+| Agent          | `./workflows/[nombre-agent].md`       |
+| Workflow       | `./workflows/[nombre-workflow].md`    |
+| Rule           | `./rules/[nombre-rule].md`            |
+| Knowledge-base | `./knowledge-base/[nombre-kb].md`     |
+| Command        | `./workflows/[nombre-command].md`     |
+| Resources      | `./resources/res-[nombre-recurso].md` |
+
+---
+
+### 6. Estructuración y Partición de Contenido (/resources)
+
+Si al planificar el nivel de intricacy (especialmente en `complex`) prevés que una entidad será muy extensa o superará el límite recomendado:
+
+1. Identifica los bloques densos que puedan externalizarse (ej. prompts muy largos, tablas de categorización extensas, ejemplos de few-shot, políticas o guías de estilo detalladas).
+2. Determina qué archivos de soporte crear en el directorio `./resources/` para alojar esa información en bruto.
+3. En la entidad principal, haz referencia directa a los archivos de soporte estructurando la información como un sistema relacional. Ej. `Ver políticas detalladas en [Políticas de Seguridad](./resources/res-security-policies.md)`.
 
 ---
 
@@ -386,6 +128,7 @@ Antes de incluir cualquier referencia a otra entidad, verifica que:
 **Ejemplo — Generación de Agent Specialist nivel simple**
 
 Input:
+
 ```json
 {
   "tipo": "agent-specialist",

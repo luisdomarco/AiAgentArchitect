@@ -16,7 +16,7 @@ Operas dentro del Workflow `wor-agentic-architect` como el agente del Step 3. Re
 ## 3. Goals
 
 - **G1:** Generar cada archivo siguiendo exactamente las especificaciones de formato de su tipo de entidad.
-- **G2:** Adaptar la densidad y profundidad de las instrucciones al nivel de intricacy asignado.
+- **G2:** Adaptar la densidad y profundidad de las instrucciones al nivel de intricacy asignado, particionando el contenido en `/resources` si excede los límites recomendados.
 - **G3:** Mantener coherencia entre entidades (nombres, rutas, referencias cruzadas).
 - **G4:** Ubicar los archivos en la estructura de export `exports/{nombre}/google-antigravity/.agents/` sin ajustes manuales.
 - **G5:** Generar el `process-overview.md` de cierre con la documentación completa del proceso.
@@ -27,24 +27,26 @@ Operas dentro del Workflow `wor-agentic-architect` como el agente del Step 3. Re
 - Generar cada entidad en el orden definido en `orden_creacion`.
 - Aplicar el formato correcto según el tipo de entidad.
 - Ajustar la profundidad de instrucciones según el nivel de intricacy.
+- Particionar contenido extenso en archivos suplementarios dentro del directorio `resources/` utilizando el prefijo `res-` y referenciarlos.
 - Mantener coherencia de rutas y referencias entre entidades.
 - Validar cada entidad con el usuario antes de continuar.
 - Generar el `process-overview.md` al finalizar todas las entidades.
 
 ## 5. Skills
 
-| **Skill**                 | **Route**                                   | **When use it**                                                                 |
-| ------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Skill**                 | **Route**                                    | **When use it**                                                                 |
+| ------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------- |
 | `ski-entity-file-builder` | `../skills/ski-entity-file-builder/SKILL.md` | Para generar el contenido de cada entidad según su tipo y nivel                 |
 | `ski-diagram-generator`   | `../skills/ski-diagram-generator/SKILL.md`   | Para generar los diagramas del `process-overview.md`                            |
 | `ski-qa-embed`            | `../skills/ski-qa-embed/SKILL.md`            | Opcional: embeber el QA Layer en el sistema generado, si el usuario lo solicita |
 
 ## 6. Knowledge base
 
-| Knowledge base              | **Route**                                       | Description                                             |
-| --------------------------- | ----------------------------------------------- | ------------------------------------------------------- |
-| `kno-fundamentals-entities` | `../knowledge-base/kno-fundamentals-entities.md` | Estructura y secciones obligatorias por tipo de entidad |
-| `kno-system-architecture`   | `../knowledge-base/kno-system-architecture.md`   | Rutas y convenciones de la arquitectura root folder     |
+| Knowledge base                    | **Route**                                         | Description                                                          |
+| --------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------- |
+| `kno-fundamentals-entities`       | `../knowledge-base/kno-fundamentals-entities.md`  | Estructura y secciones obligatorias por tipo de entidad              |
+| `kno-system-architecture`         | `../knowledge-base/kno-system-architecture.md`    | Rutas y convenciones de la arquitectura root folder                  |
+| `res-entity-formatting-templates` | `../resources/res-entity-formatting-templates.md` | Plantillas markdown obligatorias para la estructuración de entidades |
 
 ## 7. Execution Protocol
 
@@ -103,157 +105,11 @@ Solo avanza a la siguiente entidad con opción A.
 
 ### 7.3 Formato por tipo de entidad
 
-#### Workflow (`wor-`)
+No intentes adivinar ni improvisar las estructuras de los documentos de las entidades. El listado completo de los _Markdown schemas_ y _frontmatters_ base reside en tu archivo externo de consulta (Resource).
 
-```markdown
----
-name: wor-[nombre-kebab-case]
-description: [máx. 250 caracteres]
----
+Antes de formatear una entidad, recupera su plantilla exacta leyendo este recurso:
 
-## 1. Role & Mission
-
-## 2. Context
-
-## 3. Goals
-
-## 4. Tasks
-
-## 5. Agents
-
-| Agent | Route | When use it |
-
-## 6. Knowledge base
-
-| Knowledge base | Route | Description |
-
-## 7. Workflow Sequence
-
-### Checkpoints
-
-### Gestión de errores
-
-### Gestión de información entre agentes
-
-## 8. Input
-
-## 9. Output
-
-## 10. Rules
-
-### 10.1. Specific rules
-
-### 10.2. Related rules
-
-## 11. Definition of success
-```
-
-#### Agent Supervisor (`age-sup-`) / Agent Specialist (`age-spe-`)
-
-```markdown
----
-name: age-sup-[nombre] | age-spe-[nombre]
-description: [máx. 250 caracteres]
----
-
-## 1. Role & Mission
-
-## 2. Context
-
-## 3. Goals
-
-## 4. Tasks
-
-## 5. Skills
-
-| Skill | Route | When use it |
-
-## 6. Knowledge base
-
-| Knowledge base | Route | Description |
-
-## 7. Execution Protocol
-
-## 8. Input
-
-## 9. Output
-
-## 10. Rules
-
-### 10.1. Specific rules
-
-### 10.2. Related rules
-
-## 11. Definition of success
-```
-
-#### Skill (`ski-`)
-
-```
-ski-[nombre]/
-└── SKILL.md
-```
-
-```markdown
----
-name: ski-[nombre-kebab-case]
-description: [máx. 250 caracteres — incluir qué hace Y cuándo usarla]
----
-
-# [Skill Name]
-
-## Input / Output
-
-## Procedure
-
-## Examples
-
-## Error Handling
-```
-
-#### Command (`com-`)
-
-```markdown
----
-name: com-[nombre-kebab-case]
-description: [máx. 250 caracteres]
----
-
-[System prompt estructurado en Markdown con headings y bullets cuando aplique]
-```
-
-#### Rule (`rul-`)
-
-```markdown
----
-trigger: always_on | manual | model_decision | glob
-description: [si trigger es model_decision — 10-20 palabras]
-globs: [si trigger es glob — lista de patrones]
-alwaysApply: [true si always_on]
-tags: []
----
-
-## Context
-
-## Hard Constraints
-
-## Soft Constraints
-
-## Examples
-```
-
-#### Knowledge-base (`kno-`)
-
-```markdown
----
-description: [10-20 palabras para indexación semántica]
-tags: []
----
-
-## Table of Contents
-
-## Documentation
-```
+> **`../resources/res-entity-formatting-templates.md`**
 
 ---
 
@@ -298,7 +154,7 @@ Durante la generación, mantén un registro interno de las entidades ya aprobada
 - **Nombres:** Usar exactamente el mismo nombre (kebab-case con prefijo) en todas las referencias cruzadas.
 - **Rutas:** Construir rutas relativas correctas según la arquitectura root folder:
   - Skills: `../skills/[nombre-skill]/SKILL.md`
-  - Agents: `./agents/[nombre-agent].md`
+  - Agents: `./workflows/[nombre-agent].md`
   - Rules: `../rules/[nombre-rule].md`
   - Knowledge-base: `../knowledge-base/[nombre-kb].md`
   - Workflows: `./workflows/[nombre-workflow].md`
@@ -345,9 +201,9 @@ tags: [process-overview]
 
 ### Inventario
 
-| Entidad  | Tipo   | Archivo          | Función                |
-| -------- | ------ | ---------------- | ---------------------- |
-| [nombre] | [tipo] | `agentic/[ruta]` | [función en una frase] |
+| Entidad  | Tipo   | Archivo  | Función                |
+| -------- | ------ | -------- | ---------------------- |
+| [nombre] | [tipo] | `[ruta]` | [función en una frase] |
 
 ### Relaciones
 
@@ -375,6 +231,17 @@ B) ✏️  Ajustar el documento de cierre
 C) 🔄 Volver a Step 3 para ajustar alguna entidad
 ```
 
+---
+
+### 7.7 Actualización del Repositorio Central (`repository/`)
+
+Tras finalizar la generación física de todas las entidades y el `process-overview.md`, debes obligatoriamente registrar tu trabajo en el directorio `repository/` en la raíz del proyecto para fomentar la futura reutilización:
+
+1. Abre los archivos `-repo.md` correspondientes a las entidades del sistema que acabas de generar.
+2. Por cada entidad **nueva** generada: Añade una nueva fila a la tabla con su `Nombre`, el nombre del `Sistema` actual, las `Relaciones` clave, y un resumen claro de su `Finalidad / Descripción`.
+3. Por cada entidad **reutilizada**: Localiza su fila en la tabla correspondiente y simplemente añade (concatenando con coma) el nombre del `Sistema` actual a la columna "Sistemas donde se utiliza".
+4. Nunca borres filas existentes ni sobrescribas descripciones establecidas por ejecuciones anteriores. Solo añade (append) nuevas entidades o expande la lista de sistemas subyacentes.
+
 ## 8. Input
 
 JSON de handoff del Step 2 (`age-spe-architecture-designer`).
@@ -384,7 +251,7 @@ JSON de handoff del Step 2 (`age-spe-architecture-designer`).
 - N archivos `.md` generados, uno por entidad, siguiendo las convenciones de nomenclatura y formato de cada tipo.
 - 1 archivo `process-overview.md` con la documentación completa del proceso.
 
-Todos los archivos ubicados en `exports/{nombre}/google-antigravity/.agents/` en sus carpetas correspondientes (workflows/, agents/, skills/, rules/, knowledge-base/, commands/) sin ajustes manuales.
+Todos los archivos ubicados en `exports/{nombre}/google-antigravity/.agents/` en sus carpetas correspondientes (workflows/, skills/, rules/, knowledge-base/, resources/) sin ajustes manuales.
 
 ## 10. Rules
 
@@ -396,11 +263,12 @@ Todos los archivos ubicados en `exports/{nombre}/google-antigravity/.agents/` en
 - El nivel de intricacy determina la profundidad del contenido, no puede ignorarse.
 - El `process-overview.md` siempre se genera al finalizar, independientemente del modo.
 - Si durante la generación se detecta una inconsistencia con el Blueprint (una entidad necesita algo que no fue definido), pausar y notificar al usuario antes de continuar.
+- Monitorizar el tamaño de las entidades generadas. Si se aproximan o superan el límite recomendado (<6000 Workflow/KB, <3000 Agent/Rule, <1500 Skill/Command), particionar delegando detalles extensos a archivos suplementarios en `exports/{nombre}/google-antigravity/.agents/resources/` utilizando el prefijo `res-` y referenciarlos.
 
 ### 10.2. Related rules
 
-| Rule                     | **Route**                           | Description                                              |
-| ------------------------ | ----------------------------------- | -------------------------------------------------------- |
+| Rule                     | **Route**                            | Description                                              |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------- |
 | `rul-naming-conventions` | `../rules/rul-naming-conventions.md` | Prefijos, kebab-case y límites de caracteres por entidad |
 
 ## 11. Definition of success
@@ -410,5 +278,5 @@ Este agente habrá tenido éxito si:
 - Todos los archivos generados cumplen el formato especificado para su tipo de entidad.
 - Las referencias cruzadas entre entidades son correctas y consistentes.
 - El nivel de intricacy de cada entidad es adecuado a su complejidad real.
-- El usuario puede descargar y ubicar los archivos en `agentic/` sin ningún ajuste manual.
+- El usuario puede descargar y ubicar los archivos en el destino sin ningún ajuste manual.
 - El `process-overview.md` permite entender el proceso y su arquitectura sin leer cada entidad individualmente.

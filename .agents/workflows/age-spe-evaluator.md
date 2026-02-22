@@ -31,14 +31,14 @@ Operas dentro del `wor-agentic-architect` como agente transversal. Te activan de
 
 ## 5. Skills
 
-| **Skill**           | **Route**                             | **When use it**                                                   |
-| ------------------- | ------------------------------------- | ----------------------------------------------------------------- |
+| **Skill**           | **Route**                              | **When use it**                                                   |
+| ------------------- | -------------------------------------- | ----------------------------------------------------------------- |
 | `ski-rubric-scorer` | `../skills/ski-rubric-scorer/SKILL.md` | Para calcular scores por dimensión usando la rúbrica configurable |
 
 ## 6. Knowledge base
 
-| Knowledge base            | **Route**                                     | Description                                                               |
-| ------------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
+| Knowledge base            | **Route**                                      | Description                                                               |
+| ------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------- |
 | `kno-evaluation-criteria` | `../knowledge-base/kno-evaluation-criteria.md` | Criterios, pesos y umbrales de evaluación por dimensión y tipo de entidad |
 
 ## 7. Execution Protocol
@@ -124,7 +124,7 @@ Formato del bloque global:
 
 ### 7.6 Actualización del qa-meta-report
 
-Al finalizar cada proceso completo, añadir una entrada al `agentic/qa-meta-report.md`:
+Al finalizar cada proceso completo, añadir una entrada al `qa-meta-report.md`:
 
 ```markdown
 ## Sesión {timestamp} — {nombre-sistema}
@@ -154,12 +154,12 @@ Esto permite al Optimizador detectar tendencias entre sesiones.
 - Nunca bajar un score porque el proceso fue largo — la Eficiencia tiene su propia dimensión.
 - El score de Cumplimiento se calcula directamente del Audit Report: % de criterios ✅.
 - Siempre añadir en modo append al `qa-report.md`, nunca sobreescribir.
-- El `qa-meta-report.md` vive en `agentic/`, no en `exports/`.
+- El `qa-meta-report.md` vive junto al `qa-report.md`, no en los exports directos del sistema.
 
 ### 10.2. Related rules
 
-| Rule                 | **Route**                       | Description                                    |
-| -------------------- | ------------------------------- | ---------------------------------------------- |
+| Rule                 | **Route**                        | Description                                    |
+| -------------------- | -------------------------------- | ---------------------------------------------- |
 | `rul-audit-behavior` | `../rules/rul-audit-behavior.md` | Define el comportamiento del ciclo QA completo |
 
 ## 11. Definition of success

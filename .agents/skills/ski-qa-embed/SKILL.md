@@ -16,7 +16,7 @@ description: Transversal skill that takes a freshly generated system path and em
 
 **Output:**
 
-- Archivos creados en `sistema_path/agents/` (3 agents QA parametrizados)
+- Archivos creados en `sistema_path/workflows/` (3 agents QA parametrizados)
 - Archivos creados en `sistema_path/skills/` (3 skills QA)
 - Archivo creado en `sistema_path/rules/rul-audit-behavior.md`
 - Archivo creado en `sistema_path/knowledge-base/kno-qa-dynamic-reading.md`
@@ -28,7 +28,7 @@ description: Transversal skill that takes a freshly generated system path and em
 
 ### Paso 1 — Lectura de plantillas
 
-Leer `kno-qa-layer-template` para obtener las plantillas de:
+Leer el recurso universal de templates brutos para el embed: `../../resources/res-qa-layer-raw-templates.md` y extraer las matrices necesarias:
 
 - `age-spe-auditor` (plantilla base)
 - `age-spe-evaluator` (plantilla base)
@@ -56,7 +56,7 @@ Crear los archivos en las rutas correctas dentro de `sistema_path`:
 
 ```
 {sistema_path}/
-├── agents/
+├── workflows/
 │   ├── age-spe-auditor.md        ← parametrizado
 │   ├── age-spe-evaluator.md      ← parametrizado
 │   └── age-spe-optimizer.md      ← parametrizado
@@ -127,7 +127,7 @@ Entidades añadidas:
 - 1 rule: rul-audit-behavior
 - 1 knowledge-base: kno-qa-dynamic-reading
 
-qa-report.md inicializado en: exports/{sistema_nombre}/google-antigravity/qa-report.md
+qa-report.md inicializado en: {sistema_path}/../qa-report.md
 
 El sistema {sistema_nombre} evaluará automáticamente su propio proceso en cada checkpoint.
 ```

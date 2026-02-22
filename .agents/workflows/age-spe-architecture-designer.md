@@ -34,15 +34,15 @@ Operas dentro del Workflow `wor-agentic-architect` como el agente del Step 2. Re
 
 ## 5. Skills
 
-| **Skill**               | **Route**                                 | **When use it**                                            |
-| ----------------------- | ----------------------------------------- | ---------------------------------------------------------- |
+| **Skill**               | **Route**                                  | **When use it**                                            |
+| ----------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `ski-entity-selector`   | `../skills/ski-entity-selector/SKILL.md`   | Para seleccionar el tipo correcto de cada entidad          |
 | `ski-diagram-generator` | `../skills/ski-diagram-generator/SKILL.md` | Para generar el diagrama de arquitectura en Modo Architect |
 
 ## 6. Knowledge base
 
-| Knowledge base              | **Route**                                       | Description                                               |
-| --------------------------- | ----------------------------------------------- | --------------------------------------------------------- |
+| Knowledge base              | **Route**                                        | Description                                               |
+| --------------------------- | ------------------------------------------------ | --------------------------------------------------------- |
 | `kno-fundamentals-entities` | `../knowledge-base/kno-fundamentals-entities.md` | Definición, estructura y especificaciones de cada entidad |
 | `kno-entity-selection`      | `../knowledge-base/kno-entity-selection.md`      | Árbol de decisión y criterios de selección de entidad     |
 | `kno-system-architecture`   | `../knowledge-base/kno-system-architecture.md`   | Arquitectura root folder y convenciones de nomenclatura   |
@@ -64,15 +64,21 @@ Este análisis no se presenta al usuario, es razonamiento interno previo al dise
 
 ---
 
-### 7.2 Verificación de Skills existentes
+### 7.2 Consulta del Repositorio Central (Reutilización)
 
-Antes de proponer ninguna entidad, pregunta al usuario:
+Antes de proponer ninguna entidad nueva, debes consultar obligatoriamente los índices del directorio `repository/` en la raíz del proyecto para descubrir entidades existentes que puedan ser reutilizadas.
 
-_"Antes de diseñar la arquitectura, quiero saber si tienes Skills ya creadas que podría reutilizar. ¿Tienes un catálogo de Skills disponibles? Si es así, compártelas aquí."_
+1. Lee los archivos `-repo.md` correspondientes al tipo de responsabilidad detectado (ej. `skills-repo.md`, `agents-repo.md`).
+2. Evalúa si la "Finalidad / Descripción" de alguna entidad existente concuerda con lo que el flujo actual necesita.
+3. Si existe una entidad útil, márcala como reutilizada en el diseño. Prioriza siempre la reutilización sobre la creación de nuevas entidades (especialmente Skills y Rules).
 
-Si el usuario comparte Skills existentes, regístralas. Durante el diseño, prioriza siempre la reutilización sobre la creación de nuevas Skills.
+Adicionalmente, si el repositorio está vacío o si lo consideras necesario, pregunta al usuario:
 
-Si no tiene Skills existentes, continúa con el diseño completo.
+_"Antes de diseñar la arquitectura, quiero asegurarme de maximizar la reutilización. Además de lo registrado en el repositorio, ¿tienes alguna otra Skill o entidad ya creada que deba integrar en esta arquitectura?"_
+
+Si el usuario comparte Skills existentes adicionales, regístralas. Durante el diseño, prioriza siempre la reutilización sobre la creación.
+
+Si no hay nada reutilizable ni en el repositorio ni por parte del usuario, diseña entidades nuevas.
 
 ---
 
@@ -115,29 +121,13 @@ Del proceso descubierto, extrae cada responsabilidad diferenciada. Una responsab
 - Tiene un input/output propio
 
 **Paso 2 — Selección de entidad para cada responsabilidad**
-
-Para cada responsabilidad, aplica sistemáticamente el árbol de decisión de `kno-entity-selection`:
-
-| Responsabilidad | ¿Coordina?    | ¿Dominio único? | ¿Reutilizable? | ¿Manual/frecuente? | ¿Condiciona? | ¿Estática? | Entidad |
-| --------------- | ------------- | --------------- | -------------- | ------------------ | ------------ | ---------- | ------- |
-| ...             | Sí → Workflow | Sí → Agent      | Sí → Skill     | Sí → Command       | Sí → Rule    | Sí → KB    | ...     |
+Para cada responsabilidad, revisa los árboles de decisión y tablas discriminatorias del recurso central (`res-architecture-component-metrics.md` >> "Entity Decision Tree").
 
 **Paso 3 — Definición de relaciones e interfaces**
-
-Para cada par de entidades relacionadas, define:
-
-- Dirección de la relación (A invoca B, A consulta B, A es condicionado por B)
-- Interface: qué datos pasan de una a otra y en qué formato
+Para cada par de entidades relacionadas, define la dirección (Invoca / Consulta / Condiciona) y la interface compartida (los datos).
 
 **Paso 4 — Asignación de nivel de intricacy**
-
-Para cada entidad, asigna el nivel de complejidad de sus instrucciones:
-
-| Nivel     | Cuándo aplica                                                                    |
-| --------- | -------------------------------------------------------------------------------- |
-| `simple`  | Una tarea clara, sin decisiones complejas, sin ramificaciones                    |
-| `medium`  | Varias tareas, alguna decisión, manejo de errores básico                         |
-| `complex` | Múltiples tareas, lógica de decisión, integraciones, gestión de errores avanzada |
+Revisa la matriz de intricacy en el recurso central (`res-architecture-component-metrics.md` >> "Mapeo de Intricacy Levels") y define a la entidad como simple, medium o complex.
 
 **Paso 5 — Generación del Blueprint**
 
@@ -184,40 +174,7 @@ Activa `ski-diagram-generator` para generar el diagrama de arquitectura en Merma
 
 ### 7.4 Construcción del JSON de handoff
 
-```json
-{
-  "modo": "express | architect",
-  "entidades": [
-    {
-      "tipo": "workflow | agent | skill | command | rule | knowledge-base",
-      "nombre": "nombre-en-kebab-case",
-      "descripcion": "descripción para el frontmatter",
-      "funcion": "qué hace esta entidad",
-      "input": {
-        "descripcion": "",
-        "formato": ""
-      },
-      "output": {
-        "descripcion": "",
-        "formato": ""
-      },
-      "relaciones": [
-        {
-          "entidad": "nombre-entidad",
-          "tipo": "invoca | es-invocado-por | consulta | es-condicionado-por",
-          "descripcion": ""
-        }
-      ],
-      "es_nueva": true,
-      "reutilizada_de": null,
-      "nivel_intricacy": "simple | medium | complex"
-    }
-  ],
-  "diagrama_arquitectura": "código Mermaid completo | null si Express",
-  "orden_creacion": ["nombre-entidad-1", "nombre-entidad-2"],
-  "skills_reutilizadas": ["nombre-skill-existente"]
-}
-```
+Formatea el Blueprint en la estructura que impone el recurso central (`res-architecture-component-metrics.md` >> "Salida del Blueprint JSON"). Esta estructura pasará contextualmente al step S3 (Entity Builder).
 
 ## 8. Input
 
@@ -240,8 +197,8 @@ JSON de handoff del Step 2, validado por el usuario en el checkpoint, que incluy
 
 ### 10.2. Related rules
 
-| Rule                     | **Route**                           | Description                                              |
-| ------------------------ | ----------------------------------- | -------------------------------------------------------- |
+| Rule                     | **Route**                            | Description                                              |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------- |
 | `rul-naming-conventions` | `../rules/rul-naming-conventions.md` | Prefijos, kebab-case y límites de caracteres por entidad |
 
 ## 11. Definition of success

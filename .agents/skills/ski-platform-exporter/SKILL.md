@@ -10,11 +10,13 @@ Convierte un sistema exportado para Google Antigravity a otras plataformas, apli
 ## Input / Output
 
 **Input:**
+
 - Ruta del sistema en `exports/{nombre}/google-antigravity/`
 - Plataforma destino: `claude-code`, `chatgpt`, `claude-ai`, `dust`, `gemini`
 - Nombre del sistema (extraído del path o proporcionado)
 
 **Output:**
+
 - Archivos generados en `exports/{nombre}/{plataforma}/`
 - Resumen de entidades exportadas
 
@@ -54,28 +56,34 @@ Consultar `kno-system-architecture` Sección 3 para el mapeo correcto.
 #### Para Claude Code
 
 **Estructura de destino:**
+
 ```
 exports/{nombre}/claude-code/
 ├── .claude/
+│   ├── knowledge-base/
+│   ├── rules/
+│   ├── resources/
 │   ├── skills/
 │   ├── agents/
 │   ├── commands/
 │   └── settings.json
 ├── CLAUDE.md
-├── knowledge-base/
 └── process-overview.md
 ```
 
 **Mapeo:**
-- Workflows → `.claude/commands/` (copiar contenido, adaptar formato si es necesario)
+
+- Workflows → `.claude/commands/` (copiar contenido)
 - Agents → `.claude/agents/` (copiar directamente)
 - Skills → `.claude/skills/` (copiar directorios completos)
-- Rules → integrar en `CLAUDE.md` (generar sección "Rules activas")
-- Knowledge-base → `knowledge-base/` (copiar) + referenciar en `CLAUDE.md`
+- Rules → `.claude/rules/` (copiar) + referenciar en `CLAUDE.md`
+- Knowledge-base → `.claude/knowledge-base/` (copiar) + referenciar en `CLAUDE.md`
+- Resources → `.claude/resources/` (copiar)
 - Commands → `.claude/commands/` (copiar directamente)
 - process-overview.md → raíz
 
 **Generar `settings.json`:**
+
 ```json
 {
   "permissions": {
@@ -86,6 +94,7 @@ exports/{nombre}/claude-code/
 ```
 
 **Generar `CLAUDE.md`:**
+
 ```markdown
 # {Nombre del Sistema}
 
@@ -113,40 +122,32 @@ exports/{nombre}/claude-code/
 #### Para Aplicaciones (ChatGPT, Claude.ai, Dust, Gemini)
 
 **Estructura de destino:**
+
 ```
 exports/{nombre}/{plataforma}/
-├── workflows/
-│   └── wor-nombre.md
-├── agents/
-│   └── age-nombre.md
-├── skills/
-│   └── ski-nombre.zip
-├── rules/
-│   └── rul-nombre.md
 ├── knowledge-base/
-│   └── kno-nombre.md
-├── commands/
-│   └── com-nombre.md
+├── rules/
+├── skills/
+├── workflows/
+├── resources/
 └── process-overview.md
 ```
 
 **Mapeo:**
-- Workflows → `workflows/` (copiar `.md` directamente)
-- Agents → `agents/` (copiar `.md` directamente)
-- Skills → `skills/` (comprimir cada `ski-nombre/` como `ski-nombre.zip`)
+
+- Workflows, Agents, Commands → `workflows/` (copiar `.md` directamente)
+- Skills → `skills/` (copiar `ski-nombre/` con todo su contenido intacto)
 - Rules → `rules/` (copiar `.md` directamente)
 - Knowledge-base → `knowledge-base/` (copiar `.md` directamente)
-- Commands → `commands/` (copiar `.md` directamente)
+- Resources → `resources/` (copiar `.md` directamente)
 - process-overview.md → raíz
-
-**Comprimir skills:**
-Para cada skill `ski-nombre/`, crear `ski-nombre.zip` que contenga `SKILL.md` y cualquier archivo adicional.
 
 ---
 
 ### 4. Ejecutar la conversión
 
 Para cada entidad en la lista:
+
 1. Leer el archivo fuente desde `.agents/{tipo}/{nombre}`
 2. Aplicar transformaciones si aplica (ninguna necesaria para la mayoría)
 3. Escribir en la ruta destino según el mapeo
@@ -175,8 +176,8 @@ Entidades exportadas:
 **Instrucciones por plataforma:**
 
 - **Claude Code**: "Abre este directorio en Claude Code para usar el sistema completo."
-- **ChatGPT**: "Sube los archivos .md a tu proyecto en ChatGPT. Descomprime los .zip de skills si es necesario."
-- **Claude.ai**: "Crea un nuevo proyecto y adjunta los archivos .md. Descomprime las skills como archivos separados."
+- **ChatGPT**: "Sube los archivos .md a tu proyecto en ChatGPT."
+- **Claude.ai**: "Crea un nuevo proyecto y adjunta los archivos .md."
 - **Dust / Gemini**: "Sube los archivos según las convenciones de la plataforma."
 
 ---
@@ -186,6 +187,7 @@ Entidades exportadas:
 **Ejemplo 1 — Export a Claude Code**
 
 Input:
+
 ```json
 {
   "sistema": "exports/customer-onboarding/google-antigravity/",
@@ -194,17 +196,19 @@ Input:
 ```
 
 Output esperado:
+
 - Directorio `exports/customer-onboarding/claude-code/` con estructura `.claude/`
 - `CLAUDE.md` generado con contexto del sistema
 - `settings.json` creado
 - 2 workflows convertidos a commands en `.claude/commands/`
 - 3 agents copiados a `.claude/agents/`
 - 1 skill copiada a `.claude/skills/`
-- 2 rules integradas en `CLAUDE.md`
+- 2 rules copiadas en `.claude/rules/` y referenciadas en `CLAUDE.md`
 
 **Ejemplo 2 — Export a ChatGPT**
 
 Input:
+
 ```json
 {
   "sistema": "exports/email-classifier/google-antigravity/",
@@ -213,9 +217,10 @@ Input:
 ```
 
 Output esperado:
-- Directorio `exports/email-classifier/chatgpt/` con carpetas planas
-- 1 agent en `agents/age-spe-email-classifier.md`
-- 2 skills comprimidas en `skills/ski-xxx.zip`
+
+- Directorio `exports/email-classifier/chatgpt/` con carpetas alineadas a la arquitectura
+- 1 agent en `workflows/age-spe-email-classifier.md`
+- 2 skills en `skills/ski-xxx/SKILL.md`
 - 1 rule en `rules/rul-xxx.md`
 - process-overview.md en raíz
 
@@ -228,6 +233,7 @@ Output esperado:
 - **Plataforma no soportada**: Mostrar lista de plataformas soportadas: `claude-code`, `chatgpt`, `claude-ai`, `dust`, `gemini`.
 
 - **Export destino ya existe**: Preguntar:
+
   ```
   El export a {plataforma} ya existe en exports/{nombre}/{plataforma}/.
 
@@ -236,7 +242,5 @@ Output esperado:
   B) No, cancelar
   C) Generar en un directorio diferente ({plataforma}-v2)
   ```
-
-- **Error al comprimir skill**: Notificar el error específico e intentar con la siguiente skill. Listar las skills que fallaron al final del resumen.
 
 - **Archivo corrupto o ilegible**: Notificar y omitir ese archivo. Continuar con el resto. Listar archivos omitidos en el resumen.

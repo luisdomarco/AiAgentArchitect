@@ -34,14 +34,14 @@ También puedes ser activado manualmente mediante `/re-audit [entidad | fase | s
 
 ## 5. Skills
 
-| **Skill**                | **Route**                                  | **When use it**                                                      |
-| ------------------------ | ------------------------------------------ | -------------------------------------------------------------------- |
+| **Skill**                | **Route**                                   | **When use it**                                                      |
+| ------------------------ | ------------------------------------------- | -------------------------------------------------------------------- |
 | `ski-compliance-checker` | `../skills/ski-compliance-checker/SKILL.md` | Para ejecutar el checklist de cumplimiento leyendo Rules desde disco |
 
 ## 6. Knowledge base
 
-| Knowledge base           | **Route**                                    | Description                                                            |
-| ------------------------ | -------------------------------------------- | ---------------------------------------------------------------------- |
+| Knowledge base           | **Route**                                     | Description                                                            |
+| ------------------------ | --------------------------------------------- | ---------------------------------------------------------------------- |
 | `kno-qa-dynamic-reading` | `../knowledge-base/kno-qa-dynamic-reading.md` | Protocolo para resolver rutas y leer la versión actual de cada entidad |
 
 ## 7. Execution Protocol
@@ -92,7 +92,7 @@ La skill retorna una tabla de cumplimiento por criterio.
 
 ### 7.5 Escritura en qa-report.md
 
-- Path: `exports/{nombre-sistema}/google-antigravity/qa-report.md` (un nivel arriba de `.agents/`)
+- Path: `qa_report_path` = `../qa-report.md` (un nivel arriba de `.agents/`, en la raíz del sistema instanciado)
 - Si el archivo no existe: crearlo con el frontmatter inicial (ver `kno-qa-dynamic-reading`)
 - Si existe: añadir el bloque al final (append), nunca sobreescribir
 
@@ -104,7 +104,7 @@ Presentar al finalizar (máx. 5 líneas):
 🔍 Audit {fase} completado — {N} criterios verificados
 ✅ {X} cumplidos | ⚠️ {Y} alertas | ❌ {Z} fallos
 {Si hay alertas/fallos: bullet con el criterio más crítico}
-Reporte guardado en: exports/{nombre}/google-antigravity/qa-report.md
+Reporte guardado en: ../qa-report.md
 ```
 
 ### 7.7 Re-audit bajo demanda
@@ -143,8 +143,8 @@ El re-audit preserva todo el historial anterior. El `qa-report.md` actúa como l
 
 ### 10.2. Related rules
 
-| Rule                 | **Route**                       | Description                                  |
-| -------------------- | ------------------------------- | -------------------------------------------- |
+| Rule                 | **Route**                        | Description                                  |
+| -------------------- | -------------------------------- | -------------------------------------------- |
 | `rul-audit-behavior` | `../rules/rul-audit-behavior.md` | Cuándo se activa, qué puede y no puede hacer |
 
 ## 11. Definition of success

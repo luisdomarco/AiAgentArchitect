@@ -56,14 +56,14 @@ Si una entidad tiene múltiples versiones (p.ej. fue regenerada), el Auditor lee
 
 #### 2.3 Rutas estándar por tipo de entidad
 
-| Tipo             | Ruta relativa desde sistema_path                 |
-| ---------------- | ------------------------------------------------ |
-| Rule             | `./rules/{rul-nombre}.md`                        |
-| Agent            | `./agents/{age-nombre}.md`                       |
-| Skill            | `./skills/{ski-nombre}/SKILL.md`                 |
-| Workflow         | `./workflows/{wor-nombre}.md`                    |
-| Knowledge-base   | `./knowledge-base/{kno-nombre}.md`               |
-| process-overview | `./process-overview.md`                          |
+| Tipo             | Ruta relativa desde sistema_path                  |
+| ---------------- | ------------------------------------------------- |
+| Rule             | `./rules/{rul-nombre}.md`                         |
+| Agent            | `./workflows/{age-nombre}.md`                     |
+| Skill            | `./skills/{ski-nombre}/SKILL.md`                  |
+| Workflow         | `./workflows/{wor-nombre}.md`                     |
+| Knowledge-base   | `./knowledge-base/{kno-nombre}.md`                |
+| process-overview | `./process-overview.md`                           |
 | qa-report        | `../qa-report.md` (un nivel arriba de `.agents/`) |
 
 ---
@@ -101,7 +101,7 @@ Por cada entidad generada, leer el archivo recién creado en disco + las Rules a
 → Auditar: el Blueprint completo contra las Rules actuales
 
 /re-audit sistema
-→ Leer: todas las entidades en todas las carpetas de .agents/
+→ Leer: todas las entidades en todas las carpetas del sistema (dentro de .agents/ y, en el caso del sistema nativo Architect, también la carpeta repository/ en la raíz)
 → Verificar contra: todas las Rules activas
 → Genera un audit report completo del estado actual del sistema
 ```
@@ -135,7 +135,7 @@ Ubicación: Un nivel arriba de `.agents/`, en la raíz del directorio del sistem
 exports/mi-sistema/google-antigravity/
 ├── .agents/
 │   ├── rules/
-│   ├── agents/
+│   ├── workflows/
 │   └── ...
 └── qa-report.md    ← aquí, accesible sin entrar a .agents/
 ```
