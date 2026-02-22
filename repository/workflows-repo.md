@@ -1,2 +1,3 @@
-| Nombre | Sistemas donde se utiliza | Relacionado con | Finalidad / Descripción |
-| ------ | ------------------------- | --------------- | ----------------------- |
+| Nombre                        | Sistemas donde se utiliza         | Relacionado con                                   | Finalidad / Descripción                                                                       |
+| ----------------------------- | --------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `wor-documentation-generator` | Assistant Documentation Generator | `age-spe-content-analyzer`, `age-spe-doc-builder` | Orquesta la transformación de documentos en archivos .md de knowledge-base, rules y resources |

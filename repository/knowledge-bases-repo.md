@@ -1,2 +1,4 @@
-| Nombre | Sistemas donde se utiliza | Relacionado con | Finalidad / Descripción |
-| ------ | ------------------------- | --------------- | ----------------------- |
+| Nombre                    | Sistemas donde se utiliza         | Relacionado con                                     | Finalidad / Descripción                                                                  |
+| ------------------------- | --------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `kno-entity-format-specs` | Assistant Documentation Generator | `age-spe-content-analyzer`, `age-spe-doc-builder`   | Especificaciones de formato y estructura para archivos knowledge-base, rules y resources |
+| `kno-input-template`      | Assistant Documentation Generator | `wor-documentation-generator`, `res-input-template` | Documentación de la plantilla input.md y sus campos: título, objetivo, recursos          |

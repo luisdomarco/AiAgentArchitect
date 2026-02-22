@@ -1,2 +1,3 @@
-| Nombre | Sistemas donde se utiliza | Relacionado con | Finalidad / Descripción |
-| ------ | ------------------------- | --------------- | ----------------------- |
+| Nombre                | Sistemas donde se utiliza         | Relacionado con                                   | Finalidad / Descripción                                                               |
+| --------------------- | --------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `ski-content-chunker` | Assistant Documentation Generator | `age-spe-content-analyzer`, `age-spe-doc-builder` | Particiona documentos extensos en chunks procesables manteniendo coherencia semántica |

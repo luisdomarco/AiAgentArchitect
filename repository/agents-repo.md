@@ -1,2 +1,4 @@
-| Nombre | Sistemas donde se utiliza | Relacionado con | Finalidad / Descripción |
-| ------ | ------------------------- | --------------- | ----------------------- |
+| Nombre                     | Sistemas donde se utiliza         | Relacionado con                                      | Finalidad / Descripción                                                                                          |
+| -------------------------- | --------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `age-spe-content-analyzer` | Assistant Documentation Generator | `wor-documentation-generator`, `ski-content-chunker` | Analiza documentos, clasifica contenido por tipo de entidad y propone enriquecimiento con trazabilidad de fuente |
+| `age-spe-doc-builder`      | Assistant Documentation Generator | `wor-documentation-generator`, `ski-content-chunker` | Genera archivos .md finales respetando formato, límites y referencias cruzadas                                   |
