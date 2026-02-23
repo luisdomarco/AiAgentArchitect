@@ -28,3 +28,11 @@ Añade enlaces a webs, repositorios o wikis externas que el sistema deba conside
 
 - [URL 1] - [Descripción útil]
 - [URL 2] - [Descripción útil]
+
+## 5. Proceso de generación de conocimiento
+
+NotebookLM -> Generar documentación
+Gemini -> Deep research
+ - sobre buscador
+ - sobre la documentación del cuaderno de NotebookLM
+

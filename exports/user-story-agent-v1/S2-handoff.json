@@ -1,0 +1,239 @@
+{
+  "modo": "architect",
+  "entidades": [
+    {
+      "tipo": "workflow",
+      "nombre": "wor-user-story-generator",
+      "descripcion": "Orquestador del proceso de creación y refinamiento de historias de usuario. Coordina las fases de Definition, Scope, Motivation y Acceptance Criteria.",
+      "funcion": "Recibe el input (.md), gestiona el Context Ledger, coordina a los agentes especialistas por cada fase del proceso, maneja los checkpoints humanos obligatorios en cada paso y genera el output final.",
+      "input": {
+        "descripcion": "Archivos Markdown (.md) de épicas con plantillas parciales o completas.",
+        "formato": "Directorio con archivos .md"
+      },
+      "output": {
+        "descripcion": "Archivos Markdown refinados y validados.",
+        "formato": "Archivos .md en la subcarpeta output/"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-story-definer",
+          "tipo": "invoca",
+          "descripcion": "Para asegurar Brand, Jobs, Modules y refinar Problem/Need."
+        },
+        {
+          "entidad": "age-spe-scope-definer",
+          "tipo": "invoca",
+          "descripcion": "Para definir Scope, Out of Scope, Motivation, Título y Proposal."
+        },
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "invoca",
+          "descripcion": "Para generar los criterios de aceptación en 3 fases (Features, Scenarios, Gherkin)."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "complex"
+    },
+    {
+      "tipo": "agent",
+      "nombre": "age-spe-story-definer",
+      "descripcion": "Especialista en asegurar la completitud de la definición base y orientar el problema al negocio.",
+      "funcion": "Verifica que Brand, Jobs, Modules estén cubiertos. Clarifica y asiste al usuario en la definición del Problem o Need, orientándolo al impacto real en negocio/usuario.",
+      "input": {
+        "descripcion": "Secciones Definition y Problem/Need del Markdown original.",
+        "formato": "Texto extraído o JSON desde el Ledger."
+      },
+      "output": {
+        "descripcion": "Secciones Definition y Problem/Need validadas y refinadas.",
+        "formato": "JSON o Markdown parcial."
+      },
+      "relaciones": [
+        {
+          "entidad": "wor-user-story-generator",
+          "tipo": "es-invocado-por",
+          "descripcion": "El orquestador le pasa el contexto inicial y le pide definir la base."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "medium"
+    },
+    {
+      "tipo": "agent",
+      "nombre": "age-spe-scope-definer",
+      "descripcion": "Especialista en acotar el alcance funcional y redactar la motivación de la historia.",
+      "funcion": "Genera el Scope, Out of Scope (en bullet points), Motivation narrativa (As/I want/So that), Title orientado al usuario, y opcionalmente el Proposal.",
+      "input": {
+        "descripcion": "Problem/Need validado por el age-spe-story-definer.",
+        "formato": "JSON de contexto."
+      },
+      "output": {
+        "descripcion": "Secciones Scope, Out of Scope, Motivation, Título y Proposal.",
+        "formato": "Markdown parcial estructurado."
+      },
+      "relaciones": [
+        {
+          "entidad": "wor-user-story-generator",
+          "tipo": "es-invocado-por",
+          "descripcion": "El orquestador le pasa el problema confirmado para acotar su alcance y motivación."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "medium"
+    },
+    {
+      "tipo": "agent",
+      "nombre": "age-spe-criteria-generator",
+      "descripcion": "Especialista en Behavior-Driven Development (BDD) que diseña criterios en sintaxis Gherkin.",
+      "funcion": "Ejecuta las Fases 9.1 (Features+Background), 9.2 (Scenarios) y 9.3 (Criterios Gherkin) asegurando el lenguaje de negocio y las reglas estrictas de formato.",
+      "input": {
+        "descripcion": "Scope y Proposal validados.",
+        "formato": "JSON de contexto."
+      },
+      "output": {
+        "descripcion": "Bloques iterativos de Features, Scenarios y finalmente Acceptance Criteria formados.",
+        "formato": "Listas Markdown (Gherkin)."
+      },
+      "relaciones": [
+        {
+          "entidad": "wor-user-story-generator",
+          "tipo": "es-invocado-por",
+          "descripcion": "El orquestador le solicita los criterios dividiendo su ejecución en tres sub-checkpoints."
+        },
+        {
+          "entidad": "kno-gherkin-syntax-reference",
+          "tipo": "consulta",
+          "descripcion": "Para asegurar el cumplimiento de la sintaxis."
+        },
+        {
+          "entidad": "rul-acceptance-criteria-generation",
+          "tipo": "es-condicionado-por",
+          "descripcion": "Debe respetar el EN-US y las normas de presentación."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "complex"
+    },
+    {
+      "tipo": "rule",
+      "nombre": "rul-story-formatting-standards",
+      "descripcion": "Normas globales para el forjado del Markdown final y reglas de estilo para todos los agentes.",
+      "funcion": "Impide la edición de meta-etiquetas de desarrollo (Design notes, Test plan, etc.), obliga el uso estricto de listas (bullet points), no inventar información, y uso de [HYPOTHESIS] ante ambigüedades.",
+      "input": {
+        "descripcion": "No recibe input ejecutable, es pasiva.",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "No emite output ejecutable, condiciona.",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "wor-user-story-generator",
+          "tipo": "condiciona",
+          "descripcion": "Aplicada globalmente en el sistema."
+        },
+        {
+          "entidad": "age-spe-story-definer",
+          "tipo": "condiciona",
+          "descripcion": "Para el formateo del contenido."
+        },
+        {
+          "entidad": "age-spe-scope-definer",
+          "tipo": "condiciona",
+          "descripcion": "Aplica para asegurar bullet points en scope."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    },
+    {
+      "tipo": "knowledge-base",
+      "nombre": "kno-gherkin-syntax-reference",
+      "descripcion": "Referencia de Gherkin, tomada directamente del repositorio externo del usuario.",
+      "funcion": "Punto de consulta para el age-spe-criteria-generator conteniendo palabras clave, anti-patrones y modelos.",
+      "input": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "es-consultado-por",
+          "descripcion": "Punto de verdad durante la generación sintáctica."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    },
+    {
+      "tipo": "rule",
+      "nombre": "rul-acceptance-criteria-generation",
+      "descripcion": "Reglas de output para los criterios (proveniente del repo del usuario).",
+      "funcion": "Define la estructura de listas Markdown, escenario ordenado (happy/unhappy), idioma (EN-US).",
+      "input": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "condiciona",
+          "descripcion": "Restricción restrictiva al emitir Acceptance Criteria."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    },
+    {
+      "tipo": "knowledge-base",
+      "nombre": "kno-acceptance-criteria-fundamentals",
+      "descripcion": "Fundamentos de CA, traído del repo (Scrum, modelo 3C).",
+      "funcion": "Otorga el mindset BDD básico al age-spe-criteria-generator.",
+      "input": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "es-consultado-por",
+          "descripcion": "Conocimiento estructural base."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    }
+  ],
+  "diagrama_arquitectura": "graph TD\n    A[\"input: archivos .md\"] --> B[\"wor-user-story-generator\"]\n    B -->|\"1. Invoca para Brand/Jobs/Modules/Problem\"| C(\"age-spe-story-definer\")\n    C -->|\"Retorna base validada\"| B\n    B -->|\"2. Invoca para Scope/Motivation\"| D(\"age-spe-scope-definer\")\n    D -->|\"Retorna alcance y contexto\"| B\n    B -->|\"3. Invoca (por fases) para CA\"| E(\"age-spe-criteria-generator\")\n    E -->|\"Genera Features/Scenarios/CA\"| B\n    B --> F[\"output: {id}-output.md\"]\n    \n    G(\"rul-story-formatting-standards\") -.->|\"Condiciona globalmente\"| B\n    G -.->|\"Aplica estilo\"| C\n    G -.->|\"Aplica listas\"| D\n    \n    H(\"kno-gherkin-syntax-reference\") -.->|\"Consulta sintaxis\"| E\n    I(\"rul-acceptance-criteria-generation\") -.->|\"Fuerza reglas output\"| E\n    J(\"kno-acceptance-criteria-fundamentals\") -.->|\"Aporta fundamentos\"| E\n    \n    style B fill:#f9f,stroke:#333,stroke-width:2px,color:#000",
+  "orden_creacion": [
+    "rul-story-formatting-standards (Base global)",
+    "kno-gherkin-syntax-reference (KB externa para Criteria)",
+    "rul-acceptance-criteria-generation (Regla externa para Criteria)",
+    "kno-acceptance-criteria-fundamentals (KB externa para Criteria)",
+    "age-spe-story-definer (Agente Paso 1)",
+    "age-spe-scope-definer (Agente Paso 2)",
+    "age-spe-criteria-generator (Agente Paso 3)",
+    "wor-user-story-generator (Orquestador principal que consolida y coordina alles)"
+  ],
+  "skills_reutilizadas": []
+}

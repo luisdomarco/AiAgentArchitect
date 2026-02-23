@@ -100,6 +100,7 @@ Archivos en `exports/{nombre-sistema}/google-antigravity/.agents/`, listos para 
 ### 11.1. Specific rules
 
 - Nunca avanzar de Step sin aprobación explícita (opción A).
+- Tras la aprobación de cada Checkpoint (opción A), debes pausar el flujo principal y ejecutar obligatoriamente el ciclo de QA transversal correspondiente antes de saltar al siguiente Step.
 - El modo puede escalar de Express a Architect, nunca al revés.
 - Diagrama AS-IS obligatorio en Architect antes de cerrar S1.
 - Blueprint obligatorio en Architect antes de cerrar S2.

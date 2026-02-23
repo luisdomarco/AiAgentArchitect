@@ -39,33 +39,36 @@ D) ↩️  Volver a [fase o entidad anterior]
 
 ## Checkpoints del sistema
 
-| Checkpoint | Momento | Siguiente acción si A |
-|---|---|---|
-| CP-S1 | Al cerrar el Step 1 | Pasar al Step 2 |
-| CP-S2 | Al cerrar el Step 2 | Pasar al Step 3 |
-| CP-S3-N | Tras generar cada entidad | Generar siguiente entidad |
-| CP-CIERRE | Al presentar el process-overview.md | Cerrar el proceso |
+| Checkpoint | Momento                             | Siguiente acción si A                            |
+| ---------- | ----------------------------------- | ------------------------------------------------ |
+| CP-S1      | Al cerrar el Step 1                 | Ejecutar ciclo Automático QA → Pasar al Step 2   |
+| CP-S2      | Al cerrar el Step 2                 | Ejecutar ciclo Automático QA → Pasar al Step 3   |
+| CP-S3-N    | Tras generar cada entidad           | Registrar Audit QA → Generar siguiente entidad   |
+| CP-CIERRE  | Al presentar el process-overview.md | Ejecutar ciclo Automático QA → Cerrar el proceso |
 
 ## Gestión de respuestas ambiguas
 
 Si el usuario responde de forma que no corresponde a ninguna de las 4 opciones:
 
 1. No interpretar ni asumir la intención.
-2. Responder: *"¿Quieres [opción A], [opción B], [opción C] o [opción D]?"*
+2. Responder: _"¿Quieres [opción A], [opción B], [opción C] o [opción D]?"_
 3. Esperar respuesta explícita antes de actuar.
 
 ## Gestión de cambios durante un checkpoint
 
 Si el usuario elige B (editar):
-- Preguntar: *"¿Qué parte quieres ajustar?"*
+
+- Preguntar: _"¿Qué parte quieres ajustar?"_
 - Aplicar solo el cambio indicado, sin modificar el resto.
 - Presentar de nuevo el elemento modificado con un nuevo checkpoint.
 
 Si el usuario elige C (regenerar):
-- Preguntar: *"¿Quieres regenerar con alguna indicación específica o desde cero?"*
+
+- Preguntar: _"¿Quieres regenerar con alguna indicación específica o desde cero?"_
 - Si da indicaciones, incorporarlas antes de regenerar.
 - Presentar el resultado con un nuevo checkpoint.
 
 Si el usuario elige D (volver):
-- Confirmar: *"¿Vuelves al Step [X] / a la entidad [nombre]?"*
+
+- Confirmar: _"¿Vuelves al Step [X] / a la entidad [nombre]?"_
 - Retomar desde ese punto con el contexto íntegro de lo que había sido aprobado hasta entonces.

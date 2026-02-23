@@ -1,0 +1,324 @@
+{
+  "modo": "architect",
+  "entidades": [
+    {
+      "tipo": "workflow",
+      "nombre": "wor-user-story-generator",
+      "descripcion": "Orquestador del proceso de creacion y refinamiento de historias de usuario. Coordina 3 agentes especialistas a traves de 10 pasos secuenciales con checkpoints humanos en cada fase.",
+      "funcion": "Recibe archivos .md de historias de usuario, los procesa individualmente invocando agentes para Definition, Scope/Motivation y Acceptance Criteria, gestiona checkpoints de aprobacion y genera el output final en output/{id}-output.md.",
+      "input": {
+        "descripcion": "Archivos Markdown (.md) con historias de usuario parciales o completas.",
+        "formato": "EPIC-ID/US-ID.md"
+      },
+      "output": {
+        "descripcion": "Archivos Markdown completos, validados y formateados.",
+        "formato": "EPIC-ID/output/US-ID-output.md"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-story-definer",
+          "tipo": "invoca",
+          "descripcion": "Para validar Definition (Brand/Jobs/Modules) y refinar Problem/Need."
+        },
+        {
+          "entidad": "age-spe-scope-definer",
+          "tipo": "invoca",
+          "descripcion": "Para definir Scope, Out of Scope, Motivation, Title y Proposal."
+        },
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "invoca",
+          "descripcion": "Para generar criterios de aceptacion en 3 fases (Features, Scenarios, Gherkin)."
+        },
+        {
+          "entidad": "rul-story-formatting-standards",
+          "tipo": "es-condicionado-por",
+          "descripcion": "Regla global de formato Markdown y secciones prohibidas."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "complex"
+    },
+    {
+      "tipo": "agent",
+      "nombre": "age-spe-story-definer",
+      "descripcion": "Especialista en asegurar la completitud de la definicion base de la historia y orientar el problema al impacto en negocio/usuario.",
+      "funcion": "Verifica que Brand, Jobs y Modules estan cubiertos. Clarifica y refina el Problem/Need con el usuario, asegurando orientacion al negocio. Related es opcional.",
+      "input": {
+        "descripcion": "Secciones Definition y Problem/Need del Markdown original.",
+        "formato": "JSON de contexto desde el workflow."
+      },
+      "output": {
+        "descripcion": "Secciones Definition y Problem/Need validadas y refinadas.",
+        "formato": "Markdown parcial."
+      },
+      "relaciones": [
+        {
+          "entidad": "wor-user-story-generator",
+          "tipo": "es-invocado-por",
+          "descripcion": "El workflow le pasa el contexto inicial para definir la base."
+        },
+        {
+          "entidad": "rul-story-formatting-standards",
+          "tipo": "es-condicionado-por",
+          "descripcion": "Para formato de contenido y uso de [HYPOTHESIS]."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "medium"
+    },
+    {
+      "tipo": "agent",
+      "nombre": "age-spe-scope-definer",
+      "descripcion": "Especialista en acotar el alcance funcional de la historia y redactar la motivacion narrativa.",
+      "funcion": "Genera Scope y Out of Scope (bullet list), Motivation (As/I want/So that), Title orientado al usuario, y opcionalmente Proposal (acciones sobre el Producto).",
+      "input": {
+        "descripcion": "Problem/Need validado por age-spe-story-definer.",
+        "formato": "JSON de contexto desde el workflow."
+      },
+      "output": {
+        "descripcion": "Secciones Scope, Out of Scope, Motivation, Title y Proposal.",
+        "formato": "Markdown parcial estructurado."
+      },
+      "relaciones": [
+        {
+          "entidad": "wor-user-story-generator",
+          "tipo": "es-invocado-por",
+          "descripcion": "El workflow le pasa el problema confirmado para acotar alcance."
+        },
+        {
+          "entidad": "rul-story-formatting-standards",
+          "tipo": "es-condicionado-por",
+          "descripcion": "Para bullet lists en Scope/Out of Scope y estilo de escritura."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "medium"
+    },
+    {
+      "tipo": "agent",
+      "nombre": "age-spe-criteria-generator",
+      "descripcion": "Especialista en BDD que disena criterios de aceptacion en sintaxis Gherkin usando la convencion de lista Markdown del equipo.",
+      "funcion": "Ejecuta las Fases 9.1 (Features+Backgrounds), 9.2 (Scenarios) y 9.3 (Criterios Given/When/Then). Usa AC preexistentes como input si los hay, reformateandolos al estandar. Asegura lenguaje de negocio, formato lista Markdown y EN-US.",
+      "input": {
+        "descripcion": "Scope y Proposal validados, mas AC preexistentes si los hay.",
+        "formato": "JSON de contexto desde el workflow."
+      },
+      "output": {
+        "descripcion": "Criterios de aceptacion completos en formato lista Markdown Gherkin.",
+        "formato": "Markdown estructurado."
+      },
+      "relaciones": [
+        {
+          "entidad": "wor-user-story-generator",
+          "tipo": "es-invocado-por",
+          "descripcion": "El workflow le solicita los criterios en 3 sub-checkpoints."
+        },
+        {
+          "entidad": "kno-gherkin-syntax-reference",
+          "tipo": "consulta",
+          "descripcion": "Para asegurar cumplimiento de la sintaxis Gherkin."
+        },
+        {
+          "entidad": "kno-acceptance-criteria-fundamentals",
+          "tipo": "consulta",
+          "descripcion": "Para mindset BDD y modelo 3C."
+        },
+        {
+          "entidad": "kno-business-context",
+          "tipo": "consulta",
+          "descripcion": "Para capturar contexto de producto antes de generar criterios."
+        },
+        {
+          "entidad": "rul-acceptance-criteria-generation",
+          "tipo": "es-condicionado-por",
+          "descripcion": "Formato output: listas MD, orden scenarios, Background/Outline, EN-US."
+        },
+        {
+          "entidad": "res-gherkin-output-examples",
+          "tipo": "referencia",
+          "descripcion": "Ejemplos anotados que concretan las reglas abstractas."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "complex"
+    },
+    {
+      "tipo": "rule",
+      "nombre": "rul-story-formatting-standards",
+      "descripcion": "Normas globales de formato Markdown, secciones prohibidas, uso de [HYPOTHESIS] y estilo de escritura para todos los agentes del sistema.",
+      "funcion": "Impide la edicion de secciones de desarrollo/QA, obliga bullet lists en Scope/Out of Scope, prohibe inventar datos y meta-lenguaje IA.",
+      "input": {
+        "descripcion": "N/A (entidad pasiva).",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A (condiciona, no emite output).",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "wor-user-story-generator",
+          "tipo": "condiciona",
+          "descripcion": "Aplicada globalmente en el sistema."
+        },
+        {
+          "entidad": "age-spe-story-definer",
+          "tipo": "condiciona",
+          "descripcion": "Formato de contenido y [HYPOTHESIS]."
+        },
+        {
+          "entidad": "age-spe-scope-definer",
+          "tipo": "condiciona",
+          "descripcion": "Bullet lists en Scope/Out of Scope."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    },
+    {
+      "tipo": "rule",
+      "nombre": "rul-acceptance-criteria-generation",
+      "descripcion": "Reglas de formato output para criterios de aceptacion: estructura lista Markdown, orden de scenarios, uso de Background/Scenario Outline, idioma EN-US.",
+      "funcion": "Define hard y soft constraints para la generacion de AC en formato Gherkin como lista Markdown.",
+      "input": {
+        "descripcion": "N/A (entidad pasiva).",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A (condiciona, no emite output).",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "condiciona",
+          "descripcion": "Restriccion directa al emitir Acceptance Criteria."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    },
+    {
+      "tipo": "knowledge-base",
+      "nombre": "kno-gherkin-syntax-reference",
+      "descripcion": "Referencia completa de sintaxis Gherkin: keywords primarios, step keywords, Background, Scenario Outline, criterios de calidad y anti-patrones.",
+      "funcion": "Punto de consulta para age-spe-criteria-generator con las reglas sintacticas y de calidad.",
+      "input": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "es-consultado-por",
+          "descripcion": "Punto de verdad para la sintaxis Gherkin."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    },
+    {
+      "tipo": "knowledge-base",
+      "nombre": "kno-acceptance-criteria-fundamentals",
+      "descripcion": "Fundamentos conceptuales de criterios de aceptacion en Scrum: definicion, modelo 3C, formatos narrative vs Gherkin, errores comunes.",
+      "funcion": "Proporciona el mindset BDD basico al age-spe-criteria-generator.",
+      "input": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "es-consultado-por",
+          "descripcion": "Conocimiento conceptual base."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    },
+    {
+      "tipo": "knowledge-base",
+      "nombre": "kno-business-context",
+      "descripcion": "Template estructurado para capturar el contexto de producto: roles, glosario, modulos funcionales, restricciones de negocio y edge cases frecuentes.",
+      "funcion": "El agente de criterios lo consulta y rellena por proyecto antes de generar Features y Scenarios, asegurando criterios contextualizados.",
+      "input": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "es-consultado-por",
+          "descripcion": "Contexto de producto para informar la generacion de criterios."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    },
+    {
+      "tipo": "resource",
+      "nombre": "res-gherkin-output-examples",
+      "descripcion": "Ejemplos anotados de criterios Gherkin en formato lista Markdown: User Login (3 paths), Scenario Outline, Background at Rule level, dominio e-commerce, correcciones de anti-patrones.",
+      "funcion": "Material de referencia que concreta las reglas abstractas de rul-acceptance-criteria-generation con ejemplos practicos.",
+      "input": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "output": {
+        "descripcion": "N/A",
+        "formato": "N/A"
+      },
+      "relaciones": [
+        {
+          "entidad": "age-spe-criteria-generator",
+          "tipo": "es-referenciado-por",
+          "descripcion": "Ejemplos concretos para la generacion."
+        },
+        {
+          "entidad": "rul-acceptance-criteria-generation",
+          "tipo": "soporta",
+          "descripcion": "Ilustra las reglas con casos practicos."
+        }
+      ],
+      "es_nueva": true,
+      "reutilizada_de": null,
+      "nivel_intricacy": "simple"
+    }
+  ],
+  "diagrama_arquitectura": "graph TD\n    A[\"input: .md files\"] --> B[\"wor-user-story-generator\"]\n    B -->|\"1. Invoca pasos 2-3\"| C(\"age-spe-story-definer\")\n    C -->|\"Retorna base validada\"| B\n    B -->|\"2. Invoca pasos 4-8\"| D(\"age-spe-scope-definer\")\n    D -->|\"Retorna alcance y motivacion\"| B\n    B -->|\"3. Invoca paso 9 (3 fases)\"| E(\"age-spe-criteria-generator\")\n    E -->|\"Retorna AC completos\"| B\n    B --> F[\"output: {id}-output.md\"]\n    G(\"rul-story-formatting-standards\") -.->|\"Condiciona global\"| B\n    G -.->|\"Formato\"| C\n    G -.->|\"Bullet lists\"| D\n    H(\"kno-gherkin-syntax-reference\") -.->|\"Consulta sintaxis\"| E\n    I(\"rul-acceptance-criteria-generation\") -.->|\"Formato AC\"| E\n    J(\"kno-acceptance-criteria-fundamentals\") -.->|\"Fundamentos BDD\"| E\n    K(\"kno-business-context\") -.->|\"Contexto producto\"| E\n    L(\"res-gherkin-output-examples\") -.->|\"Ejemplos\"| E\n    style B fill:#f9f,stroke:#333,stroke-width:2px,color:#000",
+  "orden_creacion": [
+    "rul-story-formatting-standards (base global)",
+    "rul-acceptance-criteria-generation (regla AC)",
+    "kno-gherkin-syntax-reference (KB sintaxis)",
+    "kno-acceptance-criteria-fundamentals (KB fundamentos)",
+    "kno-business-context (KB contexto producto)",
+    "res-gherkin-output-examples (resource ejemplos)",
+    "age-spe-story-definer (agente pasos 2-3)",
+    "age-spe-scope-definer (agente pasos 4-8)",
+    "age-spe-criteria-generator (agente paso 9)",
+    "wor-user-story-generator (orquestador principal)"
+  ],
+  "skills_reutilizadas": []
+}
