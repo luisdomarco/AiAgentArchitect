@@ -38,6 +38,8 @@ Leer el recurso universal de templates brutos para el embed: `../../resources/re
 - `ski-pattern-analyzer` (plantilla base)
 - `rul-audit-behavior` (plantilla base)
 - `kno-qa-dynamic-reading` (plantilla base)
+- `rul-strict-compliance` (plantilla base nueva)
+- `ski-context-ledger` (plantilla base nueva)
 
 ### Paso 2 — Parametrización
 
@@ -65,71 +67,58 @@ Crear los archivos en las rutas correctas dentro de `sistema_path`:
 │   │   └── SKILL.md
 │   ├── ski-rubric-scorer/
 │   │   └── SKILL.md
-│   └── ski-pattern-analyzer/
+│   ├── ski-pattern-analyzer/
+│   │   └── SKILL.md
+│   └── ski-context-ledger/
 │       └── SKILL.md
 ├── rules/
-│   └── rul-audit-behavior.md     ← parametrizado
-├── knowledge-base/
-│   └── kno-qa-dynamic-reading.md ← parametrizado
-└── qa-report.md                  ← inicializado en blanco
+│   ├── rul-audit-behavior.md     ← parametrizado
+│   └── rul-strict-compliance.md  ← parametrizado
+└── knowledge-base/
+    └── kno-qa-dynamic-reading.md ← parametrizado
 ```
 
-### Paso 4 — Inicialización del qa-report.md
+### Paso 4 — Modificación del workflow destino
 
-Crear el archivo `{sistema_path}/../qa-report.md` (un nivel arriba de `.agents/`, en la raíz del sistema exportado) con el frontmatter inicial:
-
-```markdown
----
-sistema: { sistema_nombre }
-fecha-inicio: { timestamp-actual }
-fecha-cierre: null
-score-global: pending
----
-
-# QA Report — {sistema_nombre}
-
-_Este reporte se irá completando automáticamente con cada checkpoint aprobado._
-```
-
-### Paso 5 — Modificación del workflow destino
-
-Leer el workflow principal del sistema destino (`workflow_path`). Añadir al final de la sección de Workflow Sequence (o al inicio del empaquetado final) el bloque de hooks QA:
+Leer el workflow principal del sistema destino (`workflow_path`). Añadir al final de la sección de Workflow Sequence (o al inicio del empaquetado final) el bloque de hooks QA, incluyendo la instrucción imperativa para que el orquestador calcule y pregunte la ruta destino:
 
 ```markdown
+### Inicialización de Sesión (Step 0)
+
+Obligatorio: Al inicio del flujo, antes de invocar al primer sub-agente, el Workflow principal DEBE preguntar al usuario: `"¿En qué directorio quieres generar los reportes y outputs para este proceso? (ej. output/proceso-xyz/)"`. Una vez el usuario responda, el orquestador almacenará esa respuesta en la variable interna `target_dir` y la usará para inicializar el Context Ledger y para inyectarla en todos los módulos QA.
+
 ### QA Layer — Activación automática
 
-Tras cada checkpoint aprobado, activar el ciclo QA correspondiente:
+Tras cada checkpoint aprobado, activar el ciclo QA correspondiente, enviando siempre el `target_dir` y el `reasoning_trace` extraído del Ledger:
 
-| Checkpoint            | Activar                                                                    |
-| --------------------- | -------------------------------------------------------------------------- |
-| CP-S1 (o equivalente) | `age-spe-auditor` → `age-spe-evaluator` → qa-report.md actualizado         |
-| CP-S2 (o equivalente) | `age-spe-auditor` → `age-spe-evaluator` → qa-report.md actualizado         |
-| CP por entidad        | `age-spe-auditor` → qa-report.md actualizado                               |
-| CP-CIERRE             | `age-spe-evaluator` (global) → `age-spe-optimizer` → qa-report.md completo |
+| Checkpoint            | Activar                                                                  |
+| --------------------- | ------------------------------------------------------------------------ |
+| CP-S1 (o equivalente) | `age-spe-auditor` → `age-spe-evaluator` (apuntando al target_dir actual) |
+| CP-S2 (o equivalente) | `age-spe-auditor` → `age-spe-evaluator` (apuntando al target_dir actual) |
+| CP por entidad        | `age-spe-auditor` (apuntando al target_dir actual)                       |
+| CP-CIERRE             | `age-spe-evaluator` (global) → `age-spe-optimizer`                       |
 
 Para re-auditorías manuales usar: `/re-audit [entidad | fase | sistema]`
 
 Rules activas del sistema que se auditan: {RULES_EXISTENTES}
 ```
 
-### Paso 6 — Actualización del process-overview.md del sistema destino
+### Paso 5 — Actualización del process-overview.md del sistema destino
 
 Si existe `{sistema_path}/../process-overview.md`, añadir el QA Layer al inventario de entidades y al diagrama de arquitectura.
 
-### Paso 7 — Mensaje de confirmación
+### Paso 6 — Mensaje de confirmación
 
 ```
 ✅ QA Layer embebido en {sistema_nombre}
 
 Entidades añadidas:
 - 3 agents: age-spe-auditor, age-spe-evaluator, age-spe-optimizer
-- 3 skills: ski-compliance-checker, ski-rubric-scorer, ski-pattern-analyzer
-- 1 rule: rul-audit-behavior
+- 4 skills: ski-compliance-checker, ski-rubric-scorer, ski-pattern-analyzer, ski-context-ledger
+- 2 rules: rul-audit-behavior, rul-strict-compliance
 - 1 knowledge-base: kno-qa-dynamic-reading
 
-qa-report.md inicializado en: {sistema_path}/../qa-report.md
-
-El sistema {sistema_nombre} evaluará automáticamente su propio proceso en cada checkpoint.
+El orquestador de {sistema_nombre} ha sido configurado para preguntar su target_dir interactivamente y auditarse en silos rotacionales.
 ```
 
 ## Error Handling

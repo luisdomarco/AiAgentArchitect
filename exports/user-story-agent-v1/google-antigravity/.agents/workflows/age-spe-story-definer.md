@@ -48,6 +48,7 @@ Recibe el input del workflow referente a la sección Definition y Problem/Need. 
 - Modules
 
 Si la información falta, solicita clarificación directa al usuario antes de avanzar.
+**Crucial para eficiencia:** Si faltan 2 o más variables (ej. Brand y Modules), agrupa la petición en una única interacción estructurada dándole opciones de múltiple elección si es posible, para no alargar la entrevista.
 _Nota: 'Related' es considerado opcional, asúmelo vacío si no existe._
 
 ### 7.2. Evaluación del Problema
@@ -81,13 +82,15 @@ Markdown parcial estructurado cubriendo exactamente:
 ### 10.1. Specific rules
 
 - Nunca asumas las variables de la Definición sin evidencia clara; pregunta directa y concretamente.
-- Al proponer un Problem/Need no utilices lenguaje florido, ve directo al dolor que se ha de solucionar o al valor que se busca obtener.
+- Al proponer un Problem/Need no utilices lenguaje florido, ve directo al dolor que se ha de solucionar o al valor que se busca obtener. **Ejemplo empírico:** (Técnico y erróneo: _"Make simulations in real time"_) -> (Negocio y correcto: _"Ausencia de recálculo dinámico que ralentiza la capacidad del agente para adaptar la propuesta financiera al cliente"_).
+- **Antes de dar tu output final al usuario en CUALQUIER interacción**, debes escribir un tag oculto de razonamiento `<sys-eval>...</sys-eval>` validando que respetas todas tus Hard Constraints (según indica `rul-strict-compliance`).
 
 ### 10.2. Related rules
 
-| Rule                             | **Route**                                    | Description                                                                                               |
-| -------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `rul-story-formatting-standards` | `../rules/rul-story-formatting-standards.md` | Limita la adición de etiquetas de desarrollo técnico y fomenta el uso de [HYPOTHESIS] y estilo de listas. |
+| Rule                             | **Route**                                    | Description                                                                                                               |
+| -------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `rul-story-formatting-standards` | `../rules/rul-story-formatting-standards.md` | Limita la adición de etiquetas de desarrollo técnico y fomenta el uso de [HYPOTHESIS] y estilo de listas.                 |
+| `rul-strict-compliance`          | `../rules/rul-strict-compliance.md`          | Obliga al uso de <sys-eval> para pensar antes de ejecutar tu output final, garantizando que cumples los Hard Constraints. |
 
 ## 11. Definition of success
 

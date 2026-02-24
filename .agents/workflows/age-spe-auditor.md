@@ -51,9 +51,11 @@ También puedes ser activado manualmente mediante `/re-audit [entidad | fase | s
 Recibes del orquestador:
 
 - `fase`: `S1 | S2 | S3-N | re-audit`
-- `sistema_path`: ruta base del sistema (p.ej. `exports/mi-sistema/google-antigravity/.agents/`)
+- `sistema_path`: ruta base estática del sistema global (para referenciar las reglas base en disco)
+- `target_dir`: ruta local del directorio donde el usuario está definiendo la historia o proceso (ej. carpeta de US o carpeta de export).
 - `output_fase`: el JSON de handoff o el archivo de entidad generado en esta fase
 - `rules_activas`: lista de rutas relativas de Rules del sistema (p.ej. `../rules/rul-naming-conventions.md`)
+- `reasoning_trace`: (Opcional) El bloque de pensamiento `<sys-eval>` extraído del Ledger que demuestra si el agente razonó su respuesta.
 
 ### 7.2 Resolución de rutas (lectura dinámica)
 
@@ -68,7 +70,8 @@ Consultar `kno-qa-dynamic-reading` para:
 Activar `ski-compliance-checker` con:
 
 - El contenido actual de cada Rule
-- El output de la fase a auditar
+- El `output_fase` a auditar
+- El `reasoning_trace` (si lo hay) para comprobar la obediencia cognitiva.
 
 La skill retorna una tabla de cumplimiento por criterio.
 
@@ -90,11 +93,14 @@ La skill retorna una tabla de cumplimiento por criterio.
 **Resumen:** {N} criterios verificados — ✅ {X} cumplidos / ⚠️ {Y} alertas / ❌ {Z} fallos
 ```
 
-### 7.5 Escritura en qa-report.md
+### 7.5 Escritura Dinámica y Rotacional del Reporte QA
 
-- Path: `qa_report_path` = `../qa-report.md` (un nivel arriba de `.agents/`, en la raíz del sistema instanciado)
-- Si el archivo no existe: crearlo con el frontmatter inicial (ver `kno-qa-dynamic-reading`)
-- Si existe: añadir el bloque al final (append), nunca sobreescribir
+A diferencia del pasado, The Auditor _nunca quema la información en un un archivo masivo en la raíz del proyecto_. Sigue esta regla rotacional para persistir los hallazgos en la carpeta donde estés trabajando (el `target_dir`):
+
+1. **Crear carpeta QA:** Crea el directorio `{target_dir}/qa-reports/` si no existe.
+2. **Path:** `qa_report_path` = `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md` (Genera nombre usando el timestamp actual o ID de sesión)
+3. **Guardado:** Escribe el bloque de formato ahí dentro en lugar de hacer append al antiguo.
+4. Si por forzar re-audits sobre esa misma sesión necesitas actualizar _ese mismo archivo_, haz append sobre él. Si pasan horas/días y el usuario relanza, el sistema creará uno nuevo rotacionalmente, evitando la polución cruzada de sesiones viejas.
 
 ### 7.6 Resumen para el orquestador
 
@@ -122,7 +128,7 @@ El re-audit preserva todo el historial anterior. El `qa-report.md` actúa como l
 
 ## 8. Input
 
-- Contexto de fase: `fase`, `sistema_path`, `output_fase`, `rules_activas`
+- Contexto de fase: `fase`, `sistema_path`, `output_fase`, `rules_activas`, `reasoning_trace` (opcional).
 - O: comando `/re-audit [target]`
 
 ## 9. Output

@@ -14,6 +14,18 @@ Mantener el objeto de métricas `{ "regeneraciones", "iteraciones" }` por Step (
 
 ---
 
+## Step 0 — Input Structuring & Enrichment
+
+**Activa:** `age-spe-input-enricher` recibiendo el input crudo o formato parcial. Estructura e infiere vacíos iniciales proponiendo mejoras para validar la idea antes del discovery fuerte.
+
+**Checkpoint S0:** A) ✅ Aprobar estructura base → Step 1 · B) ✏️ Ajustar este resultado · C) 🔄 Regenerar usando distinto enfoque · D) ↩️ Volver atrás
+
+**Context Ledger:** Tras validar el Checkpoint S0, ejecutar `ski-context-ledger` operación `write` con step=0, agent=`age-spe-input-enricher`, output=Resumen del input estructurado.
+
+> `/skip-qa S0` omite el QA para esta fase preparatoria.
+
+---
+
 ## Step 1 — Process Discovery
 
 **Activa:** `age-spe-process-discovery` con el modo y descripción inicial. El agente conduce la entrevista completa y devuelve el handoff S1→S2 (schema en `kno-handoff-schemas` §1).

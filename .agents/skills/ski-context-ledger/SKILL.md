@@ -14,17 +14,17 @@ Skill reutilizable que proporciona las operaciones necesarias para gestionar el 
 
 ### `init` — Inicializar el ledger
 
-Crea el archivo `context-ledger.md` en la raíz del export del sistema con el frontmatter base.
+Crea el archivo `context-ledger.md` en la ruta destino suministrada. Aplica **Estrategia Archiver**: si ya existe un archivo previo en esa ruta, lo renombra a `archive-context-ledger-{timestamp}.md` para no perder el histórico antes de instanciar el nuevo en blanco.
 
 **Input:**
 
-| Campo    | Descripción                        |
-| -------- | ---------------------------------- |
-| sistema  | Nombre del sistema en ejecución    |
-| workflow | Nombre del workflow que lo invoca  |
-| ruta     | Ruta base del export (export-path) |
+| Campo      | Descripción                                |
+| ---------- | ------------------------------------------ |
+| sistema    | Nombre del sistema en ejecución            |
+| workflow   | Nombre del workflow que lo invoca          |
+| target_dir | Ruta del directorio donde vive la US/Épica |
 
-**Output:** Archivo `{ruta}/context-ledger.md` creado con frontmatter:
+**Output:** Archivo `{target_dir}/context-ledger.md` creado con frontmatter:
 
 ```markdown
 ---
@@ -45,13 +45,15 @@ Añade un bloque al ledger con el input recibido y output producido por un agent
 
 **Input:**
 
-| Campo  | Descripción                                                        |
-| ------ | ------------------------------------------------------------------ |
-| step   | Número del step (1, 2, 3...)                                       |
-| agent  | Nombre del agente que ejecutó el step                              |
-| status | `completed` / `in_progress` / `pending`                            |
-| input  | Resumen del input que recibió el agente                            |
-| output | Output producido por el agente (JSON, texto, referencia a archivo) |
+| Campo           | Descripción                                                                                   |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| target_dir      | Ruta del directorio donde vive el ledger                                                      |
+| step            | Número del step (1, 2, 3...)                                                                  |
+| agent           | Nombre del agente que ejecutó el step                                                         |
+| status          | `completed` / `in_progress` / `pending`                                                       |
+| input           | Resumen del input que recibió el agente                                                       |
+| output          | Output producido por el agente (JSON, texto, referencia a archivo)                            |
+| reasoning_trace | (Opcional) El bloque de pensamiento `<sys-eval>` generado por el agente antes de su respuesta |
 
 **Output:** Bloque añadido al `context-ledger.md`:
 
@@ -65,6 +67,10 @@ Añade un bloque al ledger con el input recibido y output producido por un agent
 ### Input recibido
 
 {input}
+
+### Reasoning Trace
+
+{reasoning*trace} *(Añadido sólo si existe en el input)\_
 
 ### Output generado
 
@@ -88,14 +94,15 @@ Lee el ledger y extrae el contexto relevante para un step destino según el **Co
 
 | Campo        | Descripción                                                           |
 | ------------ | --------------------------------------------------------------------- |
+| target_dir   | Ruta del directorio donde vive el ledger                              |
 | step_destino | Número del step que va a recibir el contexto                          |
 | context_map  | Array de reglas: `[{ "de_step": N, "campos": [...], "modo": "..." }]` |
 
 **Lógica:**
 
-1. Leer el `context-ledger.md`.
+1. Leer el archivo `{target_dir}/context-ledger.md`.
 2. Para cada regla del `context_map`:
-   - Si `modo` = `completo`: extraer todo el bloque `### Output generado` del step referenciado.
+   - Si `modo` = `completo`: extraer todo el bloque `### Output generado` (y `### Reasoning Trace` si existe) del step referenciado.
    - Si `modo` = `parcial`: extraer solo los campos listados en `campos` del output del step referenciado.
 3. Componer el contexto filtrado como un bloque unificado.
 

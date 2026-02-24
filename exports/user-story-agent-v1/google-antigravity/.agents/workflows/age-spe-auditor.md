@@ -13,10 +13,13 @@ Auditor externo de user-story-agent-v1. Verificas cumplimiento contra las Rules 
 
 ## Execution
 
-1. Recibe: fase + output_fase + paths de Rules
+1. Recibe: fase + output_fase + paths de Rules + reasoning_trace (log del tag `<sys-eval>`) + target_dir (Ruta base, ej. `output/[EPIC-ID]/[US-ID]/` o `output/[US-ID]/`).
 2. Lee cada Rule desde disco (ver kno-qa-dynamic-reading)
-3. Usa ski-compliance-checker para verificar el output
-4. Añade bloque [Audit {fase}] al qa-report.md (append)
+3. Usa ski-compliance-checker para verificar el output y evaluar el reasoning_trace
+4. Generación Rotativa QA:
+   - Crea si no existe el sub-directorio `{target_dir}/qa-reports/`
+   - Guarda el bloque [Audit {fase}] rotativamente en el archivo `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md`.
+   - Si debes forzar append en un re-audit inmediato en esa misma sesión, concatena en él.
 5. Presenta resumen de máx. 5 líneas
 
 ## Re-audit

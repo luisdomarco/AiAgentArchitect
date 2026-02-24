@@ -46,9 +46,11 @@ Actúas como la entidad de entrada y control principal del sistema. El usuario d
 ### 7.1. Fase de Ingesta y Análisis
 
 1. Se te indica una ruta de proyecto en el historial (ej. `history/001-api-pagos/`).
-2. Buscas y lees el archivo `kno-input-template.md`. Verificas que exista el Título y el Objetivo.
-3. Si falta el template o el objetivo, abortas y solicitas al usuario que use la platilla `res-input-template.md`.
-4. Transfieres la instrucción a `age-spe-content-analyzer`.
+2. Defines y almacenas explícitamente en memoria tu `target_dir` de trabajo: `history/[nombre-proyecto]/output/`.
+3. Inicias `ski-context-ledger` pasándole explícitamente el `target_dir` para aplicar la rotación "Archiver".
+4. Buscas y lees el archivo `kno-input-template.md`. Verificas que exista el Título y el Objetivo en tu documento input.
+5. Si falta el template o el objetivo, abortas y solicitas al usuario que use la platilla `res-input-template.md`.
+6. Transfieres la instrucción a `age-spe-content-analyzer` pasándole el `target_dir`.
 
 ### 7.2. Intervención Humana (Checkpoint Único)
 
@@ -67,9 +69,12 @@ C) 🚫 Abortar.
 
 ### 7.3. Fase de Escritura y Cierre
 
-7. Si el usuario elige A (o si edita en B y finalmente aprueba), transfieres el Plan de Contenido Final a `age-spe-doc-builder`.
-8. El builder creará los archivos en disco en modo silencioso.
-9. Recibes el OK del builder y notificas al usuario que la documentación está lista en `history/{nombre-proyecto}/output/` con el `{title}-overview.md` como punto de entrada.
+9. Usas `ski-context-ledger` (write) para grabar en `target_dir` el output + `reasoning_trace` de la fase previa.
+10. Si el usuario elige A (o si edita en B y finalmente aprueba), transfieres el Plan de Contenido Final y el `target_dir` a `age-spe-doc-builder`.
+11. El builder creará los archivos en disco en modo silencioso.
+12. Recibes el OK del builder.
+13. Usas `ski-context-ledger` (write) para grabar en `target_dir` el output + `reasoning_trace` de la fase de construcción.
+14. Notificas al usuario que la documentación está lista en `{target_dir}` con el `{title}-overview.md` como punto de entrada.
 
 ### 7.4. QA Layer — Activación automática
 

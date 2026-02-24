@@ -12,6 +12,7 @@ description: Reads the current content of active Rules from disk paths, extracts
 - `rules_content`: array de objetos `{ rule_name, content }` con el contenido actual de cada Rule leída desde disco
 - `output_to_audit`: el contenido del output de la fase (JSON de handoff, archivo de entidad, etc.)
 - `fase`: identificador de la fase auditada (`S1 | S2 | S3-N`)
+- `reasoning_trace`: (Opcional) El log de pensamiento del agente estructurado en `<sys-eval>`.
 
 **Output:**
 
@@ -32,12 +33,12 @@ Para cada Rule en `rules_content`:
 
 Para cada criterio extraído:
 
-1. Buscar en `output_to_audit` la evidencia de cumplimiento o incumplimiento
+1. Buscar en `output_to_audit` y en `reasoning_trace` la evidencia de cumplimiento o incumplimiento
 2. Asignar estado:
-   - `✅` — El output cumple explícitamente el criterio con evidencia clara
-   - `⚠️` — El output cumple parcialmente o la evidencia es ambigua (Soft Constraint)
-   - `❌` — El output no cumple el criterio (Hard Constraint violado)
-3. Registrar la evidencia concreta: cita textual del output que justifica el estado
+   - `✅` — El output cumple explícitamente el criterio con evidencia clara. Si el criterio requería razonamiento (Hard Constraint LLM), el `reasoning_trace` contiene prueba de obediencia.
+   - `⚠️` — El output cumple parcialmente o la evidencia es ambigua (Soft Constraint). O si el output cumple, pero el agente omitió el razonamiento dictado por `rul-strict-compliance`.
+   - `❌` — El output no cumple el criterio (Hard Constraint violado) o flagrante negligencia cognitiva.
+3. Registrar la evidencia concreta: cita textual del output o del trace que justifica el estado.
 
 ### Paso 3 — Composición de la tabla
 

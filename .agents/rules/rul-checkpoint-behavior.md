@@ -41,6 +41,7 @@ D) ↩️  Volver a [fase o entidad anterior]
 
 | Checkpoint | Momento                             | Siguiente acción si A                            |
 | ---------- | ----------------------------------- | ------------------------------------------------ |
+| CP-S0      | Tras estructurar el input inicial   | Ejecutar ciclo Automático QA → Pasar al Step 1   |
 | CP-S1      | Al cerrar el Step 1                 | Ejecutar ciclo Automático QA → Pasar al Step 2   |
 | CP-S2      | Al cerrar el Step 2                 | Ejecutar ciclo Automático QA → Pasar al Step 3   |
 | CP-S3-N    | Tras generar cada entidad           | Registrar Audit QA → Generar siguiente entidad   |

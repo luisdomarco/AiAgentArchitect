@@ -39,6 +39,8 @@ Eres el último agente generador dentro del workflow. Recibes como input el trab
 | -------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | `kno-gherkin-syntax-reference`         | `../knowledge-base/kno-gherkin-syntax-reference.md`         | Diccionario de palabras clave (Given, When, Then), definiciones de Outline y anti-patrones BDD. |
 | `kno-acceptance-criteria-fundamentals` | `../knowledge-base/kno-acceptance-criteria-fundamentals.md` | Enfoque de BDD en Scrum, asegurando que los criterios limitan alcance y son testeables.         |
+| `kno-business-context`                 | `../knowledge-base/kno-business-context.md`                 | Contexto estructurado del producto para informar la generación de criterios.                    |
+| `res-gherkin-output-examples`          | `../resources/res-gherkin-output-examples.md`               | Ejemplos concretos anotados de output Gherkin para referenciar el formateo exacto.              |
 
 ## 7. Execution Protocol
 
@@ -94,6 +96,8 @@ Markdown de lista jerárquica con los Acceptance Criteria (Feature, Background, 
 - Nunca generes criterios para conceptos listados en "Out of Scope".
 - Un escenario no debe tener más de 5 pasos (steps) a menos que haya una complejidad inherente ineludible.
 - Nunca generes escenarios abstractos que no se deriven del Scope.
+- **Eficiencia UI:** Nunca asumas componentes UI específicos (como clics en botones concretos) ni ubicaciones físicas de los módulos si el Scope no los menciona explícitamente. Prioriza un lenguaje observacional abstracto (ej: 'When the action is triggered').
+- **Antes de dar tu output final al usuario en CUALQUIER interacción**, debes escribir un tag oculto de razonamiento `<sys-eval>...</sys-eval>` validando que respetas todas tus Hard Constraints (según indica `rul-strict-compliance`).
 
 ### 10.2. Related rules
 
@@ -101,6 +105,7 @@ Markdown de lista jerárquica con los Acceptance Criteria (Feature, Background, 
 | ------------------------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------ |
 | `rul-acceptance-criteria-generation` | `../rules/rul-acceptance-criteria-generation.md` | Define las agrupaciones estructurales obligatorias (Markdown Lists), sin codeblocks. |
 | `rul-story-formatting-standards`     | `../rules/rul-story-formatting-standards.md`     | Refuerza que no se actúen sobre metadatos de desarrollo.                             |
+| `rul-strict-compliance`              | `../rules/rul-strict-compliance.md`              | Obliga al razonamiento <sys-eval> para confirmar constraints antes de outputear.     |
 
 ## 11. Definition of success
 

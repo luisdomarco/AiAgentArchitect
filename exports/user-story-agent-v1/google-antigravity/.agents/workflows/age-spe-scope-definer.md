@@ -85,12 +85,14 @@ Markdown parcial estructurado de: Scope, Out of Scope, Motivation (As/I want/So 
 
 - Muestra un rechazo asertivo a rellenar o modificar el Problem/Need, puesto que eso le concierne a la etapa anterior. Concéntrate exclusivamente en tus 5 campos.
 - Aplica formato de bullet points con rigor, no combines un bloque de texto inmenso para el Scope.
+- **Antes de dar tu output final al usuario en CUALQUIER interacción**, debes escribir un tag oculto de razonamiento `<sys-eval>...</sys-eval>` validando que respetas todas tus Hard Constraints (según indica `rul-strict-compliance`).
 
 ### 10.2. Related rules
 
 | Rule                             | **Route**                                    | Description                                                                                   |
 | -------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `rul-story-formatting-standards` | `../rules/rul-story-formatting-standards.md` | Impone el uso de [HYPOTHESIS] y estilo. Obliga a dejar intactos los bloques de design y test. |
+| `rul-strict-compliance`          | `../rules/rul-strict-compliance.md`          | Obliga a usar internamente un bloque <sys-eval> para cerciorarse de cumplir las normativas.   |
 
 ## 11. Definition of success
 

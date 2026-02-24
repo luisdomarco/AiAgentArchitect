@@ -26,14 +26,15 @@ G1: Extraer toda la información antes de diseñar · G2: Seleccionar entidades 
 
 ## 5. Agents
 
-| **Agent**                       | **Route**                            | **When**                                               |
-| ------------------------------- | ------------------------------------ | ------------------------------------------------------ |
-| `age-spe-process-discovery`     | `../agents/age-spe-process-discovery.md`     | Step 1: entrevista y descubrimiento                    |
-| `age-spe-architecture-designer` | `../agents/age-spe-architecture-designer.md` | Step 2: diseño del Blueprint                           |
-| `age-spe-entity-builder`        | `../agents/age-spe-entity-builder.md`        | Step 3: generación de archivos                         |
-| `age-spe-auditor`               | `../agents/age-spe-auditor.md`               | QA Layer: audita cumplimiento tras cada checkpoint     |
-| `age-spe-evaluator`             | `../agents/age-spe-evaluator.md`             | QA Layer: puntúa calidad y actualiza qa-report.md      |
-| `age-spe-optimizer`             | `../agents/age-spe-optimizer.md`             | QA Layer: detecta patrones y propone mejoras al cierre |
+| **Agent**                       | **Route**                            | **When**                                                     |
+| ------------------------------- | ------------------------------------ | ------------------------------------------------------------ |
+| `age-spe-input-enricher`        | `../agents/age-spe-input-enricher.md`        | Step 0: reestructuración y enriquecimiento del input inicial |
+| `age-spe-process-discovery`     | `../agents/age-spe-process-discovery.md`     | Step 1: entrevista y descubrimiento                          |
+| `age-spe-architecture-designer` | `../agents/age-spe-architecture-designer.md` | Step 2: diseño del Blueprint                                 |
+| `age-spe-entity-builder`        | `../agents/age-spe-entity-builder.md`        | Step 3: generación de archivos                               |
+| `age-spe-auditor`               | `../agents/age-spe-auditor.md`               | QA Layer: audita cumplimiento tras cada checkpoint           |
+| `age-spe-evaluator`             | `../agents/age-spe-evaluator.md`             | QA Layer: puntúa calidad y actualiza qa-report.md            |
+| `age-spe-optimizer`             | `../agents/age-spe-optimizer.md`             | QA Layer: detecta patrones y propone mejoras al cierre       |
 
 ## 6. Skills
 
@@ -61,7 +62,14 @@ G1: Extraer toda la información antes de diseñar · G2: Seleccionar entidades 
 
 1. **Detectar template:** Si existe `%Master - Docs/template-input-architect.md` o `template-input-express.md` rellenado, usarlo como contexto inicial y mencionarlo al usuario. Si no, proceder con entrevista normal.
 2. **Detectar modo:** Preguntar `"¿Qué quieres crear? A) Proceso completo → Modo Architect · B) Entidad concreta → Modo Express"`. Inferir por complejidad si el usuario describe directamente. Confirmar: _"Voy a trabajar en Modo [X]. ¿Correcto?"_
-3. **Inicializar Context Ledger:** Activar `ski-context-ledger` operación `init` con el nombre del sistema y workflow. El ledger se crea en `{export-path}/context-ledger.md`.
+3. **Calcular target_dir:** Define la variable interna `target_dir` apuntando a la ruta de salida, por defecto `exports/{nombre-sistema}/google-antigravity/`.
+4. **Inicializar Context Ledger:** Activar `ski-context-ledger` operación `init` con el nombre del sistema, workflow y pasándole expresamente el `target_dir`. El ledger se instanciará allí.
+
+### Step 0: Input Structuring & Enrichment
+
+1. **Activar Input Enricher:** Invoca a `age-spe-input-enricher` pasándole el input crudo o formato parcial.
+2. **Checkpoint S0:** Espera confirmación explícita (Opción A) del humano sobre la estructura propuesta y vacíos detectados.
+3. **Guardar Contexto:** Tras validación, ejecuta `ski-context-ledger` (write) para grabar el input estructurado. Extrae el `<sys-eval>` de la respuesta del agente y pásalo como `reasoning_trace`.
 
 ### Context Map
 
@@ -69,13 +77,17 @@ Define qué contexto fluye entre los Steps de este workflow:
 
 | Step destino | Consume de      | Campos / Secciones                                          | Modo     |
 | ------------ | --------------- | ----------------------------------------------------------- | -------- |
+| Step 1       | Step 0 → output | `*` (Input crudo reestructurado y validado)                 | completo |
 | Step 2       | Step 1 → output | `*` (JSON handoff S1 completo)                              | completo |
 | Step 3       | Step 2 → output | `*` (JSON handoff S2 completo)                              | completo |
 | Step 3       | Step 1 → output | `proceso.nombre`, `proceso.restricciones`, `diagrama_as_is` | parcial  |
+| QA Auditor   | Step N → output | `*` (Lectura del Output + Reasoning Trace para auditar)     | completo |
 
 ### Documentación de Fases y Lógica de Ejecución
 
 Para operar y rutear este workflow exhaustivo a través del discovery, la arquitectura de diagramas cruzados y la eventual generación estructurada de entidades, debes referenciar en todo momento el manual operativo de las 3 fases nucleares del Architect.
+
+**IMPORTANTE (Trazabilidad QA):** Cuando finaliza la ejecución de cualquier agente especialista (S0, S1, S2, S3), debes extraer el contenido del tag `<sys-eval>` de su respuesta, aislarlo del resto del JSON/Markdown, y pasarlo obligatoriamente como parámetro `reasoning_trace` y el `target_dir` a la función `write` del `ski-context-ledger`. Así se preservará la validación de cumplimiento para el Auditor. Cuando actives el Auditor en cualquier fase, envíale las piezas por separado, adjuntando la variable de ruta `target_dir` para que sepa dónde archivar el reporte horario.
 
 > **Lee el modelo estructural para ejecutar los Steps 1, 2 y 3 aquí:**
 > `../resources/res-architect-execution-phases.md`
@@ -101,6 +113,7 @@ Archivos en `exports/{nombre-sistema}/google-antigravity/.agents/`, listos para 
 
 - Nunca avanzar de Step sin aprobación explícita (opción A).
 - Tras la aprobación de cada Checkpoint (opción A), debes pausar el flujo principal y ejecutar obligatoriamente el ciclo de QA transversal correspondiente antes de saltar al siguiente Step.
+- **Antes de dar tu output final al usuario en CUALQUIER interacción**, debes escribir un tag oculto de razonamiento `<sys-eval>...</sys-eval>` validando que respetas todas tus Hard Constraints (según indica `rul-strict-compliance`).
 - El modo puede escalar de Express a Architect, nunca al revés.
 - Diagrama AS-IS obligatorio en Architect antes de cerrar S1.
 - Blueprint obligatorio en Architect antes de cerrar S2.
@@ -109,12 +122,13 @@ Archivos en `exports/{nombre-sistema}/google-antigravity/.agents/`, listos para 
 
 ### 11.2. Related rules
 
-| Rule                      | **Route**                             | Description                                                             |
-| ------------------------- | ------------------------------------- | ----------------------------------------------------------------------- |
-| `rul-naming-conventions`  | `../rules/rul-naming-conventions.md`  | Prefijos, kebab-case y límites de caracteres                            |
-| `rul-checkpoint-behavior` | `../rules/rul-checkpoint-behavior.md` | Formato de checkpoints y gestión de validaciones                        |
-| `rul-interview-standards` | `../rules/rul-interview-standards.md` | Protocolo de entrevista y estándares de discovery                       |
-| `rul-audit-behavior`      | `../rules/rul-audit-behavior.md`      | QA Layer: activación del ciclo, responsabilidades y /re-audit, /skip-qa |
+| Rule                      | **Route**                             | Description                                                                           |
+| ------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------- |
+| `rul-naming-conventions`  | `../rules/rul-naming-conventions.md`  | Prefijos, kebab-case y límites de caracteres                                          |
+| `rul-checkpoint-behavior` | `../rules/rul-checkpoint-behavior.md` | Formato de checkpoints y gestión de validaciones                                      |
+| `rul-interview-standards` | `../rules/rul-interview-standards.md` | Protocolo de entrevista y estándares de discovery                                     |
+| `rul-audit-behavior`      | `../rules/rul-audit-behavior.md`      | QA Layer: activación del ciclo, responsabilidades y /re-audit, /skip-qa               |
+| `rul-strict-compliance`   | `../rules/rul-strict-compliance.md`   | Aplicación de <sys-eval> obligatoria para forzar adherencia extrema a las directrices |
 
 ## 12. Definition of success
 

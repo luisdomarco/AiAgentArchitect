@@ -29,6 +29,7 @@ El QA Layer es externo al proceso creativo: observa, mide y propone, pero nunca 
 
 | Evento             | Activar                          | Output                                         |
 | ------------------ | -------------------------------- | ---------------------------------------------- |
+| CP-S0 aprobado     | Auditor (S0) → Evaluador (S0)    | Bloque [Audit S0] + [Score S0] en qa-report.md |
 | CP-S1 aprobado     | Auditor (S1) → Evaluador (S1)    | Bloque [Audit S1] + [Score S1] en qa-report.md |
 | CP-S2 aprobado     | Auditor (S2) → Evaluador (S2)    | Bloque [Audit S2] + [Score S2] en qa-report.md |
 | CP-S3-N aprobado   | Auditor (entidad N)              | Bloque [Audit S3-{entidad}] en qa-report.md    |

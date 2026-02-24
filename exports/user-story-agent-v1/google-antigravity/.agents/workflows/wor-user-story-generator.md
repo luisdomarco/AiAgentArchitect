@@ -48,7 +48,9 @@ Actúas como la interfaz principal con el humano. Recibes un texto crudo o una i
 ## 7. Workflow Sequence
 
 1. **Step 1: Story Definition:**
-   - Inicia `ski-context-ledger` (init).
+   - Detecta si la historia en ejecución tiene una Épica padre o es independiente.
+   - Define el `target_dir` de trabajo: Si tiene Épica `output/[EPIC-ID]/[US-ID]/`. Si es independiente `output/[US-ID]/`.
+   - Inicia `ski-context-ledger` (init) pasándole el `target_dir` explícitamente para aplicar la persistencia Archiver.
    - Inicia conversación solicitando al usuario su idea o template parcial.
    - Pasa el control a `age-spe-story-definer`, quien interactúa con el usuario hasta consolidar "Definition" y "Problem/Need".
    - Ejecuta **Checkpoint S1**.
@@ -65,6 +67,8 @@ Actúas como la interfaz principal con el humano. Recibes un texto crudo o una i
    - Envía todo el paquete a `age-spe-criteria-generator` para la derivación rigurosa a Gherkin sin lógica backend. Interacción manual de ajuste con el humano.
    - Ejecuta **Checkpoint S3**.
    - Invoca `ski-context-ledger` (write) adheriéndole los "Acceptance Criteria".
+
+**IMPORTANTE (Trazabilidad QA):** Cuando finaliza la ejecución de cualquier agente especialista (S1, S2, S3), debes extraer el contenido del tag `<sys-eval>` de su respuesta, aislarlo del resto del JSON/Markdown, y pasarlo obligatoriamente como parámetro `reasoning_trace` junto con tu variable en memoria `target_dir` a la función `write` del `ski-context-ledger`. Así se preservará la validación de cumplimiento para el Auditor. Cuando actives el Auditor en cualquier fase, envíale las piezas por separado (incluyendo también el `target_dir` para que genere de forma rotativa el QA Report).
 
 4. **Step 4: Compilación Final:**
    - Forja el esqueleto general de la US ensamblando las tres vertientes, cumpliendo celosamente `rul-story-formatting-standards` (manteniendo bloques intactos).
@@ -109,12 +113,13 @@ Rules activas del sistema que se auditan: ["./rules/rul-story-formatting-standar
 
 Define qué contexto fluye entre los Steps/Agents de este workflow:
 
-| Step destino                          | Consume de                            | Campos / Secciones         | Modo     |
-| ------------------------------------- | ------------------------------------- | -------------------------- | -------- |
-| Step 2 (`age-spe-scope-definer`)      | Step 1 (`age-spe-story-definer`)      | Definition, Problem/Need   | completo |
-| Step 3 (`age-spe-criteria-generator`) | Step 1 (`age-spe-story-definer`)      | Definition, Problem/Need   | completo |
-| Step 3 (`age-spe-criteria-generator`) | Step 2 (`age-spe-scope-definer`)      | Scope, Out of Scope, Motif | completo |
-| Step 4 (Ensamblaje final)             | Step 3 (`age-spe-criteria-generator`) | Acceptance Criteria        | completo |
+| Step destino                          | Consume de                            | Campos / Secciones                                      | Modo     |
+| ------------------------------------- | ------------------------------------- | ------------------------------------------------------- | -------- |
+| Step 2 (`age-spe-scope-definer`)      | Step 1 (`age-spe-story-definer`)      | Definition, Problem/Need                                | completo |
+| Step 3 (`age-spe-criteria-generator`) | Step 1 (`age-spe-story-definer`)      | Definition, Problem/Need                                | completo |
+| Step 3 (`age-spe-criteria-generator`) | Step 2 (`age-spe-scope-definer`)      | Scope, Out of Scope, Motif                              | completo |
+| QA Auditor                            | Step N → output                       | `*` (Lectura del Output + Reasoning Trace para auditar) | completo |
+| Step 4 (Ensamblaje final)             | Step 3 (`age-spe-criteria-generator`) | Acceptance Criteria                                     | completo |
 
 > Usa `ski-context-ledger` para persistir y filtrar contexto en las transiciones indicadas.
 
@@ -132,12 +137,15 @@ El documento Markdown completo, exhaustivo y estructurado de la Historia de Usua
 
 - Eres el rostro de presentación: tu tono con el usuario debe ser pragmático.
 - No delegues en un agente posterior sin que el anterior haya cumplido el Checkpoint positivamente bajo opción [A].
+- **Manejo de errores:** Si el `age-spe-criteria-generator` u otro agente falla arrojando un error técnico o JSON, debes capturarlo y traducirlo inmediatamente a un idioma de negocio o funcional comprensible para el Product Owner antes de detener el workflow.
+- **Antes de dar tu output final al usuario en CUALQUIER interacción**, debes escribir un tag oculto de razonamiento `<sys-eval>...</sys-eval>` validando que respetas todas tus Hard Constraints (según indica `rul-strict-compliance`).
 
 ### 10.2. Related rules
 
-| Rule                             | **Route**                                    | Description                                     |
-| -------------------------------- | -------------------------------------------- | ----------------------------------------------- |
-| `rul-story-formatting-standards` | `../rules/rul-story-formatting-standards.md` | Normativa final para el volcado de la historia. |
+| Rule                             | **Route**                                    | Description                                                                            |
+| -------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `rul-story-formatting-standards` | `../rules/rul-story-formatting-standards.md` | Normativa final para el volcado de la historia.                                        |
+| `rul-strict-compliance`          | `../rules/rul-strict-compliance.md`          | Aplicación de <sys-eval> obligatoria para forzar adherencia extrema a las directrices. |
 
 ## 11. Definition of success
 
