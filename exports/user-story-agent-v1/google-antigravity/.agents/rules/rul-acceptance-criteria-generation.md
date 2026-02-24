@@ -1,6 +1,6 @@
 ---
 trigger: always_on
-description: Define formato, estructura y restricciones estrcitas para la salida de criterios de aceptación en Markdown list.
+description: Defines output format, structure, and constraints for generating acceptance criteria in Gherkin syntax as Markdown lists. Governs scenario ordering, Background and Scenario Outline usage, and language conventions.
 alwaysApply: true
 tags: [acceptance-criteria, gherkin, output-format, scenarios, bdd]
 ---
@@ -20,22 +20,47 @@ This rule defines how acceptance criteria in Gherkin syntax must be structured a
 
 ## Soft Constraints
 
-- Siempre incluir un bloque global al inicio con `Feature` y `Background` (si hay precondiciones comunes).
-- Siempre agrupar scenarios por módulo o tema de producto cuando la historia abarca varias áreas.
-- Siempre respetar este orden dentro de los bloques temáticos: 1) Happy path, 2) Unhappy path, 3) Error path.
-- Siempre usar esta estructura de lista Markdown (con viñetas de lista, espacios e indentación strictos):
-  - `- **Feature:** `
-  - `- **Background:** ` (si aplica) con sub-items indentados dos espacios: `  - Given`
-  - `- **Scenario:** ` con sub-items indentados dos espacios: `  - Given`, `  - When`, `  - Then`
-- Siempre utilizar `Background` si el mismo `Given` se repite en 3 o más escenarios del bloque.
-- Siempre utilizar `Scenario Outline` si los pasos son idénticos variando solo datos, con 3 o más combinaciones.
-- Siempre preferir escenarios separados cuando describen cualitativamente diferentes situaciones.
+### Grouping structure
+
+- Always include a global block at the start with `Feature` and, if there are preconditions common to all scenarios, a `Background`.
+- After the global block, group scenarios by module or product theme when the story spans more than one functional area.
+- Each thematic block must have its own scenarios — never mix behaviors from different modules in the same scenario.
+
+### Scenario ordering within each block
+
+Respect this order within each thematic block:
+
+1. **Happy path** — the main flow that results in success when all conditions are correct and the user acts as expected.
+2. **Unhappy path** — valid flows that do not result in success due to unmet business conditions: missing permissions, incorrect entity state, business rule that prevents the action.
+3. **Error path** — invalid inputs, incorrect data, or exceptional situations that generate a rejection or error message from the system.
+
+### Output format
+
+The output follows this Markdown list structure:
+
+- `- **Feature:** feature title` — first-level bold item.
+- `- **Background:**` — first-level bold item, if applicable.
+  - Steps as sub-items with 2-space indentation: `  - Given ...`
+- `- **Scenario:** descriptive title` — first-level bold item.
+  - Steps as sub-items with 2-space indentation.
+- Scenario titles: descriptive, specific, and behavior-oriented.
+- Steps: short phrases, active voice, domain language.
+- Keep 3–5 steps per scenario as a general rule.
+
+### Background and Scenario Outline usage
+
+- Use `Background` when the same `Given` repeats across 3 or more scenarios in the same block — moving it to Background eliminates redundancy.
+- Use `Scenario Outline` when the steps are identical and only the input or output data varies, and there are 3 or more combinations.
+- Prefer separate scenarios when titles describe qualitatively different situations, even if they share a step.
+
+### Collaborative review
+
+- Before a sprint begins, acceptance criteria should be reviewed jointly by the product owner, developer, and QA to confirm shared understanding and catch missing edge cases.
 
 ## Examples
 
 **Correct output (User Login — all 3 paths):**
 
-```markdown
 - **Feature:** User Login
 
 - **Background:**
@@ -55,7 +80,12 @@ This rule defines how acceptance criteria in Gherkin syntax must be structured a
   - Given the user is on the login page
   - When the user enters an incorrect password
   - Then an error message is displayed
-```
 
-**Incorrect format:**
-Usar un bloque de código `gherkin` está prohibido, la salida debe ser la lista plana Markdown.
+**Incorrect format — do not use:**
+
+Using a fenced code block with the `gherkin` language tag is forbidden. Additionally, `Then` steps must never validate internal state (e.g., "the database user record is updated") and scenario titles must be behavior-oriented, not generic (e.g., "Login" is too vague).
+
+## Sources
+
+- `📄` Hard Constraints, Soft Constraints, Scenario ordering, Background/Scenario Outline usage, and the User Login example — extracted from `raw-docs/rul-acceptance-criteria-generation.md`.
+- `🧠` Collaborative review section — inferred best practice not present literally in the source document.

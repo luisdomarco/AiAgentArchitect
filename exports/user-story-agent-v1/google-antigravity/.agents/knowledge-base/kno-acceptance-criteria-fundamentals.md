@@ -1,5 +1,5 @@
 ---
-description: Fundamentos de CA, traído del repo (Scrum, modelo 3C). Otorga el mindset BDD básico al age-spe-criteria-generator.
+description: Conceptual foundation of acceptance criteria in Scrum - definition, the 3C model, format selection (narrative vs. Gherkin), common writing errors, and link to the team's Gherkin convention.
 tags: [acceptance-criteria, scrum, bdd, gherkin, user-stories]
 ---
 
@@ -10,6 +10,8 @@ tags: [acceptance-criteria, scrum, bdd, gherkin, user-stories]
 - [3. Narrative Format vs. Gherkin](#3-narrative-format-vs-gherkin)
 - [4. Common Writing Errors](#4-common-writing-errors)
 - [5. Team Convention](#5-team-convention)
+
+---
 
 ## 1. What Are Acceptance Criteria
 
@@ -23,17 +25,21 @@ In Scrum, acceptance criteria fulfill three purposes:
 
 Acceptance criteria are not test scripts. They describe the expected behavior from the user's perspective, not the technical steps to verify it.
 
+---
+
 ## 2. The 3C Model
 
 The 3C model (Card, Conversation, Confirmation) describes how a user story should evolve:
 
-| Stage            | Description                                                                                                                       |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Card**         | A brief written representation of the story — a placeholder for a conversation, not a complete specification.                     |
+| Stage | Description |
+|---|---|
+| **Card** | A brief written representation of the story — a placeholder for a conversation, not a complete specification. |
 | **Conversation** | The ongoing dialogue between the product owner, developers, and QA that explores the story's intent, constraints, and edge cases. |
-| **Confirmation** | The acceptance criteria that emerge from the conversation and formally confirm when the story is done.                            |
+| **Confirmation** | The acceptance criteria that emerge from the conversation and formally confirm when the story is done. |
 
 Acceptance criteria belong to the Confirmation stage. They should not be written in isolation by the product owner — they are the output of the Conversation. Writing them before the conversation leads to criteria that capture assumptions rather than shared understanding.
+
+---
 
 ## 3. Narrative Format vs. Gherkin
 
@@ -55,12 +61,14 @@ Gherkin uses keywords (`Feature`, `Scenario`, `Given`, `When`, `Then`) to expres
 
 **When to choose each:**
 
-| Situation                                           | Recommended format |
-| --------------------------------------------------- | ------------------ |
-| Simple story, 1–2 scenarios                         | Narrative prose    |
-| Story with 3+ scenarios or multiple paths           | Gherkin            |
-| Team uses BDD automation                            | Gherkin            |
-| Non-technical stakeholders are the primary audience | Narrative prose    |
+| Situation | Recommended format |
+|---|---|
+| Simple story, 1–2 scenarios | Narrative prose |
+| Story with 3+ scenarios or multiple paths | Gherkin |
+| Team uses BDD automation | Gherkin |
+| Non-technical stakeholders are the primary audience | Narrative prose |
+
+---
 
 ## 4. Common Writing Errors
 
@@ -71,9 +79,11 @@ Gherkin uses keywords (`Feature`, `Scenario`, `Given`, `When`, `Then`) to expres
 - **Written in isolation:** criteria written only by the product owner without developer or QA input miss technical constraints and testability gaps.
 - **Ambiguous language:** words like "fast", "easy", or "appropriate" are not verifiable. Replace with measurable terms.
 
+---
+
 ## 5. Team Convention
 
-When this team uses Gherkin to express acceptance criteria, output must follow the Markdown list format defined in `rul-acceptance-criteria-generation.md`.
+When this team uses Gherkin to express acceptance criteria, output must follow the Markdown list format defined in [`rul-acceptance-criteria-generation.md`](../rules/rul-acceptance-criteria-generation.md).
 
 Key points of the team convention:
 
@@ -82,4 +92,9 @@ Key points of the team convention:
 - Scenarios are ordered: happy path, then unhappy path, then error path.
 - Background is used when the same `Given` repeats across 3 or more scenarios.
 
-For syntax details and anti-patterns, see `kno-gherkin-syntax-reference.md`.
+For syntax details and anti-patterns, see [`kno-gherkin-syntax-reference.md`](./kno-gherkin-syntax-reference.md).
+
+## Sources
+
+- `📄` Sections 1–4 (definition, role in Scrum, 3C framework, narrative vs. Gherkin formats, common mistakes) — extracted from external references: scrummanager.com and scrum.org/resources.
+- `🧠` Section 5 (team convention link to `rul-acceptance-criteria-generation.md`) — inferred from project context; not present literally in source URLs.
