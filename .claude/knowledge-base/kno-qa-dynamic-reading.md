@@ -1,168 +1,168 @@
 ---
-description: Protocolo de lectura dinámica para el QA Layer. Define cómo resolver rutas, leer el contenido actual de entidades desde disco, e inicializar el qa-report.md. Garantiza que el Auditor trabaja siempre con la versión más reciente de cada archivo, sin cachés.
+description: Dynamic reading protocol for the QA Layer. Defines how to resolve paths, read the current content of entities from disk, and initialize the qa-report.md. Ensures the Auditor always works with the most recent version of each file, without caches.
 tags: [qa, audit, dynamic-reading, file-paths]
 ---
 
 ## Table of Contents
 
-1. Principio de lectura dinámica
-2. Resolución de rutas
-3. Lectura por tipo de entidad
-4. Inicialización y mantenimiento del qa-report.md
-5. Manejo de archivos no encontrados
+1. Dynamic reading principle
+2. Path resolution
+3. Reading by entity type
+4. Initialization and maintenance of qa-report.md
+5. Handling files not found
 
 ---
 
 ## Documentation
 
-### 1. Principio de lectura dinámica
+### 1. Dynamic reading principle
 
-El Auditor **nunca usa el contenido de instrucciones desde su contexto de sesión**. Antes de cada auditoría, lee el archivo correspondiente desde su ruta en disco. Esto garantiza que:
+The Auditor **never uses instruction content from its session context**. Before each audit, it reads the corresponding file from its disk path. This guarantees that:
 
-- Si el usuario modifica una Rule entre dos checkpoints, la siguiente auditoría usa la versión actualizada.
-- Si el usuario modifica un agente después de que fue generado, un `/re-audit` lo audita con la versión actual.
-- No hay divergencia entre lo que el sistema tiene en disco y lo que el Auditor verifica.
+- If the user modifies a Rule between two checkpoints, the next audit uses the updated version.
+- If the user modifies an agent after it was generated, a `/re-audit` audits it with the current version.
+- There is no divergence between what the system has on disk and what the Auditor verifies.
 
-Este principio aplica tanto en AiAgentArchitect como en cualquier sistema al que se embeba el QA Layer.
-
----
-
-### 2. Resolución de rutas
-
-#### 2.1 Rutas base
-
-El orquestador provee al Auditor:
-
-- `sistema_path`: ruta absoluta o relativa a la raíz del sistema (carpeta `.agents/`)
-- `rules_activas`: lista de rutas relativas desde `sistema_path`, p.ej. `["./rules/rul-naming-conventions.md"]`
-
-El Auditor resuelve las rutas absolutas:
-
-```
-ruta_absoluta = sistema_path + ruta_relativa
-```
-
-Ejemplo:
-
-```
-sistema_path = "exports/mi-sistema/google-antigravity/.agents/"
-ruta_relativa = "./rules/rul-naming-conventions.md"
-ruta_absoluta = "exports/mi-sistema/google-antigravity/.agents/rules/rul-naming-conventions.md"
-```
-
-#### 2.2 Prioridad de lectura
-
-Si una entidad tiene múltiples versiones (p.ej. fue regenerada), el Auditor lee **el archivo en disco** en ese momento, que es la versión aprobada más reciente.
-
-#### 2.3 Rutas estándar por tipo de entidad
-
-| Tipo             | Ruta relativa desde sistema_path                  |
-| ---------------- | ------------------------------------------------- |
-| Rule             | `./rules/{rul-nombre}.md`                         |
-| Agent            | `./workflows/{age-nombre}.md`                     |
-| Skill            | `./skills/{ski-nombre}/SKILL.md`                  |
-| Workflow         | `./workflows/{wor-nombre}.md`                     |
-| Knowledge-base   | `./knowledge-base/{kno-nombre}.md`                |
-| process-overview | `./process-overview.md`                           |
-| qa-report        | `../qa-report.md` (un nivel arriba de `.agents/`) |
+This principle applies in AiAgentArchitect as well as in any system where the QA Layer is embedded.
 
 ---
 
-### 3. Lectura por tipo de entidad
+### 2. Path resolution
 
-#### En S1 (Process Discovery)
+#### 2.1 Base paths
 
-Leer:
+The orchestrator provides the Auditor with:
 
-- Todas las Rules en `./rules/` del sistema activo
-- `kno-fundamentals-entities` → para verificar señales de escalado de modo
+- `system_path`: absolute or relative path to the system root (`agents/` folder)
+- `active_rules`: list of relative paths from `system_path`, e.g. `["./rules/rul-naming-conventions.md"]`
 
-#### En S2 (Architecture Design)
+The Auditor resolves absolute paths:
 
-Leer:
+```
+absolute_path = system_path + relative_path
+```
 
-- Todas las Rules en `./rules/`
-- `kno-entity-selection` → para verificar que las entidades seleccionadas son del tipo correcto
-- JSON de handoff S1 → como referencia de lo que se prometió en Discovery
+Example:
 
-#### En S3 (Entity Implementation)
+```
+system_path = "exports/my-system/google-antigravity/.agents/"
+relative_path = "./rules/rul-naming-conventions.md"
+absolute_path = "exports/my-system/google-antigravity/.agents/rules/rul-naming-conventions.md"
+```
 
-Por cada entidad generada, leer el archivo recién creado en disco + las Rules activas.
+#### 2.2 Reading priority
 
-#### En re-audit
+If an entity has multiple versions (e.g. it was regenerated), the Auditor reads **the file on disk** at that moment, which is the most recently approved version.
+
+#### 2.3 Standard paths by entity type
+
+| Type             | Relative path from system_path                 |
+| ---------------- | ---------------------------------------------- |
+| Rule             | `./rules/{rul-name}.md`                        |
+| Agent            | `./workflows/{age-name}.md`                    |
+| Skill            | `./skills/{ski-name}/SKILL.md`                 |
+| Workflow         | `./workflows/{wor-name}.md`                    |
+| Knowledge-base   | `./knowledge-base/{kno-name}.md`               |
+| process-overview | `./process-overview.md`                        |
+| qa-report        | `../qa-report.md` (one level above `.agents/`) |
+
+---
+
+### 3. Reading by entity type
+
+#### In S1 (Process Discovery)
+
+Read:
+
+- All Rules in `./rules/` of the active system
+- `kno-fundamentals-entities` → to verify mode escalation signals
+
+#### In S2 (Architecture Design)
+
+Read:
+
+- All Rules in `./rules/`
+- `kno-entity-selection` → to verify that selected entities are of the correct type
+- S1 handoff JSON → as reference of what was promised in Discovery
+
+#### In S3 (Entity Implementation)
+
+For each generated entity, read the newly created file on disk + the active Rules.
+
+#### In re-audit
 
 ```
 /re-audit rul-naming-conventions
-→ Leer: exports/{nombre}/.agents/rules/rul-naming-conventions.md (versión actual)
-→ Verificar contra: todos los archivos de entidades generadas en S3
+→ Read: exports/{name}/.agents/rules/rul-naming-conventions.md (current version)
+→ Verify against: all entity files generated in S3
 
 /re-audit S2
-→ Leer: todas las Rules activas (versión actual) + el JSON de handoff S2
-→ Auditar: el Blueprint completo contra las Rules actuales
+→ Read: all active Rules (current version) + the S2 handoff JSON
+→ Audit: the complete Blueprint against the current Rules
 
-/re-audit sistema
-→ Leer: todas las entidades en todas las carpetas del sistema (dentro de .agents/ y, en el caso del sistema nativo Architect, también la carpeta repository/ en la raíz)
-→ Verificar contra: todas las Rules activas
-→ Genera un audit report completo del estado actual del sistema
+/re-audit system
+→ Read: all entities in all folders of the system (inside .agents/ and, in the native Architect system, also the repository/ folder at the root)
+→ Verify against: all active Rules
+→ Generates a complete audit report of the current state of the system
 ```
 
 ---
 
-### 4. Inicialización y mantenimiento del qa-report.md
+### 4. Initialization and maintenance of qa-report.md
 
-#### Inicialización (al primer Audit del proceso)
+#### Initialization (at the first Audit of the process)
 
-Si `qa-report.md` no existe al ejecutar el primer Audit:
+If `qa-report.md` does not exist when executing the first Audit:
 
 ```markdown
 ---
-sistema: { nombre-sistema }
-fecha-inicio: { timestamp }
-fecha-cierre: null
-score-global: pending
+system: { system-name }
+start-date: { timestamp }
+close-date: null
+global-score: pending
 ---
 
-# QA Report — {nombre-sistema}
+# QA Report — {system-name}
 
-_Iniciado automáticamente al aprobar el primer checkpoint._
+_Automatically initialized upon approving the first checkpoint._
 ```
 
-Ubicación: Un nivel arriba de `.agents/`, en la raíz del directorio del sistema.
+Location: One level above `.agents/`, at the root of the system directory.
 
-#### Ejemplo de estructura de carpetas:
+#### Example folder structure:
 
 ```
-exports/mi-sistema/google-antigravity/
+exports/my-system/google-antigravity/
 ├── .agents/
 │   ├── rules/
 │   ├── workflows/
 │   └── ...
-└── qa-report.md    ← aquí, accesible sin entrar a .agents/
+└── qa-report.md    ← here, accessible without entering .agents/
 ```
 
-#### Mantenimiento
+#### Maintenance
 
-- Cada nuevo bloque se añade al final del archivo con una línea de separación (`---`)
-- El frontmatter solo se actualiza al cierre del proceso (`fecha-cierre` + `score-global`)
-- Los bloques de re-audit siempre llevan timestamp para distinguirlos de las auditorías automáticas
+- Each new block is added at the end of the file with a separator line (`---`)
+- The frontmatter is only updated at process close (`close-date` + `global-score`)
+- Re-audit blocks always carry a timestamp to distinguish them from automatic audits
 
 ---
 
-### 5. Manejo de archivos no encontrados
+### 5. Handling files not found
 
-Si al resolver una ruta el archivo no existe en disco:
+If when resolving a path the file does not exist on disk:
 
-1. No lanzar error — registrar como criterio de auditoría:
+1. Do not throw an error — record it as an audit criterion:
 
 ```markdown
-| Archivo no encontrado | {ruta-relativa} | ❌ | El archivo no existe en la ruta esperada |
+| File not found | {relative-path} | ❌ | The file does not exist at the expected path |
 ```
 
-2. Continuar la auditoría con los demás archivos disponibles.
-3. En el resumen, incluir: `⚠️ {N} archivo(s) referenciado(s) no encontrado(s)`
+2. Continue the audit with the remaining available files.
+3. In the summary, include: `⚠️ {N} referenced file(s) not found`
 
-Causas comunes y sugerencias de diagnóstico:
+Common causes and diagnostic suggestions:
 
-- Ruta relativa incorrecta → verificar la arquitectura root folder con `kno-system-architecture`
-- Archivo borrado manualmente → el Optimizador puede proponer recrearlo
-- Nombre con typo → buscar archivos similares en la misma carpeta
+- Incorrect relative path → verify the root folder architecture with `kno-system-architecture`
+- File manually deleted → the Optimizer can propose recreating it
+- Name with a typo → look for similar files in the same folder

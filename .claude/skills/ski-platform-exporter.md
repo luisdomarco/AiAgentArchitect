@@ -1,64 +1,64 @@
 ---
 name: ski-platform-exporter
-description: Convierte un export de Google Antigravity a otras plataformas (Claude Code, ChatGPT, Claude.ai, Dust, Gemini). Aplica el mapeo correcto según la plataforma destino y genera la estructura de archivos correspondiente. Invocable desde el workflow post-empaquetado o directamente por el usuario.
+description: Converts a Google Antigravity export to other platforms (Claude Code, ChatGPT, Claude.ai, Dust, Gemini). Applies the correct mapping according to the destination platform and generates the corresponding file structure. Invokable from the post-packaging workflow or directly by the user.
 ---
 
 # Platform Exporter Skill
 
-Convierte un sistema exportado para Google Antigravity a otras plataformas, aplicando las transformaciones necesarias según las convenciones de cada plataforma.
+Converts a system exported for Google Antigravity to other platforms, applying the necessary transformations according to each platform's conventions.
 
 ## Input / Output
 
 **Input:**
 
-- Ruta del sistema en `exports/{nombre}/google-antigravity/`
-- Plataforma destino: `claude-code`, `chatgpt`, `claude-ai`, `dust`, `gemini`
-- Nombre del sistema (extraído del path o proporcionado)
+- Path of the system in `exports/{name}/google-antigravity/`
+- Destination platform: `claude-code`, `chatgpt`, `claude-ai`, `dust`, `gemini`
+- System name (extracted from path or provided)
 
 **Output:**
 
-- Archivos generados en `exports/{nombre}/{plataforma}/`
-- Resumen de entidades exportadas
+- Files generated in `exports/{name}/{platform}/`
+- Summary of exported entities
 
 ---
 
 ## Procedure
 
-### 1. Validar input
+### 1. Validate input
 
-- Comprobar que existe `exports/{nombre}/google-antigravity/.agents/`
-- Verificar que la plataforma destino es soportada
-- Si la plataforma ya existe en `exports/{nombre}/{plataforma}/`, preguntar si sobrescribir
+- Check that `exports/{name}/google-antigravity/.agents/` exists
+- Verify that the destination platform is supported
+- If the platform already exists in `exports/{name}/{platform}/`, ask whether to overwrite
 
 ---
 
-### 2. Leer estructura de Antigravity
+### 2. Read Antigravity structure
 
-Escanear `.agents/` y registrar todas las entidades encontradas:
+Scan `.agents/` and register all entities found:
 
 ```
 .agents/
-├── workflows/      → listar todos los .md
-├── agents/         → listar todos los .md
-├── skills/         → listar todos los subdirectorios (ski-nombre/)
-├── rules/          → listar todos los .md
-├── knowledge-base/ → listar todos los .md
-├── commands/       → listar todos los .md
+├── workflows/      → list all .md files
+├── agents/         → list all .md files
+├── skills/         → list all subdirectories (ski-name/)
+├── rules/          → list all .md files
+├── knowledge-base/ → list all .md files
+├── commands/       → list all .md files
 └── process-overview.md
 ```
 
 ---
 
-### 3. Aplicar mapeo según plataforma destino
+### 3. Apply mapping according to destination platform
 
-Consultar `kno-system-architecture` Sección 3 para el mapeo correcto.
+Consult `kno-system-architecture` Section 3 for the correct mapping.
 
-#### Para Claude Code
+#### For Claude Code
 
-**Estructura de destino:**
+**Destination structure:**
 
 ```
-exports/{nombre}/claude-code/
+exports/{name}/claude-code/
 ├── .claude/
 │   ├── knowledge-base/
 │   ├── rules/
@@ -71,18 +71,18 @@ exports/{nombre}/claude-code/
 └── process-overview.md
 ```
 
-**Mapeo:**
+**Mapping:**
 
-- Workflows → `.claude/commands/` (copiar contenido)
-- Agents → `.claude/agents/` (copiar directamente)
-- Skills → `.claude/skills/` (copiar directorios completos)
-- Rules → `.claude/rules/` (copiar) + referenciar en `CLAUDE.md`
-- Knowledge-base → `.claude/knowledge-base/` (copiar) + referenciar en `CLAUDE.md`
-- Resources → `.claude/resources/` (copiar)
-- Commands → `.claude/commands/` (copiar directamente)
-- process-overview.md → raíz
+- Workflows → `.claude/commands/` (copy content)
+- Agents → `.claude/agents/` (copy directly)
+- Skills → `.claude/skills/` (copy complete directories)
+- Rules → `.claude/rules/` (copy) + reference in `CLAUDE.md`
+- Knowledge-base → `.claude/knowledge-base/` (copy) + reference in `CLAUDE.md`
+- Resources → `.claude/resources/` (copy)
+- Commands → `.claude/commands/` (copy directly)
+- process-overview.md → root
 
-**Generar `settings.json`:**
+**Generate `settings.json`:**
 
 ```json
 {
@@ -93,38 +93,38 @@ exports/{nombre}/claude-code/
 }
 ```
 
-**Generar `CLAUDE.md`:**
+**Generate `CLAUDE.md`:**
 
 ```markdown
-# {Nombre del Sistema}
+# {System Name}
 
-[Descripción extraída del process-overview.md]
+[Description extracted from process-overview.md]
 
-## Estructura
+## Structure
 
-- `.claude/skills/` — capacidades reutilizables
-- `.claude/agents/` — agentes especializados
-- `.claude/commands/` — comandos directos
-- `knowledge-base/` — información de referencia
-- `process-overview.md` — documentación completa
+- `.claude/skills/` — reusable capabilities
+- `.claude/agents/` — specialized agents
+- `.claude/commands/` — direct commands
+- `knowledge-base/` — reference information
+- `process-overview.md` — complete documentation
 
-## Rules activas
+## Active Rules
 
-[Listar las rules encontradas con breve descripción de cada una]
+[List found rules with a brief description of each]
 
-## Cómo usarlo
+## How to use it
 
-[Instrucciones básicas extraídas del process-overview]
+[Basic instructions extracted from process-overview]
 ```
 
 ---
 
-#### Para Aplicaciones (ChatGPT, Claude.ai, Dust, Gemini)
+#### For Applications (ChatGPT, Claude.ai, Dust, Gemini)
 
-**Estructura de destino:**
+**Destination structure:**
 
 ```
-exports/{nombre}/{plataforma}/
+exports/{name}/{platform}/
 ├── knowledge-base/
 ├── rules/
 ├── skills/
@@ -133,36 +133,36 @@ exports/{nombre}/{plataforma}/
 └── process-overview.md
 ```
 
-**Mapeo:**
+**Mapping:**
 
-- Workflows, Agents, Commands → `workflows/` (copiar `.md` directamente)
-- Skills → `skills/` (copiar `ski-nombre/` con todo su contenido intacto)
-- Rules → `rules/` (copiar `.md` directamente)
-- Knowledge-base → `knowledge-base/` (copiar `.md` directamente)
-- Resources → `resources/` (copiar `.md` directamente)
-- process-overview.md → raíz
-
----
-
-### 4. Ejecutar la conversión
-
-Para cada entidad en la lista:
-
-1. Leer el archivo fuente desde `.agents/{tipo}/{nombre}`
-2. Aplicar transformaciones si aplica (ninguna necesaria para la mayoría)
-3. Escribir en la ruta destino según el mapeo
-
-Mantener la estructura de subdirectorios (ej: skills mantienen su carpeta interna).
+- Workflows, Agents, Commands → `workflows/` (copy `.md` directly)
+- Skills → `skills/` (copy `ski-name/` with all its content intact)
+- Rules → `rules/` (copy `.md` directly)
+- Knowledge-base → `knowledge-base/` (copy `.md` directly)
+- Resources → `resources/` (copy `.md` directly)
+- process-overview.md → root
 
 ---
 
-### 5. Presentar resumen
+### 4. Execute the conversion
+
+For each entity in the list:
+
+1. Read the source file from `.agents/{type}/{name}`
+2. Apply transformations if applicable (none needed for most)
+3. Write to the destination path according to the mapping
+
+Maintain the subdirectory structure (e.g. skills maintain their internal folder).
+
+---
+
+### 5. Present summary
 
 ```
-✅ Export a {plataforma} completado.
-Ubicación: exports/{nombre}/{plataforma}/
+✅ Export to {platform} complete.
+Location: exports/{name}/{platform}/
 
-Entidades exportadas:
+Exported entities:
 - {N} workflows
 - {N} agents
 - {N} skills
@@ -170,77 +170,77 @@ Entidades exportadas:
 - {N} knowledge-bases
 - {N} commands
 
-[Instrucciones específicas según plataforma]
+[Platform-specific instructions]
 ```
 
-**Instrucciones por plataforma:**
+**Instructions by platform:**
 
-- **Claude Code**: "Abre este directorio en Claude Code para usar el sistema completo."
-- **ChatGPT**: "Sube los archivos .md a tu proyecto en ChatGPT."
-- **Claude.ai**: "Crea un nuevo proyecto y adjunta los archivos .md."
-- **Dust / Gemini**: "Sube los archivos según las convenciones de la plataforma."
+- **Claude Code**: "Open this directory in Claude Code to use the complete system."
+- **ChatGPT**: "Upload the .md files to your project in ChatGPT."
+- **Claude.ai**: "Create a new project and attach the .md files."
+- **Dust / Gemini**: "Upload the files according to the platform's conventions."
 
 ---
 
 ## Examples
 
-**Ejemplo 1 — Export a Claude Code**
+**Example 1 — Export to Claude Code**
 
 Input:
 
 ```json
 {
-  "sistema": "exports/customer-onboarding/google-antigravity/",
-  "plataforma": "claude-code"
+  "system": "exports/customer-onboarding/google-antigravity/",
+  "platform": "claude-code"
 }
 ```
 
-Output esperado:
+Expected output:
 
-- Directorio `exports/customer-onboarding/claude-code/` con estructura `.claude/`
-- `CLAUDE.md` generado con contexto del sistema
-- `settings.json` creado
-- 2 workflows convertidos a commands en `.claude/commands/`
-- 3 agents copiados a `.claude/agents/`
-- 1 skill copiada a `.claude/skills/`
-- 2 rules copiadas en `.claude/rules/` y referenciadas en `CLAUDE.md`
+- Directory `exports/customer-onboarding/claude-code/` with `.claude/` structure
+- `CLAUDE.md` generated with system context
+- `settings.json` created
+- 2 workflows converted to commands in `.claude/commands/`
+- 3 agents copied to `.claude/agents/`
+- 1 skill copied to `.claude/skills/`
+- 2 rules copied in `.claude/rules/` and referenced in `CLAUDE.md`
 
-**Ejemplo 2 — Export a ChatGPT**
+**Example 2 — Export to ChatGPT**
 
 Input:
 
 ```json
 {
-  "sistema": "exports/email-classifier/google-antigravity/",
-  "plataforma": "chatgpt"
+  "system": "exports/email-classifier/google-antigravity/",
+  "platform": "chatgpt"
 }
 ```
 
-Output esperado:
+Expected output:
 
-- Directorio `exports/email-classifier/chatgpt/` con carpetas alineadas a la arquitectura
-- 1 agent en `workflows/age-spe-email-classifier.md`
-- 2 skills en `skills/ski-xxx/SKILL.md`
-- 1 rule en `rules/rul-xxx.md`
-- process-overview.md en raíz
+- Directory `exports/email-classifier/chatgpt/` with folders aligned to the architecture
+- 1 agent in `workflows/age-spe-email-classifier.md`
+- 2 skills in `skills/ski-xxx/SKILL.md`
+- 1 rule in `rules/rul-xxx.md`
+- process-overview.md at root
 
 ---
 
 ## Error Handling
 
-- **Sistema no encontrado**: Verificar que existe `exports/{nombre}/google-antigravity/`. Si no, listar los sistemas disponibles en `exports/` y pedir al usuario que especifique correctamente.
+- **System not found**: Verify that `exports/{name}/google-antigravity/` exists. If not, list available systems in `exports/` and ask the user to specify correctly.
 
-- **Plataforma no soportada**: Mostrar lista de plataformas soportadas: `claude-code`, `chatgpt`, `claude-ai`, `dust`, `gemini`.
+- **Platform not supported**: Show list of supported platforms: `claude-code`, `chatgpt`, `claude-ai`, `dust`, `gemini`.
 
-- **Export destino ya existe**: Preguntar:
+- **Destination export already exists**: Ask:
 
   ```
-  El export a {plataforma} ya existe en exports/{nombre}/{plataforma}/.
+  The export to {platform} already exists at exports/{name}/{platform}/.
 
-  ¿Quieres sobrescribirlo?
-  A) Sí, sobrescribir
-  B) No, cancelar
-  C) Generar en un directorio diferente ({plataforma}-v2)
+  Do you want to overwrite it?
+  A) Yes, overwrite
+  B) No, cancel
+  C) Generate in a different directory ({platform}-v2)
   ```
 
-- **Archivo corrupto o ilegible**: Notificar y omitir ese archivo. Continuar con el resto. Listar archivos omitidos en el resumen.
+- **Corrupt or unreadable file**: Notify and skip that file. Continue with the rest. List skipped files in the summary.

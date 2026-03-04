@@ -1,205 +1,211 @@
 ---
-description: Árbol de decisión, tabla comparativa y criterios para seleccionar la entidad correcta ante cualquier responsabilidad o capacidad a modelar.
+description: Decision tree, comparative table, and criteria for selecting the correct entity for any responsibility or capability to model.
 tags: [entity-selection, decision-tree, architecture]
 ---
 
 ## Table of Contents
 
-- [1. Árbol de decisión](#1-árbol-de-decisión)
-- [2. Tabla comparativa](#2-tabla-comparativa)
-- [3. Criterios por entidad](#3-criterios-por-entidad)
-- [4. Casos límite frecuentes](#4-casos-límite-frecuentes)
-- [5. Anti-patrones](#5-anti-patrones)
+- [1. Decision tree](#1-decision-tree)
+- [2. Comparative table](#2-comparative-table)
+- [3. Criteria per entity](#3-criteria-per-entity)
+- [4. Common edge cases](#4-common-edge-cases)
+- [5. Anti-patterns](#5-anti-patterns)
 
 ---
 
-## 1. Árbol de decisión
+## 1. Decision tree
 
 ```
-¿Qué estás modelando?
+What are you modeling?
 │
-├── ¿Condiciona cómo se comportan otras entidades sin ejecutar nada?
-│   └── SÍ → RULE
+├── Does it condition how other entities behave without executing anything?
+│   └── YES → RULE
 │
-├── ¿Es información estática de referencia que los agentes consultan?
-│   └── SÍ → KNOWLEDGE-BASE
+├── Is it static reference information that agents consult?
+│   └── YES → KNOWLEDGE-BASE
 │
-├── ¿Es una acción única, determinista, disparada siempre manualmente por el usuario?
-│   (nunca la invocaría otro agente o workflow)
-│   └── SÍ → COMMAND
+├── Is it a single, deterministic action, always triggered manually by the user?
+│   (another agent or workflow would never invoke it)
+│   └── YES → COMMAND
 │
-└── ¿Ejecuta o coordina lógica activa?
+└── Does it execute or coordinate active logic?
     │
-    ├── ¿Involucra múltiples responsabilidades diferenciadas o
-    │   transferencia de outputs entre partes distintas?
-    │   └── SÍ → WORKFLOW
+    ├── Does it involve multiple differentiated responsibilities or
+    │   transfer of outputs between distinct parts?
+    │   └── YES → WORKFLOW
     │
-    └── ¿Es una responsabilidad única y acotada?
+    └── Is it a single, bounded responsibility?
         │
-        ├── ¿Necesita identidad propia, toma decisiones en su dominio
-        │   y tiene sentido usarla de forma standalone?
-        │   └── SÍ → AGENT
+        ├── Does it need its own identity, make decisions in its domain,
+        │   and make sense to use standalone?
+        │   └── YES → AGENT
         │
-        └── ¿Es un procedimiento técnico reutilizable sin identidad
-            ni criterio propios?
-            └── SÍ → SKILL
+        └── Is it a reusable technical procedure without its own identity
+            or criteria?
+            └── YES → SKILL
 ```
 
 ---
 
-## 2. Tabla comparativa
+## 2. Comparative table
 
-| Atributo | Workflow | Agent | Skill | Command | Rule | Knowledge-base |
-|---|---|---|---|---|---|---|
-| Ejecuta tareas directamente | No | Sí | Sí | Sí | No | No |
-| Coordina otras entidades | Sí | No | No | No | No | No |
-| Tiene identidad y dominio propio | Sí | Sí | No | No | No | No |
-| Puede usarse standalone | Sí | Sí | No | Sí | No | No |
-| Reutilizable por múltiples agentes | No | No | Sí | No | Sí | Sí |
-| Siempre lo dispara el usuario | Opcional | Opcional | No | Siempre | No | No |
-| Gestiona flujo y checkpoints | Sí | No | No | No | No | No |
-| Condiciona el comportamiento de otros | No | No | No | No | Sí | No |
+| Attribute                         | Workflow | Agent    | Skill | Command | Rule | Knowledge-base |
+| --------------------------------- | -------- | -------- | ----- | ------- | ---- | -------------- |
+| Executes tasks directly           | No       | Yes      | Yes   | Yes     | No   | No             |
+| Coordinates other entities        | Yes      | No       | No    | No      | No   | No             |
+| Has own identity and domain       | Yes      | Yes      | No    | No      | No   | No             |
+| Can be used standalone            | Yes      | Yes      | No    | Yes     | No   | No             |
+| Reusable by multiple agents       | No       | No       | Yes   | No      | Yes  | Yes            |
+| Always triggered by the user      | Optional | Optional | No    | Always  | No   | No             |
+| Manages flow and checkpoints      | Yes      | No       | No    | No      | No   | No             |
+| Conditions the behavior of others | No       | No       | No    | No      | Yes  | No             |
 
 ---
 
-## 3. Criterios por entidad
+## 3. Criteria per entity
 
 ### Workflow
 
-Úsalo cuando el proceso involucra múltiples responsabilidades que deben ejecutarse en secuencia o con ramificaciones, pasando outputs de una parte a la siguiente.
+Use it when the process involves multiple responsibilities that must execute in sequence or with branches, passing outputs from one part to the next.
 
-**Señales clave:**
-- Hay más de un dominio de responsabilidad involucrado
-- Existen decisiones o bifurcaciones entre partes
-- Se necesita transferir contexto entre componentes distintos
-- Hay checkpoints de aprobación humana
-- El proceso tiene un inicio, un flujo orquestado y un output final compuesto
+**Key signals:**
 
-**Pregunta de validación:** ¿Podría descomponerse en pasos con responsables distintos?
+- More than one responsibility domain is involved
+- There are decisions or branches between parts
+- Context needs to be transferred between distinct components
+- There are human approval checkpoints
+- The process has a start, an orchestrated flow, and a composite final output
+
+**Validation question:** Could it be decomposed into steps with distinct responsible parties?
 
 ---
 
 ### Agent
 
-Úsalo cuando la responsabilidad es única, acotada y requiere criterio propio para ejecutarse.
+Use it when the responsibility is single, bounded, and requires its own criteria to execute.
 
-**Señales clave:**
-- Un único dominio de responsabilidad claro
-- Necesita tomar decisiones dentro de su ámbito
-- Puede usarse standalone o dentro de un Workflow
-- Tiene input y output bien definidos
+**Key signals:**
 
-**Pregunta de validación:** ¿Podría describirse su responsabilidad en una frase? ¿Tiene sentido invocarlo solo?
+- A single, clear responsibility domain
+- Needs to make decisions within its scope
+- Can be used standalone or within a Workflow
+- Has well-defined input and output
+
+**Validation question:** Could its responsibility be described in one sentence? Does it make sense to invoke it alone?
 
 ---
 
 ### Skill
 
-Úsalo cuando es una capacidad técnica o procedimental que varios agentes podrían necesitar, sin identidad ni criterio propios.
+Use it when it is a technical or procedural capability that multiple agents might need, without its own identity or criteria.
 
-**Señales clave:**
-- La misma lógica podría usarse en más de un Agent
-- No toma decisiones: ejecuta un procedimiento concreto
-- No tiene contexto de dominio propio
-- Se activa bajo demanda
+**Key signals:**
 
-**Pregunta de validación:** ¿Encontrarías esta misma lógica duplicada en dos Agents distintos?
+- The same logic could be used in more than one Agent
+- It doesn't make decisions: it executes a concrete procedure
+- It has no domain context of its own
+- It is activated on demand
+
+**Validation question:** Would you find this same logic duplicated in two different Agents?
 
 ---
 
 ### Command
 
-Úsalo cuando es una acción concreta, determinista y de uso frecuente que el usuario dispara directamente con una palabra clave.
+Use it when it is a concrete, deterministic, frequently used action that the user triggers directly with a keyword.
 
-**Señales clave:**
-- Siempre lo inicia el usuario de forma manual
-- Produce siempre el mismo comportamiento base
-- No tiene sentido que otro Agent o Workflow lo invoque
-- Es equivalente a un prompt guardado
+**Key signals:**
 
-**Pregunta de validación:** ¿Es algo que el usuario repetiría exactamente igual muchas veces?
+- Always initiated manually by the user
+- Always produces the same base behavior
+- Makes no sense for another Agent or Workflow to invoke it
+- It is equivalent to a saved prompt
+
+**Validation question:** Is this something the user would repeat in exactly the same way many times?
 
 ---
 
 ### Rule
 
-Úsalo cuando defines restricciones o convenciones que deben condicionar el comportamiento de múltiples entidades sin ejecutar nada.
+Use it when you define restrictions or conventions that must condition the behavior of multiple entities without executing anything.
 
-**Señales clave:**
-- La misma directriz aplica en más de un contexto
-- Es una restricción (nunca hacer X) o convención (siempre hacer Y de este modo)
-- No produce output propio: condiciona los outputs de otros
+**Key signals:**
 
-**Pregunta de validación:** ¿Acabas de escribir la misma restricción en tres Agents distintos?
+- The same directive applies in more than one context
+- It is a restriction (never do X) or convention (always do Y this way)
+- It produces no output of its own: it conditions others' outputs
+
+**Validation question:** Did you just write the same restriction in three different Agents?
 
 ---
 
 ### Knowledge-base
 
-Úsalo cuando es información de referencia estática que los agentes consultan para fundamentar sus decisiones.
+Use it when it is static reference information that agents consult to ground their decisions.
 
-**Señales clave:**
-- Contenido que no cambia con cada ejecución
-- Los agentes la consultan bajo demanda, no la ejecutan
-- Contiene documentación, ejemplos, glosarios, guías, datos del dominio
+**Key signals:**
 
-**Pregunta de validación:** ¿Estás metiendo mucho contexto factual en el body de un Agent para que "lo sepa"?
+- Content that doesn't change with each execution
+- Agents consult it on demand, don't execute it
+- Contains documentation, examples, glossaries, guides, domain data
+
+**Validation question:** Are you stuffing a lot of factual context into an Agent's body for it to "know" it?
 
 ---
 
-## 4. Casos límite frecuentes
+## 4. Common edge cases
 
 ### Agent vs Skill
 
-| Situación | Entidad |
-|---|---|
-| Necesita tomar decisiones dentro de su ejecución | Agent |
-| Solo ejecuta un procedimiento dado un input | Skill |
-| Tiene sentido usarlo standalone | Agent |
-| Solo tiene sentido dentro de otro Agent o Workflow | Skill |
-| Tiene nombre de dominio ("Validador de contratos") | Agent |
-| Es una capacidad técnica genérica ("parse_json") | Skill |
-| La misma lógica aparecería en dos Agents distintos | Skill |
+| Situation                                           | Entity |
+| --------------------------------------------------- | ------ |
+| Needs to make decisions during execution            | Agent  |
+| Only executes a procedure given an input            | Skill  |
+| Makes sense to use standalone                       | Agent  |
+| Only makes sense inside another Agent or Workflow   | Skill  |
+| Has a domain name ("Contract Validator")            | Agent  |
+| Is a generic technical capability ("parse_json")    | Skill  |
+| The same logic would appear in two different Agents | Skill  |
 
 ### Command vs Agent
 
-| Situación | Entidad |
-|---|---|
-| Solo tiene sentido como disparo manual del usuario | Command |
-| Podría ser invocado también por un Workflow | Agent |
-| Produce siempre el mismo comportamiento base | Command |
-| Adapta su comportamiento al contexto recibido | Agent |
-| Es equivalente a un prompt guardado | Command |
+| Situation                                   | Entity  |
+| ------------------------------------------- | ------- |
+| Only makes sense as a manual user trigger   | Command |
+| Could also be invoked by a Workflow         | Agent   |
+| Always produces the same base behavior      | Command |
+| Adapts its behavior to the received context | Agent   |
+| Is equivalent to a saved prompt             | Command |
 
-### Workflow vs Agent complejo
+### Workflow vs complex Agent
 
-| Situación | Entidad |
-|---|---|
-| Dos o más responsabilidades con dominios distintos | Workflow |
-| Una sola responsabilidad con muchos pasos internos | Agent |
-| Necesita transferir outputs entre partes distintas | Workflow |
-| Gestiona checkpoints de aprobación humana | Workflow |
-| Necesita invocar a otro Agent | Workflow |
-| Opera de forma autónoma en su dominio | Agent |
+| Situation                                          | Entity   |
+| -------------------------------------------------- | -------- |
+| Two or more responsibilities with distinct domains | Workflow |
+| A single responsibility with many internal steps   | Agent    |
+| Needs to transfer outputs between distinct parts   | Workflow |
+| Manages human approval checkpoints                 | Workflow |
+| Needs to invoke another Agent                      | Workflow |
+| Operates autonomously within its domain            | Agent    |
 
-### Rule vs Specific rules de un Agent
+### Rule vs Agent's Specific rules
 
-| Situación | Entidad |
-|---|---|
-| La restricción aplica solo a este Agent | Specific rule en sección 10.1 del Agent |
-| La misma restricción aplica a 2+ entidades | Rule independiente referenciada en 10.2 |
-| Es un estándar global del sistema | Rule con `alwaysApply: true` |
-| Es una restricción contextual | Rule con `trigger: model_decision` |
+| Situation                                   | Entity                                     |
+| ------------------------------------------- | ------------------------------------------ |
+| The restriction applies only to this Agent  | Specific rule in section 10.1 of the Agent |
+| The same restriction applies to 2+ entities | Independent Rule referenced in 10.2        |
+| It is a global system standard              | Rule with `alwaysApply: true`              |
+| It is a contextual restriction              | Rule with `trigger: model_decision`        |
 
 ---
 
-## 5. Anti-patrones
+## 5. Anti-patterns
 
-| Anti-patrón | Señal | Corrección |
-|---|---|---|
-| Agent que invoca a otro Agent | Un Agent referencia a otro en sus instrucciones | Crear un Workflow que orqueste ambos |
-| Skill con criterio propio | La Skill "decide" cómo actuar según contexto | Convertirla en Agent Specialist |
-| Workflow de una sola entidad | Solo hay una responsabilidad | Es un Agent, no un Workflow |
-| Contexto factual en body de Agent | El Agent tiene párrafos de datos o guías | Extraer a Knowledge-base |
-| Misma restricción en múltiples Agents | Se repite la misma regla en 2+ Agents | Extraer a Rule |
-| Command invocable por Workflow | El Command tiene sentido como paso de un flujo | Convertirlo en Agent |
+| Anti-pattern                        | Signal                                              | Correction                               |
+| ----------------------------------- | --------------------------------------------------- | ---------------------------------------- |
+| Agent that invokes another Agent    | An Agent references another in its instructions     | Create a Workflow that orchestrates both |
+| Skill with its own criteria         | The Skill "decides" how to act according to context | Convert it to Agent Specialist           |
+| Single-entity Workflow              | There is only one responsibility                    | It's an Agent, not a Workflow            |
+| Factual context in Agent body       | The Agent has paragraphs of data or guides          | Extract to Knowledge-base                |
+| Same restriction in multiple Agents | The same rule is repeated in 2+ Agents              | Extract to Rule                          |
+| Command invocable by Workflow       | The Command makes sense as a flow step              | Convert it to Agent                      |

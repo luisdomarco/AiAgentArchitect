@@ -1,83 +1,83 @@
 ---
 name: res-interview-question-trees
-description: Árboles lógicos de preguntas, técnicas de descomposición y bloques de entrevista para Discovery.
+description: Logical question trees, decomposition techniques, and interview blocks for Discovery.
 tags: [interview, questions, process, discovery, BPM]
 ---
 
 # Process Interview Question Trees
 
-Este documento actúa como el "cerebro conversacional" del especialista en descubrimiento de procesos (`age-spe-process-discovery` y su skill `ski-process-interviewer`). Contiene todas las preguntas aplicables organizadas por nivel de profundidad.
+This document acts as the "conversational brain" of the process discovery specialist (`age-spe-process-discovery` and its skill `ski-process-interviewer`). It contains all applicable questions organized by depth level.
 
-## Técnica de Ingeniería Inversa
+## Reverse Engineering Technique
 
-Ante descripciones vagas o genéricas, descompón sistemáticamente:
+When faced with vague or generic descriptions, systematically decompose:
 
-> _"Cuando dices [término vago], ¿te refieres a [opción A], [opción B] o [opción C]?"_
+> _"When you say [vague term], do you mean [option A], [option B], or [option C]?"_
 
-| Descripción vaga         | Descomposición                                                                                          |
-| ------------------------ | ------------------------------------------------------------------------------------------------------- |
-| "Automatizar [proceso]"  | ¿Qué pasos concretos tiene ese proceso hoy? ¿Cuál de ellos consume más tiempo? ¿Cuál tiene más errores? |
-| "Gestionar [entidad]"    | ¿Gestionar en qué sentido: crear, actualizar, eliminar, clasificar, enrutar?                            |
-| "Procesar [datos]"       | ¿Qué se hace exactamente con esos datos? ¿Se transforman, se validan, se almacenan, se envían?          |
-| "Mejorar [área]"         | ¿Qué problema concreto existe hoy en esa área? ¿Cómo se mide que está mejorado?                         |
-| "Integrar con [sistema]" | ¿Qué información se lee de ese sistema? ¿Qué información se escribe? ¿Con qué frecuencia?               |
-
----
-
-## Bloques de Entrevista (Modo Architect)
-
-Aplica los bloques en orden. Dentro de cada bloque, formula una pregunta a la vez.
-
-### Bloque 1 — Objetivo del sistema
-
-- ¿Qué problema específico debe resolver este sistema? _(validación: descripción concreta, no genérica)_
-- ¿Cuál es el resultado cuando funciona correctamente? ¿Cómo se ve ese éxito?
-- ¿Cómo se hace esto hoy, sin el sistema? ¿Qué pasos se siguen manualmente?
-- ¿Qué pasa si el sistema falla o no existe? ¿Cuál es el coste o impacto?
-
-### Bloque 2 — Flujo de datos
-
-- Describe el flujo paso a paso. _(formato sugerido: 1. → 2. → 3.)_
-- ¿Qué INPUT recibe el sistema para iniciarse? ¿Cuál es su formato y origen?
-- ¿Quién o qué dispara el proceso? _(usuario, evento, cron job, webhook, email...)_
-- ¿Qué OUTPUT produce al finalizar? ¿A quién o qué sistema va ese output?
-
-### Bloque 3 — Validación del flujo (Complejidad)
-
-- ¿Hay decisiones o bifurcaciones? ¿En qué puntos y qué condiciona cada camino?
-- ¿Hay pasos que pueden fallar? ¿Qué ocurre cuando fallan?
-- ¿Hay pasos que se repiten hasta que se cumpla alguna condición?
-- ¿Hay casos excepcionales o edge cases que el sistema debe manejar diferente?
-
-### Bloque 4 — Integraciones
-
-- ¿El proceso interactúa con algún sistema externo? _(CRM, ERP, base de datos, API, email, Slack...)_
-- Para cada sistema: ¿qué información se lee? ¿qué información se escribe? ¿con qué frecuencia?
-- ¿Hay credenciales o autenticación involucrada?
-- ¿Esos sistemas tienen limitaciones de uso o rate limits relevantes?
-
-### Bloque 5 — Autonomía y control
-
-- ¿Hay puntos donde un humano debe revisar o aprobar antes de continuar?
-- ¿Qué decisiones nunca debe tomar el sistema solo? ¿Por qué?
-- ¿Qué nivel de autonomía se espera en el día a día?
-- ¿Hay acciones irreversibles en el proceso? _(enviar email, borrar datos, hacer un pago)_
-
-### Bloque 6 — Contexto adicional
-
-- ¿Hay documentación, ejemplos o datos de referencia que el sistema deba conocer?
-- ¿Hay restricciones legales, de negocio o técnicas a tener en cuenta?
-- ¿Hay procesos similares ya agentizados que pueda reutilizar o tomar como referencia?
-- ¿Hay algo importante que no haya preguntado y debería saber?
+| Vague description         | Decomposition                                                                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| "Automate [process]"      | What specific steps does that process have today? Which one takes the most time? Which has the most errors? |
+| "Manage [entity]"         | Manage in what sense: create, update, delete, classify, route?                                              |
+| "Process [data]"          | What exactly is done with that data? Is it transformed, validated, stored, sent?                            |
+| "Improve [area]"          | What specific problem exists in that area today? How is improvement measured?                               |
+| "Integrate with [system]" | What information is read from that system? What information is written? How often?                          |
 
 ---
 
-## Cuestionario Rápido (Modo Express)
+## Interview Blocks (Architect Mode)
 
-Si el modo es Express, aplica únicamente la siguiente matriz en el menor número de intervenciones posibles:
+Apply the blocks in order. Within each block, formulate one question at a time.
 
-1. **Propósito:** ¿Qué problema concreto resuelve esta entidad?
-2. **Input:** ¿Qué recibe exactamente como input para funcionar?
-3. **Output:** ¿Qué produce como output y a quién o qué se lo entrega?
-4. **Comportamiento:** ¿Cómo debe actuar ante los casos más comunes?
-5. **Restricciones:** ¿Hay algo que nunca deba hacer o alguna restricción importante?
+### Block 1 — System objective
+
+- What specific problem should this system solve? _(validation: concrete description, not generic)_
+- What is the result when it works correctly? What does that success look like?
+- How is this done today, without the system? What steps are followed manually?
+- What happens if the system fails or doesn't exist? What is the cost or impact?
+
+### Block 2 — Data flow
+
+- Describe the flow step by step. _(suggested format: 1. → 2. → 3.)_
+- What INPUT does the system receive to start? What is its format and origin?
+- Who or what triggers the process? _(user, event, cron job, webhook, email...)_
+- What OUTPUT does it produce when finished? To whom or what system does that output go?
+
+### Block 3 — Flow validation (Complexity)
+
+- Are there decisions or branches? At what points and what conditions each path?
+- Are there steps that can fail? What happens when they fail?
+- Are there steps that repeat until some condition is met?
+- Are there exceptional cases or edge cases the system must handle differently?
+
+### Block 4 — Integrations
+
+- Does the process interact with any external system? _(CRM, ERP, database, API, email, Slack...)_
+- For each system: what information is read? What information is written? How often?
+- Are credentials or authentication involved?
+- Do those systems have usage limitations or relevant rate limits?
+
+### Block 5 — Autonomy and control
+
+- Are there points where a human must review or approve before continuing?
+- What decisions should the system never make alone? Why?
+- What level of autonomy is expected in day-to-day use?
+- Are there irreversible actions in the process? _(sending email, deleting data, making a payment)_
+
+### Block 6 — Additional context
+
+- Is there documentation, examples, or reference data the system should know?
+- Are there legal, business, or technical constraints to consider?
+- Are there similar already-agentized processes that can be reused or referenced?
+- Is there anything important I haven't asked that I should know?
+
+---
+
+## Quick Questionnaire (Express Mode)
+
+If the mode is Express, apply only the following matrix in the fewest possible interactions:
+
+1. **Purpose:** What specific problem does this entity solve?
+2. **Input:** What does it receive exactly as input to function?
+3. **Output:** What does it produce as output and to whom or what is it delivered?
+4. **Behavior:** How should it act in the most common cases?
+5. **Constraints:** Is there anything it should never do or any important restriction?

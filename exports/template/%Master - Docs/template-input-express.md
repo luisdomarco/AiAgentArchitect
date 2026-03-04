@@ -1,58 +1,51 @@
 # Agentic Architect — Template Express
 
-Rellena este template antes de iniciar la sesión. Con esta información el sistema podrá arrancar directamente con las últimas preguntas de ajuste y generar la entidad rápidamente.
+Fill in this template before starting the session. With this information the system will be able to start directly with the final adjustment questions and generate the entity quickly.
 
 ---
 
-## ¿Qué quieres crear?
+## What do you want to create?
 
-Marca con una X:
+Mark with an X:
 
-- [ ] Agent Specialist — ejecuta una función específica en un dominio
-- [ ] Agent Supervisor — supervisa o valida outputs de otros
-- [ ] Skill — capacidad técnica reutilizable por múltiples agentes
-- [ ] Command — acción directa y determinista disparada por el usuario
-- [ ] Rule — restricciones o convenciones de comportamiento
-
----
-
-## Descripción de la entidad
-
-**Nombre tentativo:**
-_(puede ser informal, el sistema lo formateará correctamente)_
-
-
-**¿Qué debe hacer exactamente?**
-_(describe en 2-3 frases su función principal)_
-
-
-**¿Qué recibe como input?**
-_(qué información o datos necesita para funcionar)_
-
-
-**¿Qué produce como output?**
-_(qué entrega cuando termina y a quién o qué se lo entrega)_
+- [ ] Agent Specialist — executes a specific function in a domain
+- [ ] Agent Supervisor — supervises or validates outputs from others
+- [ ] Skill — reusable technical capability by multiple agents
+- [ ] Command — direct and deterministic action triggered by the user
+- [ ] Rule — behavioral restrictions or conventions
 
 ---
 
-## Restricciones conocidas _(opcional)_
+## Entity description
 
-**¿Hay algo que esta entidad nunca deba hacer?**
+**Tentative name:**
+_(can be informal, the system will format it correctly)_
 
+**What exactly should it do?**
+_(describe its main function in 2-3 sentences)_
 
-**¿Hay alguna restricción técnica, de negocio o de formato relevante?**
+**What does it receive as input?**
+_(what information or data it needs to function)_
 
-
----
-
-## Contexto adicional _(opcional)_
-
-**¿Tienes Skills o entidades ya creadas que podrían relacionarse con esta?**
-
-
-**Cualquier otra información que consideres relevante:**
-
+**What does it produce as output?**
+_(what it delivers when finished and to whom or what does it deliver it)_
 
 ---
 
-_Pega el contenido de este template al inicio de la conversación con el Agentic Architect._
+## Known constraints _(optional)_
+
+**Is there anything this entity should never do?**
+
+**Are there any relevant technical, business, or format restrictions?**
+
+---
+
+## Additional context _(optional)_
+
+**Do you have Skills or entities already created that could be related to this one?**
+
+**Any other information you consider relevant:**
+
+---
+
+_Paste the content of this template at the start of the conversation with the Agentic Architect._

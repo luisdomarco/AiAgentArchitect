@@ -9,93 +9,93 @@ description: Analyzes all Audit and Score blocks in a qa-report.md to detect rec
 
 **Input:**
 
-- `qa_report_content`: contenido completo del `qa-report.md`
-- `meta_report_content`: contenido del `qa-meta-report.md` (opcional, para histórico)
+- `qa_report_content`: complete content of `qa-report.md`
+- `meta_report_content`: content of `qa-meta-report.md` (optional, for historical data)
 
 **Output:**
 
-- `failure_patterns`: array de `{ criterio, ocurrencias, fases_afectadas, impacto_score }`
-- `success_patterns`: array de `{ criterio, ocurrencias, fases }`
-- `efficiency_issues`: `{ fase, regeneraciones }` para fases con regeneraciones > 1
-- `dimension_trends`: `{ dimension, score_promedio }` por dimensión
-- `priority_targets`: array ordenado de `{ target_entity, descripcion_problema, prioridad }`
+- `failure_patterns`: array of `{ criterion, occurrences, affected_phases, score_impact }`
+- `success_patterns`: array of `{ criterion, occurrences, phases }`
+- `efficiency_issues`: `{ phase, regenerations }` for phases with regenerations > 1
+- `dimension_trends`: `{ dimension, average_score }` per dimension
+- `priority_targets`: ordered array of `{ target_entity, problem_description, priority }`
 
 ## Procedure
 
-### Paso 1 — Extracción de bloques
+### Step 1 — Block extraction
 
-Parsear el `qa-report.md` e identificar:
+Parse the `qa-report.md` and identify:
 
-- Todos los bloques `## [Audit {fase}]` → extraer la tabla de cumplimiento
-- Todos los bloques `### Score {fase}` → extraer scores por dimensión
-- Bloques `## [Re-audit — {entidad} — {timestamp}]` → tratarlos como auditorías adicionales
+- All `## [Audit {phase}]` blocks → extract the compliance table
+- All `### Score {phase}` blocks → extract scores per dimension
+- `## [Re-audit — {entity} — {timestamp}]` blocks → treat them as additional audits
 
-Si existe `meta_report_content`, extraer entradas históricas de sesiones anteriores.
+If `meta_report_content` exists, extract historical entries from previous sessions.
 
-### Paso 2 — Análisis de fallos
+### Step 2 — Failure analysis
 
-Para cada criterio con estado ⚠️ o ❌:
+For each criterion with status ⚠️ or ❌:
 
-1. Contar en cuántas fases/entidades apareció ese criterio con fallo
-2. Identificar qué Rule está asociada
-3. Estimar el impacto en el score (⚠️ = impacto medio, ❌ = impacto alto)
+1. Count in how many phases/entities that criterion appeared with failure
+2. Identify which Rule is associated
+3. Estimate impact on the score (⚠️ = medium impact, ❌ = high impact)
 
-Ordenar por: `ocurrencias × impacto_score` (descendente)
+Order by: `occurrences × score_impact` (descending)
 
-### Paso 3 — Análisis de scores por dimensión
+### Step 3 — Score analysis by dimension
 
-Calcular el promedio de cada dimensión a lo largo de todas las fases:
+Calculate the average of each dimension across all phases:
 
 ```
 dimension_trend = {
-  Completitud: promedio(todos los scores de Completitud),
-  Calidad: promedio(todos los scores de Calidad),
-  Cumplimiento: promedio(todos los scores de Cumplimiento),
-  Eficiencia: promedio(todos los scores de Eficiencia)
+  Completeness: average(all Completeness scores),
+  Quality: average(all Quality scores),
+  Compliance: average(all Compliance scores),
+  Efficiency: average(all Efficiency scores)
 }
 ```
 
-Dimensiones con promedio < 6.0 → alta prioridad de mejora.
+Dimensions with average < 6.0 → high improvement priority.
 
-### Paso 4 — Análisis de eficiencia
+### Step 4 — Efficiency analysis
 
-Para cada fase, extraer el número de regeneraciones de las métricas del bloque Score.
-Fases con regeneraciones > 1 → generar entrada en `efficiency_issues`.
+For each phase, extract the number of regenerations from the Score block metrics.
+Phases with regenerations > 1 → generate entry in `efficiency_issues`.
 
-### Paso 5 — Análisis de éxitos
+### Step 5 — Success analysis
 
-Para cada criterio con estado ✅ **en todas las fases donde fue verificado**:
+For each criterion with status ✅ **in all phases where it was verified**:
 
-1. Registrarlo como patrón de éxito
-2. Identificar qué Rule o diseño lo hace consistente
+1. Register it as a success pattern
+2. Identify which Rule or design makes it consistent
 
-### Paso 6 — Generación de priority_targets
+### Step 6 — priority_targets generation
 
-Para cada patrón de fallo, mapear a la entidad del sistema que debería ser modificada:
+For each failure pattern, map to the system entity that should be modified:
 
-| Tipo de fallo                                         | Target probable                 |
-| ----------------------------------------------------- | ------------------------------- |
-| Criterio de rul-naming-conventions                    | `rul-naming-conventions`        |
-| Checkpoint mal formado                                | `rul-checkpoint-behavior`       |
-| Entrevista con múltiples preguntas                    | `rul-interview-standards`       |
-| Formato de entidad incorrecto                         | `ski-entity-file-builder`       |
-| Blueprint incompleto / exceso de regeneraciones en S2 | `age-spe-architecture-designer` |
-| Discovery incompleto / trigger o pasos faltantes      | `age-spe-process-discovery`     |
-| Score de Completitud bajo                             | entidad con más ⚠️ en S3        |
+| Failure type                                    | Probable target                 |
+| ----------------------------------------------- | ------------------------------- |
+| Criterion from rul-naming-conventions           | `rul-naming-conventions`        |
+| Poorly formed checkpoint                        | `rul-checkpoint-behavior`       |
+| Interview with multiple questions               | `rul-interview-standards`       |
+| Incorrect entity format                         | `ski-entity-file-builder`       |
+| Incomplete Blueprint / excess S2 regenerations  | `age-spe-architecture-designer` |
+| Incomplete Discovery / missing trigger or steps | `age-spe-process-discovery`     |
+| Low Completeness score                          | entity with most ⚠️ in S3       |
 
-Ordenar `priority_targets` por `ocurrencias × impacto_score` → mayor primero.
+Order `priority_targets` by `occurrences × score_impact` → highest first.
 
 ## Examples
 
-**Input (extracto de qa-report.md):**
+**Input (excerpt from qa-report.md):**
 
 ```
 ## [Audit S1] — 2026-02-20T21:25:14
 | rul-naming-conventions | ✅ | ... |
-| rul-checkpoint-behavior | ⚠️ | Falta opción D |
+| rul-checkpoint-behavior | ⚠️ | Missing option D |
 
-## [Audit S3-age-spe-ejemplar]
-| rul-naming-conventions | ❌ | Prefijo 'agent-' en lugar de 'age-spe-' |
+## [Audit S3-age-spe-example]
+| rul-naming-conventions | ❌ | Prefix 'agent-' instead of 'age-spe-' |
 | rul-checkpoint-behavior | ✅ | ... |
 ```
 
@@ -105,35 +105,35 @@ Ordenar `priority_targets` por `ocurrencias × impacto_score` → mayor primero.
 {
   "failure_patterns": [
     {
-      "criterio": "Checkpoint con 4 opciones (rul-checkpoint-behavior)",
-      "ocurrencias": 2,
-      "fases_afectadas": ["S1", "S2"],
-      "impacto_score": "medio"
+      "criterion": "Checkpoint with 4 options (rul-checkpoint-behavior)",
+      "occurrences": 2,
+      "affected_phases": ["S1", "S2"],
+      "score_impact": "medium"
     },
     {
-      "criterio": "Prefijo correcto en agent specialists (rul-naming-conventions)",
-      "ocurrencias": 1,
-      "fases_afectadas": ["S3"],
-      "impacto_score": "alto"
+      "criterion": "Correct prefix in agent specialists (rul-naming-conventions)",
+      "occurrences": 1,
+      "affected_phases": ["S3"],
+      "score_impact": "high"
     }
   ],
   "success_patterns": [
     {
-      "criterio": "Una pregunta a la vez (rul-interview-standards)",
-      "ocurrencias": 3,
-      "fases": ["S1"]
+      "criterion": "One question at a time (rul-interview-standards)",
+      "occurrences": 3,
+      "phases": ["S1"]
     }
   ],
   "priority_targets": [
     {
       "target_entity": "rul-checkpoint-behavior",
-      "descripcion_problema": "Falta opción D en 2 de 3 fases",
-      "prioridad": "alta"
+      "problem_description": "Missing option D in 2 of 3 phases",
+      "priority": "high"
     },
     {
       "target_entity": "rul-naming-conventions",
-      "descripcion_problema": "❌ prefijo incorrecto en S3",
-      "prioridad": "alta"
+      "problem_description": "❌ incorrect prefix in S3",
+      "priority": "high"
     }
   ]
 }
@@ -141,6 +141,6 @@ Ordenar `priority_targets` por `ocurrencias × impacto_score` → mayor primero.
 
 ## Error Handling
 
-- Si el `qa-report.md` no tiene bloques de Audit: retornar `{ failure_patterns: [], success_patterns: [], priority_targets: [] }` con nota "Sin datos suficientes para análisis"
-- Si solo hay un bloque (un checkpoint): análisis parcial con nota explícita
-- Si hay bloques de Re-audit: incluirlos en el análisis pero marcarlos como `tipo: "re-audit"` para distinguirlos
+- If `qa-report.md` has no Audit blocks: return `{ failure_patterns: [], success_patterns: [], priority_targets: [] }` with note "Insufficient data for analysis"
+- If there is only one block (one checkpoint): partial analysis with explicit note
+- If there are Re-audit blocks: include them in the analysis but mark them as `type: "re-audit"` to distinguish them

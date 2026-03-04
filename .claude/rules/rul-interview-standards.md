@@ -6,72 +6,72 @@ tags: [interview, discovery, questions]
 
 ## Context
 
-Esta rule establece los estándares de conducta durante la fase de entrevista del Step 1. Una entrevista mal conducida produce un proceso mal definido, que inevitablemente resulta en una arquitectura incorrecta y en archivos de entidades que no resuelven el problema real. La calidad del output del sistema depende directamente de la calidad del discovery.
+This rule establishes the standards of conduct during the interview phase of Step 1. A poorly conducted interview produces a poorly defined process, which inevitably results in an incorrect architecture and entity files that do not solve the real problem. The quality of the system's output depends directly on the quality of the discovery.
 
 ## Hard Constraints
 
-- Nunca hacer más de una pregunta por mensaje, sin excepciones.
-- Nunca asumir información que el usuario no ha dado explícitamente — si no se ha dicho, se pregunta.
-- Nunca avanzar al siguiente bloque de preguntas sin haber cerrado el anterior.
-- Nunca completar un campo del JSON de handoff con una inferencia no validada por el usuario.
-- Nunca aceptar una descripción vaga como respuesta suficiente — siempre descomponer en lo concreto.
-- Nunca omitir el challenge del flujo en Modo Architect antes de generar el diagrama AS-IS.
+- Never ask more than one question per message, without exceptions.
+- Never assume information that the user has not explicitly provided — if it has not been stated, ask.
+- Never advance to the next question block without having closed the previous one.
+- Never complete a handoff JSON field with an inference not validated by the user.
+- Never accept a vague description as a sufficient answer — always decompose into concrete specifics.
+- Never omit the flow challenge in Architect Mode before generating the AS-IS diagram.
 
 ## Soft Constraints
 
-- Priorizar siempre la pregunta sobre lo que falta, no sobre lo que ya se sabe.
-- Antes de cada pregunta, evaluar internamente: *¿qué es lo más importante que no sé todavía?*
-- Si el usuario da información de varios bloques a la vez, registrarla internamente y seguir el orden de bloques establecido.
-- Mantener un tono directo y profesional, sin preguntas redundantes ni explicaciones innecesarias antes de preguntar.
-- En Modo Express, si con 3 preguntas ya se tiene toda la información necesaria, no hacer las 2 restantes.
+- Always prioritize the question about what is missing, not about what is already known.
+- Before each question, evaluate internally: _What is the most important thing I still don't know?_
+- If the user provides information for multiple blocks at once, register it internally and continue following the established block order.
+- Maintain a direct and professional tone, without redundant questions or unnecessary explanations before asking.
+- In Express Mode, if 3 questions are enough to gather all necessary information, do not ask the remaining 2.
 
-## Estándares de calidad de respuesta
+## Response Quality Standards
 
-Antes de dar por válida una respuesta y avanzar, verificar:
+Before accepting a response as valid and advancing, verify:
 
-| Criterio | Respuesta insuficiente | Respuesta suficiente |
-|---|---|---|
-| **Especificidad** | "Automatizar tareas de soporte" | "Clasificar tickets entrantes por email y asignarlos al agente correcto en Zendesk" |
-| **Input definido** | "Recibe la información del cliente" | "Recibe un email con asunto, cuerpo y remitente" |
-| **Output definido** | "Genera una respuesta" | "Genera un ticket en Zendesk con categoría, prioridad y agente asignado" |
-| **Trigger definido** | "Cuando llega algo" | "Cuando llega un email a soporte@empresa.com" |
-| **Casos de error** | "Si falla, se gestiona" | "Si Zendesk no responde, reintenta 3 veces y escala a un humano" |
+| Criterion           | Insufficient Response           | Sufficient Response                                                                  |
+| ------------------- | ------------------------------- | ------------------------------------------------------------------------------------ |
+| **Specificity**     | "Automate support tasks"        | "Classify incoming tickets by email and assign them to the correct agent in Zendesk" |
+| **Input defined**   | "Receives customer information" | "Receives an email with subject, body, and sender"                                   |
+| **Output defined**  | "Generates a response"          | "Generates a ticket in Zendesk with category, priority, and assigned agent"          |
+| **Trigger defined** | "When something arrives"        | "When an email arrives at support@company.com"                                       |
+| **Error cases**     | "If it fails, it's handled"     | "If Zendesk doesn't respond, retry 3 times and escalate to a human"                  |
 
-## Protocolo ante respuestas insuficientes
+## Protocol for Insufficient Responses
 
-1. No avanzar.
-2. Identificar qué falta exactamente.
-3. Reformular la pregunta de forma más específica o con opciones concretas.
+1. Do not advance.
+2. Identify exactly what is missing.
+3. Rephrase the question in a more specific way or with concrete options.
 
-Ejemplos de reformulación:
+Rephrasing examples:
 
-| Respuesta vaga | Reformulación |
-|---|---|
-| "Depende del caso" | "¿Cuáles son los 2 o 3 casos más frecuentes y qué ocurre en cada uno?" |
-| "Se gestiona internamente" | "¿Quién gestiona eso? ¿Es un humano, otro sistema o este mismo proceso?" |
-| "Ya veremos" | "Para poder diseñar correctamente, necesito saberlo ahora. ¿Tienes alguna idea de cómo debería funcionar?" |
+| Vague Response            | Rephrasing                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------- |
+| "It depends on the case"  | "What are the 2 or 3 most common cases and what happens in each one?"                       |
+| "It's handled internally" | "Who handles it? Is it a human, another system, or this same process?"                      |
+| "We'll see"               | "To design this correctly, I need to know now. Do you have any idea of how it should work?" |
 
-## Detección de señales de escalado (Modo Express)
+## Escalation Signal Detection (Express Mode)
 
-Monitorizar durante toda la entrevista. Si se detectan 2 o más señales, emitir recomendación de escalado a Architect:
+Monitor throughout the entire interview. If 2 or more signals are detected, emit an escalation recommendation to Architect:
 
-- La entidad necesita coordinar con otras entidades
-- Hay más de una responsabilidad diferenciada
-- Aparecen integraciones con sistemas externos
-- El flujo tiene ramificaciones, bucles o decisiones
-- El usuario describe más de 3 pasos secuenciales distintos
+- The entity needs to coordinate with other entities
+- There is more than one differentiated responsibility
+- Integrations with external systems appear
+- The flow has branches, loops, or decisions
+- The user describes more than 3 distinct sequential steps
 
-Mensaje de escalado:
-*"Basándome en lo que describes, esto tiene más complejidad de la que parecía inicialmente. Para asegurar un diseño correcto, te recomiendo cambiar a Modo Architect. ¿Quieres continuar en Express igualmente o cambiamos de modo?"*
+Escalation message:
+_"Based on what you describe, this has more complexity than it initially seemed. To ensure a correct design, I recommend switching to Architect Mode. Do you want to continue in Express anyway or shall we switch modes?"_
 
-## Protocolo de challenge (obligatorio en Modo Architect)
+## Challenge Protocol (mandatory in Architect Mode)
 
-Antes de cerrar la entrevista:
+Before closing the interview:
 
-1. Presentar el flujo completo tal como se ha entendido en 3-5 pasos.
-2. Pedir confirmación explícita.
-3. Si confirma, hacer al menos 2 preguntas de challenge sobre:
-   - El caso de error más probable detectado durante la entrevista.
-   - El edge case más relevante que el usuario no haya mencionado explícitamente.
+1. Present the complete flow as understood, in 3-5 steps.
+2. Request explicit confirmation.
+3. If confirmed, ask at least 2 challenge questions about:
+   - The most likely error case detected during the interview.
+   - The most relevant edge case that the user has not explicitly mentioned.
 
-El challenge no es opcional. Si el usuario quiere saltárselo, recordar que es necesario para garantizar un diseño correcto.
+The challenge is not optional. If the user wants to skip it, remind them that it is necessary to guarantee a correct design.

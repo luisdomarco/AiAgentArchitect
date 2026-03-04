@@ -1,74 +1,78 @@
 # AiAgentArchitect
 
-Sistema para diseñar y generar sistemas agénticos completos.
+System for designing and generating complete agentic systems.
 
-## Cómo funciona
+## How it Works
 
-Ejecuta el workflow principal para iniciar una sesión de diseño:
+Run the main workflow to start a design session:
 
-**Desde Google Antigravity:**
+**From Google Antigravity:**
+
 ```
 wor-agentic-architect
 ```
 
-**Desde Claude Code:**
+**From Claude Code:**
+
 ```
 /wor-agentic-architect
 ```
 
-## Estructura del Proyecto
+## Project Structure
 
-Este proyecto mantiene **dos implementaciones del mismo sistema agéntico**, cada una optimizada para su plataforma:
+This project maintains **two implementations of the same agentic system**, each optimized for its platform:
 
 ### 1. Google Antigravity (`.agents/`)
 
-Estructura original para Google Antigravity:
+Original structure for Google Antigravity:
 
 - `.agents/`
-  - `workflows/` — Workflows (`wor-*`) y Agentes (`age-spe-*`)
-  - `skills/` — Skills con estructura de subdirectorios (`ski-*/SKILL.md`)
-  - `rules/` — Reglas (`rul-*`)
-  - `knowledge-base/` — Base de conocimiento (`kno-*`)
-  - `resources/` — Recursos de referencia (`res-*`)
+  - `workflows/` — Workflows (`wor-*`) and Agents (`age-spe-*`)
+  - `skills/` — Skills with subdirectory structure (`ski-*/SKILL.md`)
+  - `rules/` — Rules (`rul-*`)
+  - `knowledge-base/` — Knowledge base (`kno-*`)
+  - `resources/` — Reference resources (`res-*`)
 
 ### 2. Claude Code (`.claude/`)
 
-Estructura adaptada para Claude Code:
+Structure adapted for Claude Code:
 
 - `.claude/`
-  - `commands/` — Workflows principales (`wor-*`)
-  - `agents/` — Agents especializados (`age-spe-*`)
-  - `skills/` — Skills con estructura aplanada (`ski-*.md`)
-  - `rules/` — Reglas (`rul-*`)
-  - `knowledge-base/` — Base de conocimiento (`kno-*`)
-  - `resources/` — Recursos de referencia (`res-*`)
-  - `settings.local.json` — Configuración de permisos
+  - `commands/` — Main workflows (`wor-*`)
+  - `agents/` — Specialized agents (`age-spe-*`)
+  - `skills/` — Skills with flat structure (`ski-*.md`)
+  - `rules/` — Rules (`rul-*`)
+  - `knowledge-base/` — Knowledge base (`kno-*`)
+  - `resources/` — Reference resources (`res-*`)
+  - `settings.local.json` — Permission configuration
 
-**Diferencias clave entre `.agents/` y `.claude/`:**
-- Workflows y Agents separados: `workflows/` → `commands/` (workflows) + `agents/` (agents)
-- Skills aplanados: `skills/ski-*/SKILL.md` → `skills/ski-*.md`
-- Referencias ajustadas automáticamente según contexto
+**Key differences between `.agents/` and `.claude/`:**
 
-### 3. Sistemas Generados (`exports/`)
+- Workflows and Agents separated: `workflows/` → `commands/` (workflows) + `agents/` (agents)
+- Flattened skills: `skills/ski-*/SKILL.md` → `skills/ski-*.md`
+- References automatically adjusted per context
 
-Directorio de salida para sistemas generados:
+### 3. Generated Systems (`exports/`)
+
+Output directory for generated systems:
 
 - `exports/`
-  - `template/` — base para copiar y renombrar
-  - `{nombre-sistema}/google-antigravity/` — export por defecto
-  - `{nombre-sistema}/{plataforma}/` — exports opcionales
+  - `template/` — base to copy and rename
+  - `{system-name}/google-antigravity/` — default export
+  - `{system-name}/{platform}/` — optional exports
 
-## Rules Activas
+## Active Rules
 
-Las siguientes reglas aplican en ambas implementaciones (`.agents/` y `.claude/`):
+The following rules apply in both implementations (`.agents/` and `.claude/`):
 
-- **`rul-naming-conventions`** — Prefijos y convenciones de nomenclatura para entidades
-- **`rul-checkpoint-behavior`** — Formato de checkpoints y validaciones estructuradas
-- **`rul-interview-standards`** — Protocolo de entrevista (una pregunta a la vez, sin asumir)
-- **`rul-audit-behavior`** — QA Layer: activación del ciclo de auditoría y responsabilidades
+- **`rul-naming-conventions`** — Prefixes and naming conventions for entities
+- **`rul-checkpoint-behavior`** — Checkpoint format and structured validations
+- **`rul-interview-standards`** — Interview protocol (one question at a time, no assumptions)
+- **`rul-audit-behavior`** — QA Layer: audit cycle activation and responsibilities
 
-## Sincronización
+## Synchronization
 
-Ambas implementaciones deben mantenerse sincronizadas. Los cambios en una estructura deben replicarse en la otra ajustando las rutas según corresponda:
+Both implementations must remain in sync. Changes in one structure must be replicated in the other, adjusting paths accordingly:
+
 - `.agents/workflows/` ↔ `.claude/commands/` + `.claude/agents/`
 - `.agents/skills/ski-*/SKILL.md` ↔ `.claude/skills/ski-*.md`

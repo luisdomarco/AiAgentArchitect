@@ -1,94 +1,94 @@
 ---
 name: kno-qa-governance-layer
-description: Documentación técnica exhaustiva del Framework de Gobernanza, Control de Calidad (QA), y Trazabilidad Cognitiva implementado en AiAgentArchitect. Diseñado para consumo por IAs en la instanciación de nuevos sistemas.
+description: Comprehensive technical documentation of the Governance, Quality Control (QA), and Cognitive Traceability Framework implemented in AiAgentArchitect. Designed for AI consumption when instantiating new systems.
 ---
 
-# Framework de Gobernanza y QA en Sistemas Agénticos
+# Governance and QA Framework in Agentic Systems
 
-Este documento describe **cómo implementar técnicamente** los mecanismos arquitectónicos de Gobernanza, Control de Calidad (QA), trazabilidad del contexto y persistencia de datos en redes multi-agente complejas.
+This document describes **how to technically implement** the architectural mechanisms of Governance, Quality Control (QA), context traceability, and data persistence in complex multi-agent networks.
 
-Cualquier Inteligencia Artificial encargada de instanciar, replicar o escalar nuevos sistemas agénticos **debe integrar el siguiente plano de ejecución arquitectónica de forma obligatoria**.
-
----
-
-## 1. Trazabilidad Cognitiva: El bloque `<sys-eval>`
-
-Para evitar la pereza inherente de los modelos fundacionales, el desvío de atención y las asunciones rápidas, el sistema implementa un mecanismo de **Cadena de Pensamiento (Chain of Thought - CoT) Condicional**.
-
-### ¿Cómo implementarlo?
-
-1. **En las Reglas Base:** El nuevo sistema debe poseer una regla tipo `rul-strict-compliance.md` que obligue al LLM a abrir un tag XML `<sys-eval>` antes de emitir cualquier output final. Dentro de él, el LLM debe hacer dos checks verbalizados:
-   - _Listando mis Hard Constraints:_ Verifica que no rompe lo prohibido por las reglas activas.
-   - _Listando mis Tasks:_ Verifica que ha ejecutado todo lo que se le ordenó en su prompt o rol.
-2. **En el Orquestador:** El flujo de código del Orquestador (el agente maestro de la sesión) debe interceptar la respuesta pura del agente especialista, extraer mediante regex o partición el string que se encuentra dentro de `<sys-eval>...</sys-eval>`, y almacenarlo transitoriamente en una variable llamada `reasoning_trace`.
+Any Artificial Intelligence tasked with instantiating, replicating, or scaling new agentic systems **must integrate the following architectural execution blueprint as mandatory**.
 
 ---
 
-## 2. Definición del Scope y Storage: `target_dir`
+## 1. Cognitive Traceability: The `<sys-eval>` block
 
-Para evitar que los sistemas agénticos polucionen la raíz de los repositorios con logs masivos, la persistencia se aísla de forma quirúrgica en el primer paso del proceso estableciendo un **área de trabajo aislada (sandbox)**.
+To prevent the inherent laziness of foundational models, attention drift, and quick assumptions, the system implements a **Conditional Chain of Thought (CoT)** mechanism.
 
-### ¿Cómo implementarlo?
+### How to implement it?
 
-1. **Cálculo de Ruta:** El Workflow orquestador es el responsable de computar y crear una variable `target_dir` nada más iniciarse (Step 0 o Step 1).
-   - _Dominio General:_ Por defecto el `target_dir` suele ser la ruta de exportación del proceso, ej. `exports/[nombre]/google-antigravity/` en el framework maestro.
-   - _Dominio V1 (User Story Agent):_ En sistemas de negocio, la ruta debe reflejar estrictamente la jerarquía del output. En V1, el workflow orquestador detecta y rutea por sí mismo el `target_dir` a:
-     - `output/[EPIC-ID]/[US-ID]/` -> Si la historia de usuario pertenece a una épica padre.
-     - `output/[US-ID]/` -> Si la historia de usuario es independiente.
-2. **Distribución del Scope:** Todos los agentes subsecuentes, especialmente el que maneja la persistencia temporal (el Context Ledger) y el que maneja el Quality Assurance (Auditor QA), **deben recibir esta variable `target_dir` como un argumento inamovible** en cada invocación para saber dónde grabar sus acciones.
+1. **In Base Rules:** The new system must possess a rule like `rul-strict-compliance.md` that forces the LLM to open an XML tag `<sys-eval>` before emitting any final output. Inside it, the LLM must perform two verbalized checks:
+   - _Listing my Hard Constraints:_ Verifies it does not break what is prohibited by the active rules.
+   - _Listing my Tasks:_ Verifies it has executed everything it was ordered in its prompt or role.
+2. **In the Orchestrator:** The code flow of the Orchestrator (the master agent of the session) must intercept the raw response from the specialist agent, extract via regex or partitioning the string found within `<sys-eval>...</sys-eval>`, and store it transiently in a variable called `reasoning_trace`.
 
 ---
 
-## 3. Memoria Temporal y Archiver (Context Ledger)
+## 2. Scope and Storage Definition: `target_dir`
 
-Los sistemas multi-agente pierden contexto si dependen exclusivamente de la ventana de contexto bruta del chat. Se utiliza la figura del **Context Ledger** (`ski-context-ledger`) para crear y leer un estado de persistencia efímero llamado `context-ledger.md` dentro de nuestro `target_dir`.
+To prevent agentic systems from polluting the repository root with massive logs, persistence is surgically isolated in the first step of the process by establishing an **isolated workspace (sandbox)**.
 
-### ¿Cómo implementarlo?
+### How to implement it?
 
-1. **Directorio Objetivo:** El archivo de estado debe crearse obligatoriamente en `{target_dir}/context-ledger.md`.
-2. **Estrategia Archiver en el Orquestador:** `ski-context-ledger` no debe borrar ni sobrescribir ejecuciones antiguas si el proceso colapsa y el usuario tiene que reiniciar la app. Al hacer el `init`, si localiza un `context-ledger.md` previo en esa ruta, debe renombrarlo insertando un timestamp (ej. `archive-context-ledger-2026-02-24-10-30-00.md`) y empezar uno virtualmente en blanco.
-3. **Flujo de Escritura Inquebrantable:** Cada vez que el Orquestador recibe el OK de que un Agente Especialista ha terminado, tiene prohibido avanzar sin antes invocar a la operación `write` del Ledger. Debe grabar allí simultáneamente:
-   - El _Output limpio_ del agente.
-   - La variable _`reasoning_trace`_ pura, bajo una sección estandarizada (ej. `### Reasoning Trace`).
-
----
-
-## 4. Orquestación de Checkpoints y QA (El "No-Salto")
-
-El avance iterativo en un sistema agéntico debe estar rígidamente condicionado por la validación del usuario. Esta es la barrera arquitectónica para que **nadie se salte la revisión de calidad**.
-
-### ¿Cómo implementarlo y cuándo interviene el QA?
-
-Al finalizar la labor de cada agente especialista (Step), el Orquestador debe pausar incondicionalmente y forzar el siguiente menú al usuario:
-
-- A: ✅ Aprobar y pasar al siguiente paso
-- B: ✏️ Ajustar este resultado
-- C: 🔄 Regenerar
-- D: ↩️ Retroceder
-
-**La obligación de la Opción A:**
-Solo y exclusivamente cuando el usuario teclea/selecciona la Opción `A`, el Orquestador activa el "Ciclo QA".
-
-- Si elige B, C o D: Se interrumpe la lógica, se vuelve invocar al especialista para corregir y se vuelve otra vez al Checkpoint.
-- Si elige A: Se asume que el output local humano es aceptable. E INMEDIATAMENTE ANTES de saltar al _Step N+1_, se invoca a las rutinas de QA en background presentándole las evidencias de esa fase.
+1. **Path Calculation:** The orchestrating Workflow is responsible for computing and creating a `target_dir` variable as soon as it starts (Step 0 or Step 1).
+   - _General Domain:_ By default the `target_dir` is usually the process export path, e.g. `exports/[name]/google-antigravity/` in the master framework.
+   - _V1 Domain (User Story Agent):_ In business systems, the path must strictly reflect the output hierarchy. In V1, the orchestrating workflow detects and routes its own `target_dir` to:
+     - `output/[EPIC-ID]/[US-ID]/` → If the user story belongs to a parent epic.
+     - `output/[US-ID]/` → If the user story is standalone.
+2. **Scope Distribution:** All subsequent agents, especially those handling temporary persistence (the Context Ledger) and Quality Assurance (QA Auditor), **must receive this `target_dir` variable as an immovable argument** in each invocation so they know where to record their actions.
 
 ---
 
-## 5. Ciclo QA y Evaluaciones Rotativas (QA-Reports)
+## 3. Temporary Memory and Archiver (Context Ledger)
 
-El bloque de Quality Assurance está pensado para auditar al LLM contra sí mismo. La auditoría está prohibido que frene la ejecución a menos que encuentre un fallo destructivo; su función es dejar un rastro de cumplimiento indexable y penalizar desviaciones detectadas en background.
+Multi-agent systems lose context if they depend exclusively on the raw context window of the chat. The **Context Ledger** figure (`ski-context-ledger`) is used to create and read an ephemeral persistence state called `context-ledger.md` within our `target_dir`.
 
-### ¿Cómo implementarlo paso a paso?
+### How to implement it?
 
-1. **Invocación al Agente Auditor (`age-spe-auditor`):** Tras la Opción A, el Orquestador notifica al Auditor pasándole estas coordenadas exactas:
-   - Nombre de la Fase (`S1`, `S2`, etc.).
-   - El _Output_ exacto que se acaba de generar.
-   - El _Reasoning Trace_ sacado del Ledger.
-   - El _`target_dir`_ computado inicialmente.
-2. **Lectura Dinámica del Auditor:** El Auditor debe ir al disco (`/rules`) y leer el texto estricto de las reglas que debían ser obedecidas en ese step concreto. **Debe leerlas del disco** (`kno-qa-dynamic-reading`), nunca tirar de su entrenamiento internalizado.
-3. **Verificación Semántica (`ski-compliance-checker`):** El Auditor cruza las leyes extraídas con el `reasoning_trace`. Debe responderse a esta interrogante del framework: _¿El agente razonó antes de actuar y contempló X restricción o fue ignorada deliberadamente?_ Se evalúan y emiten juicios visuales (✅/❌/⚠️).
-4. **Almacenamiento Rotativo del Reporte:**
-   - El Auditor tiene **prohibido estructuralmente hacer append** a un megalítico documento gigante de QA. Esta práctica agota la ventana de tokens.
-   - El Auditor acude a la variable `target_dir` y crea programáticamente el sub-directorio de auditorías: `{target_dir}/qa-reports/`.
-   - Crea un archivo de evaluación con sello horario exacto y único: `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md`.
-   - Vuelca allí la rúbrica de cumplimiento Markdown de ese step en particular.
+1. **Target Directory:** The state file must be created mandatorily at `{target_dir}/context-ledger.md`.
+2. **Archiver Strategy in the Orchestrator:** `ski-context-ledger` must not delete or overwrite old executions if the process crashes and the user has to restart the app. When doing `init`, if it locates a previous `context-ledger.md` at that path, it must rename it by inserting a timestamp (e.g. `archive-context-ledger-2026-02-24-10-30-00.md`) and start a virtually blank new one.
+3. **Unbreakable Write Flow:** Every time the Orchestrator receives the OK that a Specialist Agent has finished, it is prohibited from advancing without first invoking the Ledger's `write` operation. It must record there simultaneously:
+   - The agent's clean _Output_.
+   - The pure _`reasoning_trace`_ variable, under a standardized section (e.g. `### Reasoning Trace`).
+
+---
+
+## 4. Checkpoint and QA Orchestration (The "No-Skip")
+
+Iterative advancement in an agentic system must be rigidly conditioned by user validation. This is the architectural barrier ensuring **no one skips the quality review**.
+
+### How to implement it and when does QA intervene?
+
+At the end of each specialist agent's work (Step), the Orchestrator must unconditionally pause and force the following menu on the user:
+
+- A: ✅ Approve and move to the next step
+- B: ✏️ Adjust this result
+- C: 🔄 Regenerate
+- D: ↩️ Go back
+
+**The Option A obligation:**
+Only and exclusively when the user types/selects Option `A`, the Orchestrator activates the "QA Cycle".
+
+- If they choose B, C, or D: The logic is interrupted, the specialist is re-invoked to correct and return to the Checkpoint.
+- If they choose A: It is assumed that the human local output is acceptable. AND IMMEDIATELY BEFORE jumping to _Step N+1_, the QA routines are invoked in the background presenting the evidence of that phase.
+
+---
+
+## 5. QA Cycle and Rotational Evaluations (QA-Reports)
+
+The Quality Assurance block is designed to audit the LLM against itself. The audit is prohibited from stopping execution unless it finds a destructive failure; its function is to leave an indexable compliance trail and penalize deviations detected in the background.
+
+### How to implement it step by step?
+
+1. **Invocation of the Auditor Agent (`age-spe-auditor`):** After Option A, the Orchestrator notifies the Auditor by passing these exact coordinates:
+   - Phase Name (`S1`, `S2`, etc.).
+   - The exact _Output_ just generated.
+   - The _Reasoning Trace_ taken from the Ledger.
+   - The initially computed _`target_dir`_.
+2. **Dynamic Reading by the Auditor:** The Auditor must go to disk (`/rules`) and read the strict text of the rules that had to be obeyed in that specific step. **It must read them from disk** (`kno-qa-dynamic-reading`), never relying on its internalized training.
+3. **Semantic Verification (`ski-compliance-checker`):** The Auditor crosses the extracted rules with the `reasoning_trace`. It must answer this framework question: _Did the agent reason before acting and contemplate restriction X, or was it deliberately ignored?_ Judgments are evaluated and emitted visually (✅/❌/⚠️).
+4. **Rotational Report Storage:**
+   - The Auditor is **structurally prohibited from appending** to a megalithic giant QA document. This practice exhausts the token window.
+   - The Auditor accesses the `target_dir` variable and programmatically creates the audit subdirectory: `{target_dir}/qa-reports/`.
+   - Creates an evaluation file with an exact and unique timestamp: `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md`.
+   - Dumps there the Markdown compliance rubric for that particular step.

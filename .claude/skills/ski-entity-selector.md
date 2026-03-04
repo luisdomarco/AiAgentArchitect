@@ -5,85 +5,85 @@ description: Applies the entity decision tree to determine the correct entity ty
 
 # Entity Selector Skill
 
-Aplica el árbol de decisión de entidades para seleccionar el tipo correcto para cada responsabilidad identificada en un proceso. Evita la selección por intuición y garantiza coherencia arquitectónica.
+Applies the entity decision tree to select the correct type for each responsibility identified in a process. Avoids intuition-based selection and ensures architectural coherence.
 
 ## Input / Output
 
 **Input:**
 
-- Descripción de una responsabilidad o capacidad a modelar
-- Contexto del proceso completo (para evaluar relaciones con otras entidades)
+- Description of a responsibility or capability to model
+- Full process context (to evaluate relationships with other entities)
 
 **Output:**
 
-- Tipo de entidad recomendado con justificación
-- Señales que confirman la selección
-- Alertas si hay ambigüedad entre dos tipos
+- Recommended entity type with justification
+- Signals that confirm the selection
+- Alerts if there is ambiguity between two types
 
 ---
 
 ## Procedure
 
-### 1. Extracción de Métricas Estructurales
+### 1. Extraction of Structural Metrics
 
-Los árboles de decisión, matrices discriminatorias por atributos compartidos y las políticas de anti-patrones relacionales ya no habitan hardcoded aquí. Evitas sesgos obteniendo el "Architecture Component Metrics" actualizado del marco de centralización.
+The decision trees, discriminatory matrices by shared attributes, and relational anti-pattern policies no longer reside hardcoded here. You avoid biases by getting the updated "Architecture Component Metrics" from the centralization framework.
 
-> **Debes leer primero y de forma obligatoria el siguiente recurso antes de accionar la lógica deductiva:**
+> **You must first and mandatorily read the following resource before activating the deductive logic:**
 > `../../resources/res-architecture-component-metrics.md`
 
-Extrae de allí los bloques 1 al 4 (Decision Tree, Threshold discriminatorio, Resolución Límite y Anti-Patrones Prohibidos) y utilízalos para resolver el planteamiento estructural.
+Extract from there blocks 1 through 4 (Decision Tree, Discriminatory Threshold, Edge Case Resolution, and Prohibited Anti-Patterns) and use them to resolve the structural question.
 
 ---
 
-### 5. Output de la selección
+### 5. Selection output
 
-Para cada responsabilidad analizada, entrega:
+For each analyzed responsibility, deliver:
 
 ```
-Responsabilidad: [descripción]
-Entidad seleccionada: [TIPO]
-Justificación: [por qué este tipo y no otro]
-Señales confirmatorias:
-  - [señal 1]
-  - [señal 2]
-Alertas: [si hay ambigüedad residual o riesgo de anti-patrón]
+Responsibility: [description]
+Selected entity: [TYPE]
+Justification: [why this type and not another]
+Confirmatory signals:
+  - [signal 1]
+  - [signal 2]
+Alerts: [if there is residual ambiguity or risk of anti-pattern]
 ```
 
 ---
 
 ## Examples
 
-**Ejemplo 1 — Selección correcta de Skill vs Agent**
+**Example 1 — Correct selection of Skill vs Agent**
 
-Responsabilidad: _"Formatear el output como JSON estructurado según un schema fijo."_
+Responsibility: _"Format the output as structured JSON according to a fixed schema."_
 
-Análisis:
+Analysis:
 
-- ¿Condiciona comportamiento? No.
-- ¿Es información estática? No.
-- ¿Es manual/determinista? No.
-- ¿Múltiples responsabilidades? No.
-- ¿Necesita identidad y decisión propia? No — siempre hace lo mismo dado el input.
-- ¿Es reutilizable por múltiples agentes? Sí.
+- Does it condition behavior? No.
+- Is it static information? No.
+- Is it manual/deterministic? No.
+- Multiple responsibilities? No.
+- Needs own identity and decision? No — always does the same given the input.
+- Reusable by multiple agents? Yes.
 
 → **SKILL** (`ski-format-json-output`)
 
 ---
 
-**Ejemplo 2 — Detección de Workflow necesario**
+**Example 2 — Detection of required Workflow**
 
-Responsabilidad: _"Recibir un email, clasificarlo, buscarlo en el CRM, generar una respuesta y enviársela al cliente."_
+Responsibility: _"Receive an email, classify it, look it up in the CRM, generate a response and send it to the client."_
 
-Análisis:
+Analysis:
 
-- ¿Múltiples responsabilidades? Sí: clasificar, buscar en CRM, generar respuesta, enviar.
-- ¿Transferencia de outputs entre partes? Sí: la clasificación alimenta la búsqueda, que alimenta la generación.
+- Multiple responsibilities? Yes: classify, look up in CRM, generate response, send.
+- Transfer of outputs between parts? Yes: classification feeds the lookup, which feeds the generation.
 
-→ **WORKFLOW** + Agents Specialist por cada responsabilidad diferenciada.
+→ **WORKFLOW** + Agent Specialists for each differentiated responsibility.
 
 ---
 
 ## Error Handling
 
-- **Ambigüedad irresoluble:** Si tras aplicar el árbol y la tabla la selección no está clara, presentar las dos opciones al usuario con su justificación y pedir que decida.
-- **El usuario propone un tipo incorrecto:** Explicar el anti-patrón que generaría y proponer la alternativa correcta con justificación.
+- **Unresolvable ambiguity:** If after applying the tree and the table the selection is not clear, present both options to the user with their justification and ask them to decide.
+- **User proposes an incorrect type:** Explain the anti-pattern it would generate and propose the correct alternative with justification.

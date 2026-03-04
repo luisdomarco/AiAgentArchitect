@@ -6,302 +6,298 @@ tags: [template, formatting, schema, core, entity]
 
 # Entity Formatting Templates
 
-El sistema utiliza estas plantillas estandarizadas para materializar las distintas entidades agénticas. Cuando el Entity Builder genera un archivo, debe calcar exactamente estas estructuras y frontmatters.
+The system uses these standardized templates to materialize the different agentic entities. When the Entity Builder generates a file, it must precisely replicate these structures and frontmatters.
 
 ---
 
-## 1. Workflow (`wor-[nombre]`)
+## 1. Workflow (`wor-[name]`)
 
 ```markdown
 ---
-name: wor-[nombre-kebab-case]
-description: [máx. 250 caracteres — objetivo y misión del workflow]
+name: wor-[kebab-case-name]
+description: [max. 250 characters — objective and mission of the workflow]
 ---
 
 ## 1. Role & Mission
 
-[Quién es este workflow y cuál es su misión principal.]
+[Who this workflow is and what its main mission is.]
 
 ## 2. Context
 
-[En qué contexto opera. Plataforma, equipo, sistema al que pertenece.]
+[What context it operates in. Platform, team, system it belongs to.]
 
 ## 3. Goals
 
-- **G1:** [Objetivo específico con resultado esperado]
-- **G2:** [Objetivo específico con resultado esperado]
+- **G1:** [Specific objective with expected result]
+- **G2:** [Specific objective with expected result]
 
 ## 4. Tasks
 
-- [Tarea principal 1]
-- [Tarea principal 2]
+- [Main task 1]
+- [Main task 2]
 
 ## 5. Agents
 
-| **Agent**      | **Route**                     | **When use it**    |
-| -------------- | ----------------------------- | ------------------ |
-| `nombre-agent` | `./workflows/nombre-agent.md` | [cuándo invocarlo] |
+| **Agent**    | **Route**                   | **When use it**     |
+| ------------ | --------------------------- | ------------------- |
+| `agent-name` | `./workflows/agent-name.md` | [when to invoke it] |
 
 ## 6. Knowledge base
 
-| Knowledge base | **Route**                       | Description    |
-| -------------- | ------------------------------- | -------------- |
-| `nombre-kb`    | `./knowledge-base/nombre-kb.md` | [qué contiene] |
+| Knowledge base | **Route**                     | Description        |
+| -------------- | ----------------------------- | ------------------ |
+| `kb-name`      | `./knowledge-base/kb-name.md` | [what it contains] |
 
 ## 7. Workflow Sequence
 
-[Descripción paso a paso del flujo completo, incluyendo cuándo y cómo invocar cada Agent.]
+[Step-by-step description of the complete flow, including when and how to invoke each Agent.]
 
 ### Checkpoints
 
-[Puntos donde se requiere aprobación humana explícita y qué opciones se presentan.]
+[Points where explicit human approval is required and what options are presented.]
 
-### Gestión de errores
+### Error handling
 
-[Cómo actuar ante fallos, contradicciones o casos no esperados.]
+[How to act on failures, contradictions, or unexpected cases.]
 
 ### Context Map
 
-Define qué contexto fluye entre los Steps/Agents de este workflow (ver `kno-fundamentals-entities` §10):
+Defines what context flows between the Steps/Agents of this workflow (see `kno-fundamentals-entities` §10):
 
-| Step destino | Consume de        | Campos / Secciones | Modo               |
-| ------------ | ----------------- | ------------------ | ------------------ |
-| [step N]     | Step [M] → output | [campos o *]       | [parcial/completo] |
+| Destination Step | Consumes from     | Fields / Sections | Mode               |
+| ---------------- | ----------------- | ----------------- | ------------------ |
+| [step N]         | Step [M] → output | [fields or *]     | [partial/complete] |
 
-> Si el workflow tiene 2+ agentes en secuencia, usar `ski-context-ledger` para persistir y filtrar contexto. Ver `kno-handoff-schemas` §4-5.
-
-### Gestión de errores
-
-[Cómo actuar ante fallos, contradicciones o casos no esperados.]
+> If the workflow has 2+ agents in sequence, use `ski-context-ledger` to persist and filter context. See `kno-handoff-schemas` §4-5.
 
 ## 8. Input
 
-[Qué recibe, de quién, en qué formato.]
+[What it receives, from whom, in what format.]
 
 ## 9. Output
 
-[Qué produce, a quién va, en qué formato.]
+[What it produces, to whom it goes, in what format.]
 
 ## 10. Rules
 
 ### 10.1. Specific rules
 
-- [Regla específica de este workflow]
+- [Specific rule for this workflow]
 
 ### 10.2. Related rules
 
-| Rule          | **Route**                | Description  |
-| ------------- | ------------------------ | ------------ |
-| `nombre-rule` | `./rules/nombre-rule.md` | [qué regula] |
+| Rule        | **Route**              | Description         |
+| ----------- | ---------------------- | ------------------- |
+| `rule-name` | `./rules/rule-name.md` | [what it regulates] |
 
 ## 11. Definition of success
 
-[Criterios concretos que determinan que el workflow ha funcionado correctamente.]
+[Concrete criteria that determine the workflow has worked correctly.]
 ```
 
 ---
 
-## 2. Agent (`age-spe-[nombre]` | `age-sup-[nombre]`)
+## 2. Agent (`age-spe-[name]` | `age-sup-[name]`)
 
 ```markdown
 ---
-name: age-spe-[nombre] | age-sup-[nombre]
-description: [máx. 250 caracteres — rol y misión del agente]
+name: age-spe-[name] | age-sup-[name]
+description: [max. 250 characters — role and mission of the agent]
 ---
 
 ## 1. Role & Mission
 
-[Quién es este agente, su rol y su misión concreta.]
+[Who this agent is, its role and its concrete mission.]
 
 ## 2. Context
 
-[En qué contexto opera. De dónde viene su input y adónde va su output.]
+[What context it operates in. Where its input comes from and where its output goes.]
 
 ## 3. Goals
 
-- **G1:** [Objetivo con resultado esperado]
-- **G2:** [Objetivo con resultado esperado]
+- **G1:** [Objective with expected result]
+- **G2:** [Objective with expected result]
 
 ## 4. Tasks
 
-- [Tarea 1]
-- [Tarea 2]
+- [Task 1]
+- [Task 2]
 
 ## 5. Skills
 
-| **Skill**      | **Route**                        | **When use it**    |
-| -------------- | -------------------------------- | ------------------ |
-| `nombre-skill` | `./skills/nombre-skill/SKILL.md` | [cuándo activarla] |
+| **Skill**    | **Route**                      | **When use it**    |
+| ------------ | ------------------------------ | ------------------ |
+| `skill-name` | `./skills/skill-name/SKILL.md` | [when to activate] |
 
 ## 6. Knowledge base
 
-| Knowledge base | **Route**                       | Description    |
-| -------------- | ------------------------------- | -------------- |
-| `nombre-kb`    | `./knowledge-base/nombre-kb.md` | [qué contiene] |
+| Knowledge base | **Route**                     | Description        |
+| -------------- | ----------------------------- | ------------------ |
+| `kb-name`      | `./knowledge-base/kb-name.md` | [what it contains] |
 
 ## 7. Execution Protocol
 
-[Cómo ejecutar las tareas paso a paso. Incluir cuándo usar cada Skill y cómo aplicar las Rules.]
+[How to execute the tasks step by step. Include when to use each Skill and how to apply the Rules.]
 
 ## 8. Input
 
-[Qué recibe, de quién, en qué formato.]
+[What it receives, from whom, in what format.]
 
 ## 9. Output
 
-[Qué produce, formato exacto.]
+[What it produces, exact format.]
 
 ## 10. Rules
 
 ### 10.1. Specific rules
 
-- [Regla específica de este agente]
+- [Specific rule for this agent]
 
 ### 10.2. Related rules
 
-| Rule          | **Route**                | Description  |
-| ------------- | ------------------------ | ------------ |
-| `nombre-rule` | `./rules/nombre-rule.md` | [qué regula] |
+| Rule        | **Route**              | Description         |
+| ----------- | ---------------------- | ------------------- |
+| `rule-name` | `./rules/rule-name.md` | [what it regulates] |
 
 ## 11. Definition of success
 
-[Criterios concretos de éxito para este agente.]
+[Concrete success criteria for this agent.]
 ```
 
 ---
 
-## 3. Skill (`ski-[nombre]/SKILL.md`)
+## 3. Skill (`ski-[name]/SKILL.md`)
 
 ```markdown
 ---
-name: ski-[nombre-kebab-case]
-description: [máx. 250 caracteres — qué hace Y cuándo usarla]
+name: ski-[kebab-case-name]
+description: [max. 250 characters — what it does AND when to use it]
 ---
 
-# [Nombre Legible de la Skill]
+# [Human-readable Skill Name]
 
-[Descripción breve de qué hace esta skill y para qué sirve.]
+[Brief description of what this skill does and what it is for.]
 
 ## Input / Output
 
 **Input:**
 
-- [Campo 1: tipo y descripción]
-- [Campo 2: tipo y descripción]
+- [Field 1: type and description]
+- [Field 2: type and description]
 
 **Output:**
 
-- [Qué produce y en qué formato]
+- [What it produces and in what format]
 
 ---
 
 ## Procedure
 
-[Pasos concretos y ordenados para ejecutar la skill.
-Usar numeración clara. Incluir condiciones si aplica.]
+[Concrete, ordered steps to execute the skill.
+Use clear numbering. Include conditions if applicable.]
 
 ---
 
 ## Examples
 
-[Casos de uso concretos con input de ejemplo y output esperado.
-Incluir razonamiento si el nivel es medium o complex.]
+[Concrete use cases with example input and expected output.
+Include reasoning if the level is medium or complex.]
 
 ---
 
 ## Error Handling
 
-- **[Tipo de error]:** [Cómo actuar]
-- **[Tipo de error]:** [Cómo actuar]
+- **[Error type]:** [How to act]
+- **[Error type]:** [How to act]
 ```
 
 ---
 
-## 4. Command (`com-[nombre]`)
+## 4. Command (`com-[name]`)
 
 ```markdown
 ---
-name: com-[nombre-kebab-case]
-description: [máx. 250 caracteres — qué hace y cuándo usarlo]
+name: com-[kebab-case-name]
+description: [max. 250 characters — what it does and when to use it]
 ---
 
-[System prompt estructurado. Usar headings y bullets cuando aplique.
-Debe ser directo y determinista: el mismo comando produce siempre el mismo comportamiento base.]
+[Structured system prompt. Use headings and bullets where applicable.
+Must be direct and deterministic: the same command always produces the same base behavior.]
 
-## Objetivo
+## Objective
 
-[Qué debe hacer cuando se ejecuta este command.]
+[What it should do when this command is executed.]
 
-## Comportamiento
+## Behavior
 
-[Cómo debe actuar. Pasos o instrucciones claras.]
+[How it should act. Clear steps or instructions.]
 
-## Output esperado
+## Expected output
 
-[Qué debe producir y en qué formato.]
+[What it should produce and in what format.]
 
-## Restricciones
+## Constraints
 
-- [Lo que no debe hacer]
+- [What it should not do]
 ```
 
 ---
 
-## 5. Rule (`rul-[nombre]`)
+## 5. Rule (`rul-[name]`)
 
 ```markdown
 ---
 trigger: always_on | manual | model_decision | glob
-description: [10-20 palabras — solo si trigger es model_decision]
-globs: [lista de patrones — solo si trigger es glob]
+description: [10-20 words — only if trigger is model_decision]
+globs: [list of patterns — only if trigger is glob]
 alwaysApply: true | false
-tags: [lista de etiquetas]
+tags: [list of tags]
 ---
 
 ## Context
 
-[Por qué existe esta rule. Qué problema o riesgo previene.]
+[Why this rule exists. What problem or risk it prevents.]
 
 ## Hard Constraints
 
-[Lo que el modelo NUNCA debe hacer. Redactar en negativo.]
+[What the model MUST NEVER do. Write in negative form.]
 
-- Nunca [acción prohibida]
-- Nunca [acción prohibida]
+- Never [prohibited action]
+- Never [prohibited action]
 
 ## Soft Constraints
 
-[Estilos preferidos, convenciones, buenas prácticas. Redactar en positivo.]
+[Preferred styles, conventions, best practices. Write in positive form.]
 
-- Siempre [comportamiento preferido]
-- Preferir [opción A] sobre [opción B]
+- Always [preferred behavior]
+- Prefer [option A] over [option B]
 
 ## Examples
 
-[Bloques de código o ejemplos mostrando Input incorrecto vs Output correcto cuando sea útil.]
+[Code blocks or examples showing incorrect Input vs correct Output where useful.]
 ```
 
 ---
 
-## 6. Knowledge-base (`kno-[nombre]`)
+## 6. Knowledge-base (`kno-[name]`)
 
 ```markdown
 ---
 description:
-  [10-20 palabras para indexación semántica — qué contiene y para qué]
-tags: [lista de etiquetas temáticas]
+  [10-20 words for semantic indexing — what it contains and what it is for]
+tags: [list of thematic tags]
 ---
 
 ## Table of Contents
 
-- [Sección 1](#sección-1)
-- [Sección 2](#sección-2)
+- [Section 1](#section-1)
+- [Section 2](#section-2)
 
-## [Sección 1]
+## [Section 1]
 
-[Contenido estructurado con headings cuando aplique.]
+[Structured content with headings where applicable.]
 
-## [Sección 2]
+## [Section 2]
 
-[Contenido estructurado.]
+[Structured content.]
 ```

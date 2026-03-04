@@ -1,108 +1,108 @@
 ---
-description: Criterios, pesos y umbrales de evaluación para el QA Layer. Define la rúbrica de scoring por dimensión y por tipo de entidad, los pesos de fase para el scorecard global, y los umbrales de nivel de calidad.
+description: Criteria, weights and evaluation thresholds for the QA Layer. Defines the scoring rubric per dimension and per entity type, phase weights for the global scorecard, and quality level thresholds.
 tags: [qa, evaluation, rubric, scoring]
 ---
 
 ## Table of Contents
 
-1. Rúbrica general (por dimensión)
-2. Ajustes por tipo de entidad (S3)
-3. Pesos de fase para el scorecard global
-4. Umbrales de nivel de calidad
-5. Penalizaciones y bonificaciones
+1. General rubric (per dimension)
+2. Adjustments per entity type (S3)
+3. Phase weights for the global scorecard
+4. Quality level thresholds
+5. Penalties and bonuses
 
 ---
 
 ## Documentation
 
-### 1. Rúbrica general (por dimensión)
+### 1. General rubric (per dimension)
 
-La rúbrica estándar se aplica a todas las fases. Cuatro dimensiones con pesos ponderados:
+The standard rubric applies to all phases. Four dimensions with weighted scores:
 
-| Dimensión        | Peso | Qué mide                                                                   |
-| ---------------- | ---- | -------------------------------------------------------------------------- |
-| **Completitud**  | 30%  | ¿El output contiene todos los elementos requeridos para su fase?           |
-| **Calidad**      | 30%  | ¿El contenido es específico y contextualizado, no genérico ni placeholder? |
-| **Cumplimiento** | 25%  | ¿El output pasó el Audit sin alertas ⚠️ ni fallos ❌?                      |
-| **Eficiencia**   | 15%  | ¿Cuántas regeneraciones/iteraciones necesitó el proceso?                   |
+| Dimension        | Weight | What it measures                                                        |
+| ---------------- | ------ | ----------------------------------------------------------------------- |
+| **Completeness** | 30%    | Does the output contain all required elements for its phase?            |
+| **Quality**      | 30%    | Is the content specific and contextualized, not generic or placeholder? |
+| **Compliance**   | 25%    | Did the output pass the Audit without ⚠️ alerts or ❌ failures?         |
+| **Efficiency**   | 15%    | How many regenerations/iterations did the process require?              |
 
-**Score total = (Completitud × 0.30) + (Calidad × 0.30) + (Cumplimiento × 0.25) + (Eficiencia × 0.15)**
+**Total score = (Completeness × 0.30) + (Quality × 0.30) + (Compliance × 0.25) + (Efficiency × 0.15)**
 
 ---
 
-### 2. Ajustes por tipo de entidad (S3)
+### 2. Adjustments per entity type (S3)
 
-En S3 (Entity Implementation), la Completitud verifica que todas las secciones obligatorias del tipo de entidad están presentes y no vacías:
+In S3 (Entity Implementation), Completeness verifies that all required sections of the entity type are present and non-empty:
 
-| Tipo                          | Secciones obligatorias para Completitud                                                                                    |
+| Type                          | Required sections for Completeness                                                                                         |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | Workflow (`wor-`)             | Role & Mission, Context, Goals, Tasks, Agents, Workflow Sequence, Checkpoints, Input, Output, Rules, Definition of success |
 | Agent Specialist (`age-spe-`) | Role & Mission, Context, Goals, Tasks, Skills, Execution Protocol, Input, Output, Rules, Definition of success             |
 | Skill (`ski-`)                | Input/Output, Procedure, Examples, Error Handling                                                                          |
 | Rule (`rul-`)                 | Context, Hard Constraints, Soft Constraints                                                                                |
-| Knowledge-base (`kno-`)       | Table of Contents, Documentation (≥2 subsecciones)                                                                         |
-| Command (`com-`)              | System prompt con al menos 3 instrucciones estructuradas                                                                   |
+| Knowledge-base (`kno-`)       | Table of Contents, Documentation (≥2 subsections)                                                                          |
+| Command (`com-`)              | System prompt with at least 3 structured instructions                                                                      |
 
-Para Calidad en S3, señales de alta calidad:
+For Quality in S3, signals of high quality:
 
-- Descriptions de >40 palabras con contexto real del proceso (no descripción del tipo)
-- Goals con resultados esperados explícitos, no solo verbos de intención
-- Execution Protocol con ramificaciones y manejo de errores (para `complex`)
-- Examples en Skills que reflejan el caso de uso real del sistema
-
----
-
-### 3. Pesos de fase para el scorecard global
-
-El scorecard global pondera las tres fases del proceso:
-
-| Fase                       | Peso | Justificación                                                            |
-| -------------------------- | ---- | ------------------------------------------------------------------------ |
-| S1 — Process Discovery     | 25%  | Sienta las bases, pero errores aquí se suelen detectar y corregir en S2  |
-| S2 — Architecture Design   | 35%  | Define la estructura completa; errores aquí se arrastran al S3           |
-| S3 — Entity Implementation | 40%  | Es el output final real. Errores aquí afectan directamente la usabilidad |
-
-**Score global = (Score S1 × 0.25) + (Score S2 × 0.35) + (Score S3 × 0.40)**
-
-Si el proceso usó Modo Express (sin S2 formal), redistribuir: S1=35%, S3=65%.
+- Descriptions of >40 words with real process context (not type description)
+- Goals with explicit expected results, not just intention verbs
+- Execution Protocol with branches and error handling (for `complex`)
+- Examples in Skills that reflect the real use case of the system
 
 ---
 
-### 4. Umbrales de nivel de calidad
+### 3. Phase weights for the global scorecard
 
-| Score     | Nivel         | Interpretación                                                      |
-| --------- | ------------- | ------------------------------------------------------------------- |
-| ≥ 8.0     | **Excelente** | El proceso fue sólido. Pocas o ninguna mejora urgente.              |
-| 6.0 – 7.9 | **Bueno**     | Resultado funcional con oportunidades de mejora no críticas.        |
-| 4.0 – 5.9 | **Mejorable** | Hay patrones problemáticos que conviene abordar.                    |
-| < 4.0     | **Crítico**   | El proceso tiene fallos estructurales. El Optimizador emite alerta. |
+The global scorecard weights the three process phases:
 
----
+| Phase                      | Weight | Justification                                                             |
+| -------------------------- | ------ | ------------------------------------------------------------------------- |
+| S1 — Process Discovery     | 25%    | Sets the foundation, but errors here are usually detected and fixed in S2 |
+| S2 — Architecture Design   | 35%    | Defines the complete structure; errors here carry over to S3              |
+| S3 — Entity Implementation | 40%    | This is the actual final output. Errors here directly affect usability    |
 
-### 5. Penalizaciones y bonificaciones
+**Global score = (Score S1 × 0.25) + (Score S2 × 0.35) + (Score S3 × 0.40)**
 
-**Penalizaciones automáticas:**
-
-- ❌ Hard Constraint violado en Audit: -1.0 punto en score de Cumplimiento por cada fallo
-- Placeholders sin rellenar (`[descripción]`, `[nombre]`) detectados: -0.5 en Calidad por cada uno
-- Más de 3 regeneraciones en una misma entidad de S3: Eficiencia = 1.0 (no penaliza Completitud ni Calidad)
-
-**Bonificaciones:**
-
-- Ninguna bonificación automática — el scoring máximo es 10 sin necesidad de extras
-- En el texto de interpretación, el Evaluador puede destacar aspectos positivos notables
+If the process used Express Mode (without formal S2), redistribute: S1=35%, S3=65%.
 
 ---
 
-### 6. Scoring de Eficiencia — tabla de referencia
+### 4. Quality level thresholds
 
-| Regeneraciones en la fase | Score Eficiencia |
-| ------------------------- | ---------------- |
-| 0                         | 10.0             |
-| 1                         | 8.0              |
-| 2                         | 6.0              |
-| 3                         | 4.0              |
-| 4                         | 2.0              |
-| ≥ 5                       | 1.0              |
+| Score     | Level          | Interpretation                                                      |
+| --------- | -------------- | ------------------------------------------------------------------- |
+| ≥ 8.0     | **Excellent**  | The process was solid. Few or no urgent improvements.               |
+| 6.0 – 7.9 | **Good**       | Functional result with non-critical improvement opportunities.      |
+| 4.0 – 5.9 | **Improvable** | There are problematic patterns worth addressing.                    |
+| < 4.0     | **Critical**   | The process has structural failures. The Optimizer issues an alert. |
 
-Las iteraciones de ajuste (opción B del checkpoint, sin regenerar desde cero) cuentan como 0.3 cada una, sumadas al score de regeneraciones.
+---
+
+### 5. Penalties and bonuses
+
+**Automatic penalties:**
+
+- ❌ Hard Constraint violated in Audit: -1.0 point in Compliance score per failure
+- Unfilled placeholders (`[description]`, `[name]`) detected: -0.5 in Quality per each
+- More than 3 regenerations on the same S3 entity: Efficiency = 1.0 (does not penalize Completeness or Quality)
+
+**Bonuses:**
+
+- No automatic bonuses — the maximum score is 10 without extras
+- In the interpretation text, the Evaluator may highlight notable positive aspects
+
+---
+
+### 6. Efficiency Scoring — reference table
+
+| Regenerations in the phase | Efficiency Score |
+| -------------------------- | ---------------- |
+| 0                          | 10.0             |
+| 1                          | 8.0              |
+| 2                          | 6.0              |
+| 3                          | 4.0              |
+| 4                          | 2.0              |
+| ≥ 5                        | 1.0              |
+
+Adjustment iterations (checkpoint option B, without regenerating from scratch) count as 0.3 each, added to the regeneration score.

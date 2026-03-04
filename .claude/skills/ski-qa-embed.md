@@ -9,59 +9,59 @@ description: Transversal skill that takes a freshly generated system path and em
 
 **Input:**
 
-- `sistema_path`: ruta base del sistema destino, p.ej. `exports/mi-sistema/google-antigravity/.agents/`
-- `sistema_nombre`: nombre del sistema (p.ej. `mi-sistema`)
-- `workflow_path`: ruta del workflow principal del sistema destino (p.ej. `./workflows/wor-mi-nombre.md`)
-- `rules_existentes`: lista de rutas de Rules del sistema destino (p.ej. `["./rules/rul-mi-rule.md"]`)
+- `system_path`: base path of the destination system, e.g. `exports/my-system/google-antigravity/.agents/`
+- `system_name`: name of the system (e.g. `my-system`)
+- `workflow_path`: path of the main workflow of the destination system (e.g. `./workflows/wor-my-name.md`)
+- `existing_rules`: list of Rule paths from the destination system (e.g. `["./rules/rul-my-rule.md"]`)
 
 **Output:**
 
-- Archivos creados en `sistema_path/workflows/` (3 agents QA parametrizados)
-- Archivos creados en `sistema_path/skills/` (3 skills QA)
-- Archivo creado en `sistema_path/rules/rul-audit-behavior.md`
-- Archivo creado en `sistema_path/knowledge-base/kno-qa-dynamic-reading.md`
-- Workflow del sistema destino modificado con los hooks QA
-- `sistema_path/qa-report.md` inicializado en blanco con frontmatter
-- Mensaje de confirmación con inventario de lo creado
+- Files created in `system_path/workflows/` (3 parametrized QA agents)
+- Files created in `system_path/skills/` (3 QA skills)
+- File created in `system_path/rules/rul-audit-behavior.md`
+- File created in `system_path/knowledge-base/kno-qa-dynamic-reading.md`
+- Destination system workflow modified with QA hooks
+- `system_path/qa-report.md` initialized blank with frontmatter
+- Confirmation message with inventory of what was created
 
 ## Procedure
 
-### Paso 1 — Lectura de plantillas
+### Step 1 — Reading templates
 
-Leer el recurso universal de templates brutos para el embed: `../../resources/res-qa-layer-raw-templates.md` y extraer las matrices necesarias:
+Read the universal raw templates resource for embedding: `../../resources/res-qa-layer-raw-templates.md` and extract the needed templates:
 
-- `age-spe-auditor` (plantilla base)
-- `age-spe-evaluator` (plantilla base)
-- `age-spe-optimizer` (plantilla base)
-- `ski-compliance-checker` (plantilla base)
-- `ski-rubric-scorer` (plantilla base)
-- `ski-pattern-analyzer` (plantilla base)
-- `rul-audit-behavior` (plantilla base)
-- `kno-qa-dynamic-reading` (plantilla base)
-- `rul-strict-compliance` (plantilla base nueva)
-- `ski-context-ledger` (plantilla base nueva)
+- `age-spe-auditor` (base template)
+- `age-spe-evaluator` (base template)
+- `age-spe-optimizer` (base template)
+- `ski-compliance-checker` (base template)
+- `ski-rubric-scorer` (base template)
+- `ski-pattern-analyzer` (base template)
+- `rul-audit-behavior` (base template)
+- `kno-qa-dynamic-reading` (base template)
+- `rul-strict-compliance` (new base template)
+- `ski-context-ledger` (new base template)
 
-### Paso 2 — Parametrización
+### Step 2 — Parametrization
 
-Para cada plantilla, reemplazar los tokens de parametrización:
+For each template, replace the parametrization tokens:
 
-- `{SISTEMA_NOMBRE}` → valor de `sistema_nombre`
-- `{WORKFLOW_PATH}` → valor de `workflow_path`
-- `{RULES_EXISTENTES}` → lista formateada de `rules_existentes`
-- `{SISTEMA_PATH}` → valor de `sistema_path`
+- `{SYSTEM_NAME}` → value of `system_name`
+- `{WORKFLOW_PATH}` → value of `workflow_path`
+- `{EXISTING_RULES}` → formatted list of `existing_rules`
+- `{SYSTEM_PATH}` → value of `system_path`
 
-Los agentes del QA ya saben auditar las Rules del sistema destino porque reciben la lista en cada activación.
+The QA agents already know how to audit the destination system's Rules because they receive the list in each activation.
 
-### Paso 3 — Creación de archivos
+### Step 3 — File creation
 
-Crear los archivos en las rutas correctas dentro de `sistema_path`:
+Create the files at the correct paths within `system_path`:
 
 ```
-{sistema_path}/
+{system_path}/
 ├── workflows/
-│   ├── age-spe-auditor.md        ← parametrizado
-│   ├── age-spe-evaluator.md      ← parametrizado
-│   └── age-spe-optimizer.md      ← parametrizado
+│   ├── age-spe-auditor.md        ← parametrized
+│   ├── age-spe-evaluator.md      ← parametrized
+│   └── age-spe-optimizer.md      ← parametrized
 ├── skills/
 │   ├── ski-compliance-checker/
 │   │   └── SKILL.md
@@ -72,58 +72,58 @@ Crear los archivos en las rutas correctas dentro de `sistema_path`:
 │   └── ski-context-ledger/
 │       └── SKILL.md
 ├── rules/
-│   ├── rul-audit-behavior.md     ← parametrizado
-│   └── rul-strict-compliance.md  ← parametrizado
+│   ├── rul-audit-behavior.md     ← parametrized
+│   └── rul-strict-compliance.md  ← parametrized
 └── knowledge-base/
-    └── kno-qa-dynamic-reading.md ← parametrizado
+    └── kno-qa-dynamic-reading.md ← parametrized
 ```
 
-### Paso 4 — Modificación del workflow destino
+### Step 4 — Modification of destination workflow
 
-Leer el workflow principal del sistema destino (`workflow_path`). Añadir al final de la sección de Workflow Sequence (o al inicio del empaquetado final) el bloque de hooks QA, incluyendo la instrucción imperativa para que el orquestador calcule y pregunte la ruta destino:
+Read the main workflow of the destination system (`workflow_path`). Add at the end of the Workflow Sequence section (or at the beginning of the final packaging) the QA hooks block, including the imperative instruction for the orchestrator to calculate and ask for the destination path:
 
 ```markdown
-### Inicialización de Sesión (Step 0)
+### Session Initialization (Step 0)
 
-Obligatorio: Al inicio del flujo, antes de invocar al primer sub-agente, el Workflow principal DEBE preguntar al usuario: `"¿En qué directorio quieres generar los reportes y outputs para este proceso? (ej. output/proceso-xyz/)"`. Una vez el usuario responda, el orquestador almacenará esa respuesta en la variable interna `target_dir` y la usará para inicializar el Context Ledger y para inyectarla en todos los módulos QA.
+Mandatory: At the start of the flow, before invoking the first sub-agent, the main Workflow MUST ask the user: `"In which directory do you want to generate the reports and outputs for this process? (e.g. output/process-xyz/)"`. Once the user responds, the orchestrator will store that response in the internal variable `target_dir` and use it to initialize the Context Ledger and inject it into all QA modules.
 
-### QA Layer — Activación automática
+### QA Layer — Automatic activation
 
-Tras cada checkpoint aprobado, activar el ciclo QA correspondiente, enviando siempre el `target_dir` y el `reasoning_trace` extraído del Ledger:
+After each approved checkpoint, activate the corresponding QA cycle, always sending the `target_dir` and the `reasoning_trace` extracted from the Ledger:
 
-| Checkpoint            | Activar                                                                  |
+| Checkpoint            | Activate                                                                 |
 | --------------------- | ------------------------------------------------------------------------ |
-| CP-S1 (o equivalente) | `age-spe-auditor` → `age-spe-evaluator` (apuntando al target_dir actual) |
-| CP-S2 (o equivalente) | `age-spe-auditor` → `age-spe-evaluator` (apuntando al target_dir actual) |
-| CP por entidad        | `age-spe-auditor` (apuntando al target_dir actual)                       |
-| CP-CIERRE             | `age-spe-evaluator` (global) → `age-spe-optimizer`                       |
+| CP-S1 (or equivalent) | `age-spe-auditor` → `age-spe-evaluator` (pointing to current target_dir) |
+| CP-S2 (or equivalent) | `age-spe-auditor` → `age-spe-evaluator` (pointing to current target_dir) |
+| CP per entity         | `age-spe-auditor` (pointing to current target_dir)                       |
+| CP-CLOSE              | `age-spe-evaluator` (global) → `age-spe-optimizer`                       |
 
-Para re-auditorías manuales usar: `/re-audit [entidad | fase | sistema]`
+For manual re-audits use: `/re-audit [entity | phase | system]`
 
-Rules activas del sistema que se auditan: {RULES_EXISTENTES}
+Active system rules being audited: {EXISTING_RULES}
 ```
 
-### Paso 5 — Actualización del process-overview.md del sistema destino
+### Step 5 — Update of destination system process-overview.md
 
-Si existe `{sistema_path}/../process-overview.md`, añadir el QA Layer al inventario de entidades y al diagrama de arquitectura.
+If `{system_path}/../process-overview.md` exists, add the QA Layer to the entity inventory and architecture diagram.
 
-### Paso 6 — Mensaje de confirmación
+### Step 6 — Confirmation message
 
 ```
-✅ QA Layer embebido en {sistema_nombre}
+✅ QA Layer embedded in {system_name}
 
-Entidades añadidas:
+Added entities:
 - 3 agents: age-spe-auditor, age-spe-evaluator, age-spe-optimizer
 - 4 skills: ski-compliance-checker, ski-rubric-scorer, ski-pattern-analyzer, ski-context-ledger
 - 2 rules: rul-audit-behavior, rul-strict-compliance
 - 1 knowledge-base: kno-qa-dynamic-reading
 
-El orquestador de {sistema_nombre} ha sido configurado para preguntar su target_dir interactivamente y auditarse en silos rotacionales.
+The {system_name} orchestrator has been configured to ask for its target_dir interactively and audit itself in rotational silos.
 ```
 
 ## Error Handling
 
-- Si `sistema_path` no existe: error — `"El sistema destino no existe en la ruta indicada"`
-- Si ya existe un `age-spe-auditor.md` en el destino: preguntar `"Ya existe un QA Layer en este sistema. ¿Sobreescribir? A) Sí / B) No"`
-- Si el workflow destino no tiene sección de Workflow Sequence identificable: añadir el bloque al final del archivo con nota explicativa
-- Si `rules_existentes` está vacío: embeber con advertencia `"Sin Rules activas detectadas — el Auditor usará solo las reglas del QA Layer"`
+- If `system_path` does not exist: error — `"The destination system does not exist at the indicated path"`
+- If `age-spe-auditor.md` already exists at the destination: ask `"A QA Layer already exists in this system. Overwrite? A) Yes / B) No"`
+- If the destination workflow has no identifiable Workflow Sequence section: add the block at the end of the file with an explanatory note
+- If `existing_rules` is empty: embed with warning `"No active Rules detected — the Auditor will use only the QA Layer rules"`

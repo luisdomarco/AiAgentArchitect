@@ -9,90 +9,90 @@ description: Applies a weighted rubric (Completeness 30%, Quality 30%, Complianc
 
 **Input:**
 
-- `fase`: identificador de fase (`S1 | S2 | S3 | global`)
-- `compliance_summary`: `{ total, passed, warnings, failed }` del Audit
-- `output_fase`: el output generado en la fase (JSON de handoff o entidad)
-- `metricas`: `{ regeneraciones: N, iteraciones: N }`
-- `criteria_config`: configuración de pesos desde `kno-evaluation-criteria` (opcional, usa defaults si no se provee)
+- `phase`: phase identifier (`S1 | S2 | S3 | global`)
+- `compliance_summary`: `{ total, passed, warnings, failed }` from the Audit
+- `phase_output`: the output generated in the phase (handoff JSON or entity)
+- `metrics`: `{ regenerations: N, iterations: N }`
+- `criteria_config`: weight configuration from `kno-evaluation-criteria` (optional, uses defaults if not provided)
 
 **Output:**
 
-- `scorecard`: array de `{ dimension, score, peso, parcial }`
-- `score_total`: número entre 0-10
-- `nivel`: `Excelente | Bueno | Mejorable | Crítico`
-- `interpretacion`: 1-2 frases de contexto
+- `scorecard`: array of `{ dimension, score, weight, partial }`
+- `total_score`: number between 0-10
+- `level`: `Excellent | Good | Improvable | Critical`
+- `interpretation`: 1-2 context sentences
 
 ## Procedure
 
-### Paso 1 — Scoring de Completitud (peso: 30%)
+### Step 1 — Completeness Scoring (weight: 30%)
 
-Verificar que el output contiene todos los elementos requeridos para la fase:
+Verify that the output contains all required elements for the phase:
 
-| Fase   | Elementos requeridos                                                                            |
-| ------ | ----------------------------------------------------------------------------------------------- |
-| S1     | proceso.nombre, proceso.objetivo, proceso.pasos, proceso.trigger, proceso.input, proceso.output |
-| S2     | entidades (array no vacío), orden_creacion, diagrama_arquitectura                               |
-| S3     | archivo con todas las secciones del formato para su tipo de entidad                             |
-| global | proceso-overview.md con todas sus secciones                                                     |
+| Phase  | Required elements                                                                              |
+| ------ | ---------------------------------------------------------------------------------------------- |
+| S1     | process.name, process.objective, process.steps, process.trigger, process.input, process.output |
+| S2     | entities (non-empty array), creation_order, architecture_diagram                               |
+| S3     | file with all sections of the format for its entity type                                       |
+| global | process-overview.md with all its sections                                                      |
 
-Scoring: `(elementos_presentes / elementos_requeridos) × 10`
+Scoring: `(present_elements / required_elements) × 10`
 
-### Paso 2 — Scoring de Calidad (peso: 30%)
+### Step 2 — Quality Scoring (weight: 30%)
 
-Evaluar si el contenido es específico vs. genérico. Señales de calidad alta:
+Evaluate whether the content is specific vs. generic. Signals of high quality:
 
-- Descriptions de >50 palabras con contexto real del proceso
-- Goals con verbos de acción concretos (no "gestionar", "asegurar" genérico)
-- Tasks con pasos específicos, no bullet genérico
-- Examples en Skills que corresponden al contexto real
+- Descriptions of >50 words with real process context
+- Goals with concrete action verbs (not generic "manage", "ensure")
+- Tasks with specific steps, not generic bullets
+- Examples in Skills that correspond to the real context
 
-Señales de baja calidad:
+Signals of low quality:
 
-- Placeholders sin rellenar (`[descripción]`, `[nombre]`)
-- Descripciones de una sola línea en entidades `complex`
-- Repetición literal del objetivo como descripción
+- Unfilled placeholders (`[description]`, `[name]`)
+- Single-line descriptions in `complex` entities
+- Literal repetition of the objective as the description
 
-Scoring: `0`=todo genérico, `5`=mitad específico, `10`=todo específico y contextualizado
+Scoring: `0`=all generic, `5`=half specific, `10`=all specific and contextualized
 
-### Paso 3 — Scoring de Cumplimiento (peso: 25%)
+### Step 3 — Compliance Scoring (weight: 25%)
 
-Directo desde el Audit Report:
-
-```
-score_cumplimiento = (passed / total) × 10
-```
-
-Si hay `❌` (Hard Constraints): penalización adicional de -1 punto por cada fallo.
-
-### Paso 4 — Scoring de Eficiencia (peso: 15%)
-
-| Regeneraciones | Score |
-| -------------- | ----- |
-| 0              | 10    |
-| 1              | 8     |
-| 2              | 6     |
-| 3              | 4     |
-| >3             | 2     |
-
-### Paso 5 — Score total ponderado
+Directly from the Audit Report:
 
 ```
-score_total = (completitud × 0.30) + (calidad × 0.30) + (cumplimiento × 0.25) + (eficiencia × 0.15)
+compliance_score = (passed / total) × 10
 ```
 
-Niveles:
+If there are `❌` (Hard Constraints): additional penalty of -1 point per failure.
 
-- `≥ 8.0` → **Excelente**
-- `6.0 – 7.9` → **Bueno**
-- `4.0 – 5.9` → **Mejorable**
-- `< 4.0` → **Crítico**
+### Step 4 — Efficiency Scoring (weight: 15%)
 
-### Paso 6 — Interpretación
+| Regenerations | Score |
+| ------------- | ----- |
+| 0             | 10    |
+| 1             | 8     |
+| 2             | 6     |
+| 3             | 4     |
+| >3            | 2     |
 
-Generar 1-2 frases que expliquen el resultado de forma accionable:
+### Step 5 — Weighted total score
 
-- Si score alto: qué funcionó bien
-- Si score bajo: cuál dimensión arrastró más el resultado y por qué
+```
+total_score = (completeness × 0.30) + (quality × 0.30) + (compliance × 0.25) + (efficiency × 0.15)
+```
+
+Levels:
+
+- `≥ 8.0` → **Excellent**
+- `6.0 – 7.9` → **Good**
+- `4.0 – 5.9` → **Improvable**
+- `< 4.0` → **Critical**
+
+### Step 6 — Interpretation
+
+Generate 1-2 sentences explaining the result in an actionable way:
+
+- If score is high: what worked well
+- If score is low: which dimension dragged the result the most and why
 
 ## Examples
 
@@ -100,10 +100,10 @@ Generar 1-2 frases que expliquen el resultado de forma accionable:
 
 ```json
 {
-  "fase": "S1",
+  "phase": "S1",
   "compliance_summary": { "total": 5, "passed": 4, "warnings": 1, "failed": 0 },
-  "metricas": { "regeneraciones": 1, "iteraciones": 3 },
-  "output_fase": { "proceso": { "nombre": "...", "objetivo": "...", "pasos": [...], ... } }
+  "metrics": { "regenerations": 1, "iterations": 3 },
+  "phase_output": { "process": { "name": "...", "objective": "...", "steps": [...] } }
 }
 ```
 
@@ -112,24 +112,29 @@ Generar 1-2 frases que expliquen el resultado de forma accionable:
 ```json
 {
   "scorecard": [
-    { "dimension": "Completitud", "score": 9.0, "peso": "30%", "parcial": 2.7 },
-    { "dimension": "Calidad", "score": 7.5, "peso": "30%", "parcial": 2.25 },
     {
-      "dimension": "Cumplimiento",
-      "score": 8.0,
-      "peso": "25%",
-      "parcial": 2.0
+      "dimension": "Completeness",
+      "score": 9.0,
+      "weight": "30%",
+      "partial": 2.7
     },
-    { "dimension": "Eficiencia", "score": 8.0, "peso": "15%", "parcial": 1.2 }
+    { "dimension": "Quality", "score": 7.5, "weight": "30%", "partial": 2.25 },
+    {
+      "dimension": "Compliance",
+      "score": 8.0,
+      "weight": "25%",
+      "partial": 2.0
+    },
+    { "dimension": "Efficiency", "score": 8.0, "weight": "15%", "partial": 1.2 }
   ],
-  "score_total": 8.15,
-  "nivel": "Excelente",
-  "interpretacion": "El Discovery capturó todos los elementos clave del proceso. La calidad del contenido es sólida aunque podría ser más específica en la descripción de decisiones."
+  "total_score": 8.15,
+  "level": "Excellent",
+  "interpretation": "The Discovery captured all key process elements. The content quality is solid although it could be more specific in describing decisions."
 }
 ```
 
 ## Error Handling
 
-- Si `compliance_summary` está vacío: usar `{ total: 1, passed: 0, warnings: 0, failed: 1 }` y registrar nota en interpretación
-- Si no se provee `criteria_config`: usar weights por defecto (30/30/25/15)
-- Si el output de fase no permite evaluar Completitud: asignar score 5 con nota "Output parcial — evaluación aproximada"
+- If `compliance_summary` is empty: use `{ total: 1, passed: 0, warnings: 0, failed: 1 }` and record note in interpretation
+- If `criteria_config` is not provided: use default weights (30/30/25/15)
+- If the phase output does not allow evaluating Completeness: assign score 5 with note "Partial output — approximate evaluation"

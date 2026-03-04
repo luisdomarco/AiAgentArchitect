@@ -6,34 +6,34 @@ tags: [compliance, strict, cot, validation, reasoning]
 
 ## Context
 
-Esta regla garantiza estadísticamente que el modelo fundacional subyacente a cada agente ejecute efectivamente sus instrucciones o respete las constraints sin caer en la pereza, las asunciones rápidas o la desobediencia iterativa.
-Se basa en el paradigma del Chain of Thought (Mecanismo de Evaluación del Sistema Interno).
+This rule statistically ensures that the underlying foundational model of each agent effectively executes its instructions and respects constraints without falling into laziness, quick assumptions, or iterative disobedience.
+It is based on the Chain of Thought paradigm (Internal System Evaluation Mechanism).
 
 ## Hard Constraints
 
-- Antes de emitir CUALQUIER output definitivo, respuesta al usuario o archivo generado en una fase, DEBES reflexionar y autoevaluarte.
-- Debes escribir obligatoriamente un bloque de código Markdown con el lenguaje "xml" y un tag `<sys-eval>`.
-- Dentro de este bloque, debes listar mentalmente en lenguaje natural dos cosas:
-  1. Los **Hard Constraints primarios** (lo prohibido dictado por las reglas activas).
-  2. Las **Tasks asignadas** a tu rol y fase (lo imperativo dictado por tu instrucción principal).
-- Tras listar ambos puntos, debes manifestar si tu output planeado choca con alguna prohibición y si efectivamente cubre las tareas encomendadas.
-- Cierra el bloque obligatoriamente con `</sys-eval>`.
-- Solo y exclusivamente después del cierre del tag, puedes imprimir tu output definitivo funcional hacia el humano o sistema.
+- Before emitting ANY definitive output, user response, or file generated in a phase, you MUST reflect and self-evaluate.
+- You must mandatorily write a Markdown code block with the language "xml" and a `<sys-eval>` tag.
+- Inside this block, you must mentally list in natural language two things:
+  1. The **primary Hard Constraints** (what is prohibited as dictated by the active rules).
+  2. The **Tasks assigned** to your role and phase (what is imperative as dictated by your main instruction).
+- After listing both points, you must state whether your planned output conflicts with any prohibition and whether it effectively covers the assigned tasks.
+- Close the block mandatorily with `</sys-eval>`.
+- Only and exclusively after closing the tag, may you print your final functional output to the human or system.
 
-## Ejemplo de Flujo de Pensamiento
+## Example Thought Flow
 
 ```xml
 <sys-eval>
-Listando mis Hard Constraints:
-1. "Nunca cambiar el orden del markdown del framework." -> Mi propuesta actual mantiene intactas las etiquetas H2 y H3 de la base. Cumplido.
-2. "Nunca usar una entidad diferente a las seis catalogadas." -> Iba a usar "Custom Code", está prohibido. Corrigiendo a "Agent Specialist" (age-spe-).
+Listing my Hard Constraints:
+1. "Never change the order of the framework markdown." -> My current proposal keeps the H2 and H3 tags intact. Complied.
+2. "Never use an entity different from the six catalogued ones." -> I was going to use "Custom Code", which is prohibited. Correcting to "Agent Specialist" (age-spe-).
 
-Listando mis Tasks:
-1. "Crear diagrama Mermaid." -> Generado y adaptado al formato as-is. Cumplido.
-2. "Validar explícitamente con el usuario antes del handoff." -> Presentando las opciones A/B/C/D al humano. Cumplido.
+Listing my Tasks:
+1. "Create a Mermaid diagram." -> Generated and adapted to the as-is format. Complied.
+2. "Explicitly validate with the user before handoff." -> Presenting options A/B/C/D to the human. Complied.
 
-Veredicto: Constraints respetados y Tasks ejecutadas. Listo y seguro. Generando output final.
+Verdict: Constraints respected and Tasks executed. Ready and safe. Generating final output.
 </sys-eval>
 ```
 
-[... Tu output final empiza aquí ...]
+[... Your final output starts here ...]

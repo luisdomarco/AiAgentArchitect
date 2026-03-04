@@ -5,40 +5,40 @@ description: Generates complete and correctly formatted instruction files for ea
 
 # Entity File Builder Skill
 
-Genera el contenido completo de archivos de instrucciones para cada tipo de entidad, adaptando la profundidad al nivel de intricacy asignado y respetando todas las convenciones de formato.
+Generates the complete content of instruction files for each entity type, adapting the depth to the assigned intricacy level and respecting all formatting conventions.
 
 ## Input / Output
 
 **Input:**
 
-- Tipo de entidad: `workflow | agent-specialist | agent-supervisor | skill | command | rule | knowledge-base`
-- Nivel de intricacy: `simple | medium | complex`
-- Datos de la entidad del JSON de handoff (nombre, descripción, función, input, output, relaciones)
-- Lista de entidades ya creadas en la sesión (para referencias cruzadas correctas)
+- Entity type: `workflow | agent-specialist | agent-supervisor | skill | command | rule | knowledge-base`
+- Intricacy level: `simple | medium | complex`
+- Entity data from handoff JSON (name, description, function, input, output, relationships)
+- List of entities already created in the session (for correct cross-references)
 
 **Output:**
 
-- Archivo `.md` completo con frontmatter YAML y body Markdown, listo para descargar
+- Complete `.md` file with YAML frontmatter and Markdown body, ready to download
 
 ---
 
 ## Procedure
 
-### 1. Pre-generación: verificaciones obligatorias
+### 1. Pre-generation: mandatory verifications
 
-Antes de escribir el archivo, verifica:
+Before writing the file, verify:
 
-- El nombre sigue la convención kebab-case con el prefijo correcto para su tipo.
-- La descripción del frontmatter no supera 250 caracteres.
-- Las rutas de referencia cruzada usan el formato relativo correcto.
-- El nivel de intricacy determina la densidad del contenido (ver sección 4).
-- El tamaño y densidad esperados: si el contenido proyectado se aproxima o excede el límite de caracteres recomendado para el tipo de entidad (<6000 Workflow/KB, <3000 Agent/Rule, <1500 Skill/Command), prepárate para particionarlo creando documentos en el directorio `/resources` y referenciarlos.
+- The name follows the kebab-case convention with the correct prefix for its type.
+- The frontmatter description does not exceed 250 characters.
+- Cross-reference paths use the correct relative format.
+- The intricacy level determines the content density (see section 4).
+- The expected size and density: if the projected content approaches or exceeds the recommended character limit for the entity type (<6000 Workflow/KB, <3000 Agent/Rule, <1500 Skill/Command), prepare to partition it by creating documents in the `/resources` directory and referencing them.
 
 ---
 
-### 2. Convenciones de nomenclatura por tipo
+### 2. Naming conventions by type
 
-| Tipo             | Prefijo    | Ejemplo                       |
+| Type             | Prefix     | Example                       |
 | ---------------- | ---------- | ----------------------------- |
 | Workflow         | `wor-`     | `wor-customer-onboarding.md`  |
 | Agent Specialist | `age-spe-` | `age-spe-email-classifier.md` |
@@ -51,100 +51,100 @@ Antes de escribir el archivo, verifica:
 
 ---
 
-### 3. Plantillas por tipo de entidad
+### 3. Templates by entity type
 
-Las estructuras base, frontmatters (YAML) e introducciones descriptivas para cada tipo de entidad están externalizadas para optimizar la carga cognitiva.
+The base structures, frontmatters (YAML), and descriptive introductions for each entity type are externalized to optimize cognitive load.
 
-> **Debes inspeccionar y copiar directamente el Baseline Format leyendo el archivo auxiliar:**
+> **You must inspect and copy directly the Baseline Format by reading the auxiliary file:**
 > `../../resources/res-entity-formatting-templates.md`
 
-Extrae de allí la estructura solicitada según el `Tipo de entidad` del Input, y procede a llenarla dinámicamente según la Intricacy correspondiente.
+Extract from there the requested structure according to the `Entity type` from the Input, and proceed to fill it dynamically according to the corresponding Intricacy.
 
 ---
 
-### 4. Niveles de intricacy
+### 4. Intricacy levels
 
 #### `simple`
 
-- Goals: 2-3 objetivos concisos.
-- Tasks: 3-5 bullets sin descripción extensa.
-- Execution Protocol / Workflow Sequence: flujo lineal, sin subsecciones.
-- Rules específicas: 3-5 reglas directas.
-- Skills: sin tabla si no tiene ninguna.
-- Sin ejemplos extendidos.
+- Goals: 2-3 concise objectives.
+- Tasks: 3-5 bullets without extensive description.
+- Execution Protocol / Workflow Sequence: linear flow, without subsections.
+- Specific Rules: 3-5 direct rules.
+- Skills: no table if it has none.
+- No extended examples.
 
 #### `medium`
 
-- Goals: 3-5 objetivos con resultado esperado explícito.
-- Tasks: 5-8 bullets con descripción breve de cada una.
-- Execution Protocol / Workflow Sequence: pasos numerados, manejo de casos alternativos.
-- Rules específicas: 5-8 reglas con contexto.
-- Skills: tabla completa con columna "When use it" descriptiva.
-- Ejemplos en Skills cuando clarifiquen el uso.
+- Goals: 3-5 objectives with explicit expected result.
+- Tasks: 5-8 bullets with brief description of each.
+- Execution Protocol / Workflow Sequence: numbered steps, handling of alternative cases.
+- Specific Rules: 5-8 rules with context.
+- Skills: complete table with descriptive "When use it" column.
+- Examples in Skills when they clarify usage.
 
 #### `complex`
 
-- Goals: 4-6 objetivos detallados con métrica de éxito.
-- Tasks: 8+ bullets con descripción completa.
-- Execution Protocol / Workflow Sequence: subsecciones por etapa, gestión de errores, loops, condiciones.
-- Rules específicas: 8+ reglas con casos específicos y razonamiento.
-- Skills: tabla completa + notas sobre cuándo NO usar cada una.
-- Ejemplos detallados con razonamiento explícito.
-- Tablas comparativas o de referencia donde aporten claridad.
+- Goals: 4-6 detailed objectives with success metric.
+- Tasks: 8+ bullets with full description.
+- Execution Protocol / Workflow Sequence: subsections by stage, error handling, loops, conditions.
+- Specific Rules: 8+ rules with specific cases and reasoning.
+- Skills: complete table + notes on when NOT to use each one.
+- Detailed examples with explicit reasoning.
+- Comparative or reference tables where they add clarity.
 
 ---
 
-### 5. Coherencia de referencias cruzadas
+### 5. Cross-reference coherence
 
-Antes de incluir cualquier referencia a otra entidad, verifica que:
+Before including any reference to another entity, verify that:
 
-- El nombre usado coincide exactamente con el nombre en el frontmatter de esa entidad.
-- La ruta relativa es correcta según la arquitectura root folder:
+- The name used matches exactly the name in that entity's frontmatter.
+- The relative path is correct according to the root folder architecture:
 
-| Tipo           | Ruta relativa desde cualquier entidad |
-| -------------- | ------------------------------------- |
-| Skill          | `./skills/[nombre-skill]/SKILL.md`    |
-| Agent          | `./workflows/[nombre-agent].md`       |
-| Workflow       | `./workflows/[nombre-workflow].md`    |
-| Rule           | `./rules/[nombre-rule].md`            |
-| Knowledge-base | `./knowledge-base/[nombre-kb].md`     |
-| Command        | `./workflows/[nombre-command].md`     |
-| Resources      | `./resources/res-[nombre-recurso].md` |
+| Type           | Relative path from any entity        |
+| -------------- | ------------------------------------ |
+| Skill          | `./skills/[skill-name]/SKILL.md`     |
+| Agent          | `./workflows/[agent-name].md`        |
+| Workflow       | `./workflows/[workflow-name].md`     |
+| Rule           | `./rules/[rule-name].md`             |
+| Knowledge-base | `./knowledge-base/[kb-name].md`      |
+| Command        | `./workflows/[command-name].md`      |
+| Resources      | `./resources/res-[resource-name].md` |
 
 ---
 
-### 6. Estructuración y Partición de Contenido (/resources)
+### 6. Content Structuring and Partitioning (/resources)
 
-Si al planificar el nivel de intricacy (especialmente en `complex`) prevés que una entidad será muy extensa o superará el límite recomendado:
+If when planning the intricacy level (especially for `complex`) you anticipate a very extensive entity or one that will exceed the recommended limit:
 
-1. Identifica los bloques densos que puedan externalizarse (ej. prompts muy largos, tablas de categorización extensas, ejemplos de few-shot, políticas o guías de estilo detalladas).
-2. Determina qué archivos de soporte crear en el directorio `./resources/` para alojar esa información en bruto.
-3. En la entidad principal, haz referencia directa a los archivos de soporte estructurando la información como un sistema relacional. Ej. `Ver políticas detalladas en [Políticas de Seguridad](./resources/res-security-policies.md)`.
+1. Identify dense blocks that could be externalized (e.g. very long prompts, extensive categorization tables, few-shot examples, detailed style policies or guides).
+2. Determine which support files to create in the `./resources/` directory to host that raw information.
+3. In the main entity, make a direct reference to the support files structuring the information as a relational system. E.g. `See detailed policies in [Security Policies](./resources/res-security-policies.md)`.
 
 ---
 
 ## Examples
 
-**Ejemplo — Generación de Agent Specialist nivel simple**
+**Example — Generation of Agent Specialist at simple level**
 
 Input:
 
 ```json
 {
-  "tipo": "agent-specialist",
-  "nombre": "age-spe-email-classifier",
-  "funcion": "Clasificar emails entrantes en categorías predefinidas",
-  "nivel_intricacy": "simple"
+  "type": "agent-specialist",
+  "name": "age-spe-email-classifier",
+  "function": "Classify incoming emails into predefined categories",
+  "intricacy_level": "simple"
 }
 ```
 
-Output esperado: Agent con Goals (2), Tasks (4), Execution Protocol lineal (5-6 pasos), Rules específicas (3), sin Skills ni KB si no las necesita.
+Expected output: Agent with Goals (2), Tasks (4), linear Execution Protocol (5-6 steps), Specific Rules (3), without Skills or KB if not needed.
 
 ---
 
 ## Error Handling
 
-- **Nombre no sigue convención:** Corregir automáticamente y notificar al usuario.
-- **Descripción supera 250 caracteres:** Resumir manteniendo el significado esencial.
-- **Referencia a entidad no creada aún:** Incluir la referencia con la ruta correcta e indicar en un comentario que esa entidad se creará más adelante.
-- **Inconsistencia detectada con el Blueprint:** Pausar, notificar al usuario y pedir aclaración antes de continuar.
+- **Name does not follow convention:** Automatically correct and notify the user.
+- **Description exceeds 250 characters:** Summarize while maintaining the essential meaning.
+- **Reference to entity not yet created:** Include the reference with the correct path and indicate in a comment that entity will be created later.
+- **Inconsistency detected with the Blueprint:** Pause, notify the user, and ask for clarification before continuing.

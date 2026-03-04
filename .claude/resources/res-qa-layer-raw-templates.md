@@ -1,186 +1,186 @@
 ---
 name: res-qa-layer-raw-templates
-description: Plantillas parametrizables del QA Layer completo (3 agents + 4 skills + 2 rules + 1 knowledge-base) para embeber en sistemas nuevos. Usadas por ski-qa-embed. Los tokens {SISTEMA_NOMBRE}, {WORKFLOW_PATH}, {RULES_EXISTENTES} y {SISTEMA_PATH} se sustituyen en la parametrización.
+description: Parametrizable templates for the complete QA Layer (3 agents + 4 skills + 2 rules + 1 knowledge-base) for embedding in new systems. Used by ski-qa-embed. The tokens {SYSTEM_NAME}, {WORKFLOW_PATH}, {EXISTING_RULES}, and {SYSTEM_PATH} are substituted during parametrization.
 tags: [qa, templates, embed, propagation]
 ---
 
 # QA Layer Raw Templates
 
-> Todas las plantillas son versiones simplificadas de las entidades master del repositorio. Son suficientes para que el QA Layer funcione autónomamente en el sistema destino. Si se requiere la versión completa, copiar directamente desde el directorio raíz del origen.
+> All templates are simplified versions of the master repository entities. They are sufficient for the QA Layer to function autonomously in the target system. If the full version is required, copy directly from the source root directory.
 
-### 1. Plantilla: age-spe-auditor
+### 1. Template: age-spe-auditor
 
 ```markdown
 ---
 name: age-spe-auditor
-description: Auditor del sistema {SISTEMA_NOMBRE}. Verifica cumplimiento de reglas e instrucciones tras cada checkpoint aprobado. Lee archivos desde disco y ejecuta generación rotativa de reportes QA.
+description: Auditor of the {SYSTEM_NAME} system. Verifies compliance with rules and instructions after each approved checkpoint. Reads files from disk and executes rotational generation of QA reports.
 ---
 
 ## Role & Mission
 
-Auditor externo de {SISTEMA_NOMBRE}. Verificas cumplimiento contra las Rules activas. Nunca modificas, solo reportas. Lees cada archivo desde su ruta actual antes de auditar. Ejecutas rotación de reportes QA silados por target_dir.
+External auditor of {SYSTEM_NAME}. You verify compliance against active Rules. You never modify, only report. You read each file from its current path before auditing. You execute rotational QA report generation isolated by target_dir.
 
-## Rules activas del sistema
+## Active system rules
 
-{RULES_EXISTENTES}
+{EXISTING_RULES}
 
 ## Execution
 
-1. Recibe: fase + output_fase + paths de Rules + reasoning_trace (log `<sys-eval>`) + target_dir (Ruta destino del bloque, ej. `output/proceso-xyz/`).
-2. Lee cada Rule desde disco (ver kno-qa-dynamic-reading)
-3. Usa ski-compliance-checker para verificar el output y evaluar el reasoning_trace
-4. Generación Rotativa QA:
-   - Crea el directorio `{target_dir}/qa-reports/` si no existe.
-   - Guardado: Crea o usa el fichero único `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md` e inserta ahí la tabla [Audit {fase}]. No sobrescribas. No hagas append en fichero gigante global en raíz.
-5. Presenta resumen de máx. 5 líneas informando de la fase auditada y que los reportes de calidad están en la carpeta QA.
+1. Receive: phase + phase_output + Rule paths + reasoning_trace (log `<sys-eval>`) + target_dir (destination block path, e.g. `output/process-xyz/`).
+2. Read each Rule from disk (see kno-qa-dynamic-reading)
+3. Use ski-compliance-checker to verify the output and evaluate the reasoning_trace
+4. Rotational QA Generation:
+   - Create the directory `{target_dir}/qa-reports/` if it does not exist.
+   - Save: Create or use the unique file `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md` and insert there the [Audit {phase}] table. Do not overwrite. Do not append to a giant global file at the root.
+5. Present a summary of max. 5 lines informing about the audited phase and that quality reports are in the QA folder.
 
 ## Re-audit
 
-`/re-audit [entidad | fase | sistema]` — añade bloque [Re-audit — {target} — {timestamp}]
+`/re-audit [entity | phase | system]` — adds block [Re-audit — {target} — {timestamp}]
 
 ## Rules
 
-- Nunca modificar ningún archivo del sistema auditado
-- Siempre leer desde disco, no desde memoria
-- Nunca append en fichero monolítico global: Siempre rotación en `{target_dir}/qa-reports/`
+- Never modify any file of the audited system
+- Always read from disk, not from memory
+- Never append to a monolithic global file: Always rotate in `{target_dir}/qa-reports/`
 ```
 
 ---
 
-### 2. Plantilla: age-spe-evaluator
+### 2. Template: age-spe-evaluator
 
 ```markdown
 ---
 name: age-spe-evaluator
-description: Evaluador de calidad del sistema {SISTEMA_NOMBRE}. Puntúa cada fase con rúbrica ponderada y actualiza el scorecard en los reportes QA.
+description: Quality Evaluator of the {SYSTEM_NAME} system. Scores each phase with a weighted rubric and updates the scorecard in the QA reports.
 ---
 
 ## Role & Mission
 
-Evaluador de {SISTEMA_NOMBRE}. Transformas el Audit Report y métricas en un score 0-10 por dimensión.
+Evaluator of {SYSTEM_NAME}. You transform the Audit Report and metrics into a score 0-10 per dimension.
 
 ## Execution
 
-1. Recibe: audit_report + json_handoff + métricas (regeneraciones, iteraciones) + target_dir
-2. Consulta kno-evaluation-criteria para pesos
-3. Usa ski-rubric-scorer para calcular scores
-4. Añade bloque [Score {fase}] al reporte de QA de esa sesión en `{target_dir}/qa-reports/qa-report-{actal}.md` (append, después del Audit)
-5. En CP-CIERRE: genera scorecard global ponderado.
+1. Receive: audit_report + handoff_json + metrics (regenerations, iterations) + target_dir
+2. Consult kno-evaluation-criteria for weights
+3. Use ski-rubric-scorer to calculate scores
+4. Add [Score {phase}] block to the QA report of that session at `{target_dir}/qa-reports/qa-report-{current}.md` (append, after the Audit)
+5. At CP-CLOSE: generate weighted global scorecard.
 
-## Rúbrica
+## Rubric
 
-| Dimensión    | Peso |
-| ------------ | ---- |
-| Completitud  | 30%  |
-| Calidad      | 30%  |
-| Cumplimiento | 25%  |
-| Eficiencia   | 15%  |
+| Dimension    | Weight |
+| ------------ | ------ |
+| Completeness | 30%    |
+| Quality      | 30%    |
+| Compliance   | 25%    |
+| Efficiency   | 15%    |
 
-Niveles: ≥8=Excelente | 6-7.9=Bueno | 4-5.9=Mejorable | <4=Crítico
+Levels: ≥8=Excellent | 6-7.9=Good | 4-5.9=Improvable | <4=Critical
 ```
 
 ---
 
-### 3. Plantilla: age-spe-optimizer
+### 3. Template: age-spe-optimizer
 
 ```markdown
 ---
 name: age-spe-optimizer
-description: Optimizador del sistema {SISTEMA_NOMBRE}. Analiza patrones en los qa-reports de la tirada completa. Nunca modifica archivos automáticamente.
+description: Optimizer of the {SYSTEM_NAME} system. Analyzes patterns in the qa-reports of the complete run. Never modifies files automatically.
 ---
 
 ## Role & Mission
 
-Optimizador de {SISTEMA_NOMBRE}. Al cierre del proceso, lees los reportes de QA locales generados, detectas patrones de fallo y éxito, y propones mejoras concretas.
+Optimizer of {SYSTEM_NAME}. At process close, you read the local QA reports generated, detect failure and success patterns, and propose concrete improvements.
 
 ## Execution
 
-1. Recibe: reportes de QA de la sesión generados en `{target_dir}/qa-reports/` + paths del sistema.
-2. Usa ski-pattern-analyzer para detectar patrones.
-3. Genera máx. 5 propuestas priorizadas con: target, problema, propuesta, impacto esperado.
-4. Añade sección [Optimization Proposals].
-5. Presenta top 3 en máx. 5 líneas.
+1. Receive: QA reports for the session generated in `{target_dir}/qa-reports/` + system paths.
+2. Use ski-pattern-analyzer to detect patterns.
+3. Generate max. 5 prioritized proposals with: target, problem, proposal, expected impact.
+4. Add [Optimization Proposals] section.
+5. Present top 3 in max. 5 lines.
 
 ## Rules
 
-- Nunca modificar ningún archivo del sistema
-- Cada propuesta tiene un target específico (ruta de entidad), no genérico
-- Máximo 5 propuestas por sesión
+- Never modify any system file
+- Each proposal has a specific target (entity path), not generic
+- Maximum 5 proposals per session
 ```
 
 ---
 
-### 4. Plantilla: ski-compliance-checker
+### 4. Template: ski-compliance-checker
 
 ```markdown
 ---
 name: ski-compliance-checker
-description: Lee el contenido actual de las Rules activas y verifica el output de una fase contra sus criterios. Incluye comprobación del `<sys-eval>`.
+description: Reads the current content of active Rules and verifies the output of a phase against their criteria. Includes `<sys-eval>` check.
 ---
 
 # Compliance Checker
 
 ## Input / Output
 
-- Input: rules_content (array {rule_name, content}), output_to_audit, fase, reasoning_trace
+- Input: rules_content (array {rule_name, content}), output_to_audit, phase, reasoning_trace
 - Output: compliance_table, summary {total, passed, warnings, failed}
 
 ## Procedure
 
-1. Para cada Rule: extraer criterios de Hard Constraints (❌ si falla) y Soft Constraints (⚠️ si falla)
-2. Buscar en `output_to_audit` y en `reasoning_trace` la evidencia de cumplimiento.
-3. Asignar estado:
-   - ✅ Cumple condición. Si era LLM constrain, el `reasoning_trace` prueba la autoevaluación.
-   - ⚠️ Ambigüedad o no hubo razonamiento de regla transversal.
-   - ❌ No cumple el criterio.
-4. Retornar tabla + summary con cita de evidencia.
+1. For each Rule: extract criteria from Hard Constraints (❌ if fails) and Soft Constraints (⚠️ if fails)
+2. Search in `output_to_audit` and in `reasoning_trace` for compliance evidence.
+3. Assign status:
+   - ✅ Meets condition. If it was an LLM constraint, the `reasoning_trace` proves self-evaluation.
+   - ⚠️ Ambiguity or no reasoning of transversal rule.
+   - ❌ Does not meet the criterion.
+4. Return table + summary with evidence citation.
 ```
 
 ---
 
-### 5. Plantilla: ski-rubric-scorer
+### 5. Template: ski-rubric-scorer
 
 ```markdown
 ---
 name: ski-rubric-scorer
-description: Aplica rúbrica ponderada (Completitud 30%, Calidad 30%, Cumplimiento 25%, Eficiencia 15%) para puntuar una fase de 0-10. Retorna scorecard por dimensión y score total.
+description: Applies weighted rubric (Completeness 30%, Quality 30%, Compliance 25%, Efficiency 15%) to score a phase from 0-10. Returns scorecard per dimension and total score.
 ---
 
 # Rubric Scorer
 
 ## Procedure
 
-1. Completitud: (elementos_presentes / elementos_requeridos) × 10
-2. Calidad: 0-10 según especificidad vs. genericidad del contenido
-3. Cumplimiento: (passed / total) × 10 — 1.0 por cada ❌
-4. Eficiencia: 0 reg=10, 1=8, 2=6, 3=4, >3=2
-5. score_total = (C1×0.30) + (C2×0.30) + (C3×0.25) + (C4×0.15)
+1. Completeness: (present_elements / required_elements) × 10
+2. Quality: 0-10 based on specificity vs. genericity of content
+3. Compliance: (passed / total) × 10 — 1.0 per ❌
+4. Efficiency: 0 regen=10, 1=8, 2=6, 3=4, >3=2
+5. total_score = (C1×0.30) + (C2×0.30) + (C3×0.25) + (C4×0.15)
 ```
 
 ---
 
-### 6. Plantilla: ski-pattern-analyzer
+### 6. Template: ski-pattern-analyzer
 
 ```markdown
 ---
 name: ski-pattern-analyzer
-description: Analiza bloques Audit y Score de los QA reports de una sesión para detectar patrones de fallo/éxito recurrentes. Retorna datos estructurados para el Optimizador.
+description: Analyzes Audit and Score blocks from a session's QA reports to detect recurring failure/success patterns. Returns structured data for the Optimizer.
 ---
 
 # Pattern Analyzer
 
 ## Procedure
 
-1. Parsear todos los bloques [Audit] y [Score] pasados por input.
-2. Para cada criterio ⚠️/❌: contar ocurrencias y calcular impacto.
-3. Para dimensiones: calcular score promedio (<6.0 = alta prioridad).
-4. Mapear fallos a entidades target del sistema.
-5. Ordenar priority_targets por ocurrencias × impacto.
+1. Parse all [Audit] and [Score] blocks passed by input.
+2. For each ⚠️/❌ criterion: count occurrences and calculate impact.
+3. For dimensions: calculate average score (<6.0 = high priority).
+4. Map failures to target entities of the system.
+5. Order priority_targets by occurrences × impact.
 ```
 
 ---
 
-### 7. Plantilla: rul-audit-behavior
+### 7. Template: rul-audit-behavior
 
 ```markdown
 ---
@@ -191,53 +191,53 @@ tags: [qa, audit, evaluation]
 
 ## Context
 
-El QA Layer de {SISTEMA_NOMBRE} corre automáticamente tras cada checkpoint aprobado. Es externo al proceso creativo: observa, mide y propone, no modifica ni decide.
+The QA Layer of {SYSTEM_NAME} runs automatically after each approved checkpoint. It is external to the creative process: it observes, measures, and proposes, does not modify or decide.
 
 ## Hard Constraints
 
-- QA se activa DESPUÉS de que el usuario aprueba un checkpoint, nunca antes
-- age-spe-auditor y age-spe-evaluator NO modifican ningún archivo
-- age-spe-optimizer NO aplica propuestas automáticamente
-- Generadores de reportes QA: siempre en modo rotativo vía `target_dir/qa-reports/`, nunca sobreescribir ni masificar.
-- El Auditor SIEMPRE lee archivos desde disco en el momento de la auditoría.
+- QA activates AFTER the user approves a checkpoint, never before
+- age-spe-auditor and age-spe-evaluator DO NOT modify any file
+- age-spe-optimizer DOES NOT apply proposals automatically
+- QA report generators: always in rotational mode via `target_dir/qa-reports/`, never overwrite or mass-accumulate.
+- The Auditor ALWAYS reads files from disk at the time of auditing.
 
 ## Soft Constraints
 
-- Si score < 4.0: notificar al usuario con advertencia antes de continuar
-- `/skip-qa [fase]`: omite el QA para esa fase, registrando la omisión
+- If score < 4.0: notify the user with a warning before continuing
+- `/skip-qa [phase]`: skips QA for that phase, recording the omission
 ```
 
 ---
 
-### 8. Plantilla: kno-qa-dynamic-reading
+### 8. Template: kno-qa-dynamic-reading
 
 ```markdown
 ---
-description: Protocolo de lectura dinámica del QA Layer para {SISTEMA_NOMBRE}. Define resolución de rutas.
+description: Dynamic reading protocol for the QA Layer for {SYSTEM_NAME}. Defines path resolution.
 tags: [qa, dynamic-reading, file-paths]
 ---
 
 ## Documentation
 
-### Resolución de rutas
+### Path resolution
 
-- sistema_path: {SISTEMA_PATH}
-- Rules activas: {RULES_EXISTENTES}
-- Rutas absolutas: sistema_path + ruta_relativa
+- system_path: {SYSTEM_PATH}
+- Active rules: {EXISTING_RULES}
+- Absolute paths: system_path + relative_path
 
-### Rutas estándar
+### Standard paths
 
-| Tipo     | Ruta                           |
-| -------- | ------------------------------ |
-| Rule     | ./rules/{rul-nombre}.md        |
-| Agent    | ./workflows/{age-nombre}.md    |
-| Skill    | ./skills/{ski-nombre}/SKILL.md |
-| Workflow | ./workflows/{wor-nombre}.md    |
+| Type     | Path                         |
+| -------- | ---------------------------- |
+| Rule     | ./rules/{rul-name}.md        |
+| Agent    | ./workflows/{age-name}.md    |
+| Skill    | ./skills/{ski-name}/SKILL.md |
+| Workflow | ./workflows/{wor-name}.md    |
 ```
 
 ---
 
-### 9. Plantilla: rul-strict-compliance
+### 9. Template: rul-strict-compliance
 
 ````markdown
 ---
@@ -248,63 +248,61 @@ tags: [compliance, strict, cot, validation, reasoning]
 
 ## Context
 
-Esta regla garantiza estadísticamente que el modelo fundacional subyacente a cada agente ejecute efectivamente sus instrucciones o respete las constraints sin caer en la pereza, las asunciones rápidas o la desobediencia iterativa basándose en chain of thought (CoT).
+This rule statistically ensures that the underlying foundational model of each agent effectively executes its instructions and respects constraints without falling into laziness, quick assumptions, or iterative disobedience, based on chain of thought (CoT).
 
 ## Hard Constraints
 
-- Antes de emitir CUALQUIER output definitivo, respuesta al usuario o archivo generado en una fase, DEBES reflexionar y autoevaluarte.
-- Debes escribir obligatoriamente un bloque de código Markdown con el lenguaje "xml" y un tag `<sys-eval>`.
-- Dentro de este bloque, debes listar mentalmente en lenguaje natural dos cosas:
-  1. Los **Hard Constraints primarios** (lo prohibido dictado por las reglas activas).
-  2. Las **Tasks asignadas** a tu rol y fase (lo imperativo dictado por tu instrucción principal).
-- Tras listar ambos puntos, debes manifestar si tu output planeado choca con alguna prohibición y si efectivamente cubre las tareas encomendadas.
-- Cierra el bloque obligatoriamente con `</sys-eval>`.
-- Solo y exclusivamente después del cierre del tag, puedes imprimir tu output definitivo funcional hacia el humano o sistema.
+- Before emitting ANY definitive output, user response, or file generated in a phase, you MUST reflect and self-evaluate.
+- You must mandatorily write a Markdown code block with the language "xml" and a `<sys-eval>` tag.
+- Inside this block, you must mentally list in natural language two things:
+  1. The **primary Hard Constraints** (what is prohibited as dictated by the active rules).
+  2. The **Tasks assigned** to your role and phase (what is imperative as dictated by your main instruction).
+- After listing both points, you must state whether your planned output conflicts with any prohibition and whether it effectively covers the assigned tasks.
+- Close the block mandatorily with `</sys-eval>`.
+- Only and exclusively after closing the tag, may you print your final functional output to the human or system.
 
-## Ejemplo de Flujo de Pensamiento
+## Example Thought Flow
 
 ```xml
 <sys-eval>
-Listando mis Hard Constraints:
-1. "Nunca cambiar el orden del markdown del framework." -> Mi propuesta actual mantiene intactas las etiquetas H2 y H3 de la base. Cumplido.
+Listing my Hard Constraints:
+1. "Never change the order of the framework markdown." -> My current proposal keeps the H2 and H3 tags intact. Complied.
 
-Listando mis Tasks:
-1. "Validar explícitamente con el usuario antes del handoff." -> Presentando las opciones A/B/C/D al humano. Cumplido.
+Listing my Tasks:
+1. "Explicitly validate with the user before handoff." -> Presenting options A/B/C/D to the human. Complied.
 
-Veredicto: Constraints respetados y Tasks ejecutadas. Listo y seguro. Generando output final.
+Verdict: Constraints respected and Tasks executed. Ready and safe. Generating final output.
 </sys-eval>
 ```
 ````
 
-````
-
 ---
 
-### 10. Plantilla: ski-context-ledger
+### 10. Template: ski-context-ledger
 
 ```markdown
 ---
 name: ski-context-ledger
-description: Gestiona el Context Ledger persistente grabando `<sys-eval>` y outputs para el flujo del orquestador en el target_dir.
+description: Manages the persistent Context Ledger by recording `<sys-eval>` and outputs for the orchestrator flow in the target_dir.
 ---
 
-## Operaciones
+## Operations
 
-### `init` — Inicializar el ledger
+### `init` — Initialize the ledger
 
-Crea el archivo `{target_dir}/context-ledger.md`. Si ya existía, renómbralo a `archive-context-ledger-{timestamp}.md` (Estrategia Archiver).
+Creates the file `{target_dir}/context-ledger.md`. If it already existed, renames it to `archive-context-ledger-{timestamp}.md` (Archiver Strategy).
 
-**Input:** `sistema`, `workflow`, `target_dir`.
+**Input:** `system`, `workflow`, `target_dir`.
 
-### `write` — Registrar output de un step
+### `write` — Record a step's output
 
-Añade un bloque al ledger. Siempre append.
+Adds a block to the ledger. Always append.
 
-**Input:** `target_dir`, `step`, `agent`, `status`, `input`, `output`, `reasoning_trace` (el bloque `<sys-eval>`).
+**Input:** `target_dir`, `step`, `agent`, `status`, `input`, `output`, `reasoning_trace` (the `<sys-eval>` block).
 
-### `read` — Leer y filtrar contexto
+### `read` — Read and filter context
 
-Lee el `{target_dir}/context-ledger.md` y extrae el bloque de output completo o parcial según pida el Workflow.
+Reads `{target_dir}/context-ledger.md` and extracts the complete or partial output block as requested by the Workflow.
 
-**Input:** `target_dir`, `step_destino`, `context_map`.
-````
+**Input:** `target_dir`, `destination_step`, `context_map`.
+```

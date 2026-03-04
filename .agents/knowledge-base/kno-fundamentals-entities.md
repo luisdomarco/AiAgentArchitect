@@ -1,5 +1,5 @@
 ---
-description: Definición, propósito, activación, responsabilidades y especificaciones de formato de las 6 entidades agénticas del sistema.
+description: Definition, purpose, activation, responsibilities, and format specifications of the 6 agentic entities of the system.
 tags: [entities, fundamentals, architecture]
 ---
 
@@ -12,229 +12,229 @@ tags: [entities, fundamentals, architecture]
 - [5. Rule](#5-rule)
 - [6. Knowledge-base](#6-knowledge-base)
 - [7. Resources](#7-resources)
-- [8. Límites de caracteres por entidad](#8-límites-de-caracteres-por-entidad)
-- [9. Patrones de Workflow](#9-patrones-de-workflow)
+- [8. Character limits per entity](#8-character-limits-per-entity)
+- [9. Workflow patterns](#9-workflow-patterns)
 
 ---
 
 ## 1. Workflow
 
-**Definición:** Secuencia de pasos predefinida, ordenada y repetible que automatiza un proceso completo de principio a fin.
+**Definition:** Predefined, ordered, and repeatable sequence of steps that automates a complete process from start to finish.
 
-**Objetivo:** Coordinar la ejecución de múltiples componentes (Agents, Skills, Rules, Knowledge-base) para completar un proceso.
+**Objective:** Coordinate the execution of multiple components (Agents, Skills, Rules, Knowledge-base) to complete a process.
 
-**Activación:**
+**Activation:**
 
-- Manual: iniciado explícitamente por el usuario.
-- Instrucciones: invocado por otro workflow, agent, skill o command.
+- Manual: explicitly initiated by the user.
+- Instructions: invoked by another workflow, agent, skill or command.
 
-**Atributos clave:**
+**Key attributes:**
 
-| Atributo           | Descripción                                                          |
-| ------------------ | -------------------------------------------------------------------- |
-| Conocimiento       | Conoce el flujo completo del proceso                                 |
-| Función            | Invoca Agents en secuencia                                           |
-| Transferencia      | Pasa outputs de unos agentes como inputs de otros                    |
-| Supervisión        | Gestiona checkpoints y aprobaciones humanas                          |
-| Context Management | Persiste estado inter-agente en `context-ledger.md` (ver sección 10) |
-| Restricción        | **No ejecuta tareas directamente**, solo coordina                    |
+| Attribute          | Description                                                        |
+| ------------------ | ------------------------------------------------------------------ |
+| Knowledge          | Knows the complete process flow                                    |
+| Function           | Invokes Agents in sequence                                         |
+| Transfer           | Passes outputs of some agents as inputs of others                  |
+| Supervision        | Manages checkpoints and human approvals                            |
+| Context Management | Persists inter-agent state in `context-ledger.md` (see section 10) |
+| Restriction        | **Does not execute tasks directly**, only coordinates              |
 
-**Prefijo de archivo:** `wor-`
-**Estructura:** Frontmatter YAML + Body Markdown con secciones 1-11.
+**File prefix:** `wor-`
+**Structure:** YAML Frontmatter + Markdown Body with sections 1-11.
 
 ---
 
 ## 2. Agent
 
-**Definición:** Conjunto de instrucciones con identidad, propósito y dominio específico que opera de forma autónoma para desempeñar funciones delimitadas.
+**Definition:** Set of instructions with identity, purpose, and specific domain that operates autonomously to perform delimited functions.
 
-**Objetivo:** Delegar una responsabilidad concreta a una entidad especializada que sabe qué hacer, cómo hacerlo y qué devolver.
+**Objective:** Delegate a concrete responsibility to a specialized entity that knows what to do, how to do it, and what to return.
 
-**Activación:**
+**Activation:**
 
-- Manual: iniciado explícitamente por el usuario.
-- Instrucciones: invocado por un workflow, agent, skill o command.
+- Manual: explicitly initiated by the user.
+- Instructions: invoked by a workflow, agent, skill or command.
 
-**Atributos clave:**
+**Key attributes:**
 
-| Atributo     | Descripción                                     |
-| ------------ | ----------------------------------------------- |
-| Conocimiento | Conoce solo sus propias tareas                  |
-| Aislamiento  | No conoce ni depende de otros agentes           |
-| Interface    | Define `input_schema` y `output_schema` claros  |
-| Capacidades  | Puede utilizar Skills asignadas                 |
-| Invocación   | Puede usarse standalone o dentro de un Workflow |
+| Attribute    | Description                                      |
+| ------------ | ------------------------------------------------ |
+| Knowledge    | Knows only its own tasks                         |
+| Isolation    | Does not know or depend on other agents          |
+| Interface    | Defines clear `input_schema` and `output_schema` |
+| Capabilities | Can use assigned Skills                          |
+| Invocation   | Can be used standalone or within a Workflow      |
 
 **Roles:**
 
-- **Supervisor (`age-sup-`):** Supervisión de calidad o validación de outputs.
-- **Specialist (`age-spe-`):** Ejecución de funciones de dominio específico.
+- **Supervisor (`age-sup-`):** Quality supervision or output validation.
+- **Specialist (`age-spe-`):** Execution of specific domain functions.
 
-**Estructura:** Frontmatter YAML + Body Markdown con secciones 1-11.
+**Structure:** YAML Frontmatter + Markdown Body with sections 1-11.
 
 ---
 
 ## 3. Skill
 
-**Definición:** Paquete de conocimiento especializado y reutilizable que dota a un agente de capacidades concretas para una tarea específica.
+**Definition:** Specialized and reusable knowledge package that gives an agent concrete capabilities for a specific task.
 
-**Objetivo:** Extender las capacidades de un agente de forma modular y bajo demanda, sin sobrecargar su contexto con conocimiento que puede no ser necesario en todas las ejecuciones.
+**Objective:** Extend an agent's capabilities in a modular and on-demand way, without overloading its context with knowledge that may not be needed in all executions.
 
-**Activación:**
+**Activation:**
 
-- Automática: activada por el agente cuando detecta que la tarea lo requiere.
-- Instrucciones: invocada por un workflow, agent o command.
+- Automatic: activated by the agent when it detects the task requires it.
+- Instructions: invoked by a workflow, agent or command.
 
-**Características:**
+**Characteristics:**
 
-- Reutilizable por múltiples agentes distintos.
-- Sin dependencias de un agente específico.
-- Se carga solo cuando es relevante para la tarea en curso.
+- Reusable by multiple different agents.
+- No dependencies on a specific agent.
+- Loaded only when relevant to the current task.
 
-**Tipos:**
+**Types:**
 
-| Tipo              | Descripción                              | Ejemplo                         |
+| Type              | Description                              | Example                         |
 | ----------------- | ---------------------------------------- | ------------------------------- |
-| `tool`            | Función o API call específica            | `parse_email`, `validate_input` |
-| `workflow`        | Sub-proceso con múltiples pasos internos | `complete_onboarding`           |
-| `integration`     | Conexión con un sistema externo          | `zendesk_create_ticket`         |
-| `reasoning`       | Lógica de decisión o clasificación       | `classify_urgency`              |
-| `text-processing` | Transformación o análisis de texto       | `format_output`, `translate`    |
-| `other`           | Otros cometidos                          | —                               |
+| `tool`            | Function or specific API call            | `parse_email`, `validate_input` |
+| `workflow`        | Sub-process with multiple internal steps | `complete_onboarding`           |
+| `integration`     | Connection with an external system       | `zendesk_create_ticket`         |
+| `reasoning`       | Decision or classification logic         | `classify_urgency`              |
+| `text-processing` | Text transformation or analysis          | `format_output`, `translate`    |
+| `other`           | Other purposes                           | —                               |
 
-**Estructura de carpeta:**
+**Folder structure:**
 
 ```
-ski-[nombre]/
-├── SKILL.md          (obligatorio)
-├── scripts/          (opcional)
-├── resources/        (opcional)
-└── examples/         (opcional)
+ski-[name]/
+├── SKILL.md          (required)
+├── scripts/          (optional)
+├── resources/        (optional)
+└── examples/         (optional)
 ```
 
-**Prefijo:** `ski-` (en el nombre de la carpeta, no del archivo)
+**Prefix:** `ski-` (in the folder name, not the file name)
 
 ---
 
 ## 4. Command
 
-**Definición:** Instrucción directa y predefinida que dispara una acción o procedimiento concreto de forma inmediata y determinista.
+**Definition:** Direct and predefined instruction that triggers a concrete action or procedure immediately and deterministically.
 
-**Objetivo:** Ejecutar procedimientos guardados de forma rápida y precisa, reduciendo la fricción en tareas frecuentes.
+**Objective:** Execute saved procedures quickly and precisely, reducing friction in frequent tasks.
 
-**Activación:** Manual — invocado siempre por el usuario mediante palabra clave o atajo predefinido.
+**Activation:** Manual — always invoked by the user via keyword or predefined shortcut.
 
-**Características:**
+**Characteristics:**
 
-- Ejecución determinista: el mismo Command produce siempre el mismo comportamiento base.
-- Puede invocar Agents o Skills.
-- No requiere que el usuario redacte instrucciones cada vez.
-- Orientado a tareas atómicas o de uso frecuente.
-- Es similar a un prompt guardado.
+- Deterministic execution: the same Command always produces the same base behavior.
+- Can invoke Agents or Skills.
+- Does not require the user to write instructions each time.
+- Oriented towards atomic or frequently used tasks.
+- Similar to a saved prompt.
 
-**Diferencia con Workflow:** Un Command es una acción única o de pocos pasos. Un Workflow es un proceso completo multi-agente. Un Command puede ser un paso dentro de un Workflow, pero no al revés.
+**Difference from Workflow:** A Command is a single or few-step action. A Workflow is a complete multi-agent process. A Command can be a step within a Workflow, but not the other way around.
 
-**Prefijo de archivo:** `com-`
-**Estructura:** Frontmatter YAML + Body Markdown (system prompt estructurado).
+**File prefix:** `com-`
+**Structure:** YAML Frontmatter + Markdown Body (structured system prompt).
 
 ---
 
 ## 5. Rule
 
-**Definición:** Conjunto de directrices, pautas o restricciones que condicionan el comportamiento de Workflows, Agents, Skills o Commands.
+**Definition:** Set of guidelines, directives, or restrictions that condition the behavior of Workflows, Agents, Skills, or Commands.
 
-**Objetivo:** Garantizar consistencia, calidad y adherencia a estándares en todas las ejecuciones.
+**Objective:** Ensure consistency, quality, and adherence to standards in all executions.
 
-**Características:**
+**Characteristics:**
 
-- No ejecuta tareas, solo define cómo deben ejecutarse.
-- Puede ser global (aplica a todo) o específica (aplica a un contexto).
-- Es el componente más pasivo: guía sin actuar.
+- Does not execute tasks, only defines how they must be executed.
+- Can be global (applies to everything) or specific (applies to a context).
+- It is the most passive component: guides without acting.
 
-**Modos de activación:**
+**Activation modes:**
 
-| Modo             | Descripción                                      |
-| ---------------- | ------------------------------------------------ |
-| `always_on`      | Se aplica siempre, en cualquier contexto         |
-| `manual`         | Activada explícitamente por mención directa      |
-| `model_decision` | El modelo evalúa si aplica según el contexto     |
-| `glob`           | Se aplica a archivos que coincidan con un patrón |
+| Mode             | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `always_on`      | Always applies, in any context                          |
+| `manual`         | Explicitly activated by direct mention                  |
+| `model_decision` | The model evaluates whether it applies based on context |
+| `glob`           | Applies to files matching a pattern                     |
 
-**Prefijo de archivo:** `rul-`
-**Estructura:** Frontmatter YAML (`trigger`, `description`, `globs`, `alwaysApply`, `tags`) + Body Markdown.
+**File prefix:** `rul-`
+**Structure:** YAML Frontmatter (`trigger`, `description`, `globs`, `alwaysApply`, `tags`) + Markdown Body.
 
 ---
 
 ## 6. Knowledge-base
 
-**Definición:** Repositorio de información de referencia que los agentes consultan para fundamentar sus decisiones y outputs.
+**Definition:** Repository of reference information that agents consult to ground their decisions and outputs.
 
-**Objetivo:** Proveer contexto factual, datos del dominio, ejemplos o documentación sin incorporar ese conocimiento directamente en las instrucciones de cada agente.
+**Objective:** Provide factual context, domain data, examples, or documentation without incorporating that knowledge directly into each agent's instructions.
 
-**Características:**
+**Characteristics:**
 
-- No ejecuta ni coordina: es contenido estático consultable.
-- Puede contener: documentación técnica, guías de estilo, datos de referencia, ejemplos, glosarios.
-- Los agentes la consultan bajo demanda.
-- Desacopla el conocimiento del dominio de la lógica de los agentes.
+- Does not execute or coordinate: it is static consultable content.
+- Can contain: technical documentation, style guides, reference data, examples, glossaries.
+- Agents consult it on demand.
+- Decouples domain knowledge from agent logic.
 
-**Prefijo de archivo:** `kno-`
-**Estructura:** Frontmatter YAML (`description`, `tags`) + Body Markdown con tabla de contenidos.
+**File prefix:** `kno-`
+**Structure:** YAML Frontmatter (`description`, `tags`) + Markdown Body with table of contents.
 
 ---
 
 ## 7. Resources
 
-**Definición:** Se trata de un directorio, al mismo nivel de "/workflows" o "/knowledge-base" donde se irán creando/almacenando otros recursos que no son algunos de los considerados hasta el momento y que son necesarios o dan soporte a las diferentes entidades o procesos.
+**Definition:** A directory at the same level as "/workflows" or "/knowledge-base" where other resources are created/stored that are not one of the types considered so far and that are necessary or provide support to different entities or processes.
 
-**Prefijo de archivo:** `res-`
-
----
-
-## 8. Límites de caracteres por entidad
-
-| Entidad        | Name (máx.) | Description (máx.) | Content recomendado | Content máximo |
-| -------------- | ----------- | ------------------ | ------------------- | -------------- |
-| Workflow       | 64          | 250                | <6000               | 12.000         |
-| Agent          | 64          | 250                | <3000               | 12.000         |
-| Skill          | 64          | 250                | <1500               | 12.000         |
-| Command        | 64          | 250                | <1500               | 12.000         |
-| Rule           | 64          | 250                | <3000               | 12.000         |
-| Knowledge-base | 64          | 250                | <6000               | 12.000         |
+**File prefix:** `res-`
 
 ---
 
-## 9. Patrones de Workflow
+## 8. Character limits per entity
 
-**Patrón 1 — Lineal:**
+| Entity         | Name (max.) | Description (max.) | Recommended content | Maximum content |
+| -------------- | ----------- | ------------------ | ------------------- | --------------- |
+| Workflow       | 64          | 250                | <6000               | 12,000          |
+| Agent          | 64          | 250                | <3000               | 12,000          |
+| Skill          | 64          | 250                | <1500               | 12,000          |
+| Command        | 64          | 250                | <1500               | 12,000          |
+| Rule           | 64          | 250                | <3000               | 12,000          |
+| Knowledge-base | 64          | 250                | <6000               | 12,000          |
+
+---
+
+## 9. Workflow patterns
+
+**Pattern 1 — Linear:**
 
 ```
 Input → Agent A → Agent B → Agent C → Output
 ```
 
-**Patrón 2 — Con Checkpoints:**
+**Pattern 2 — With Checkpoints:**
 
 ```
 Input → Agent A → [Checkpoint] → Agent B → [Checkpoint] → Output
 ```
 
-**Patrón 3 — Con Decisiones:**
+**Pattern 3 — With Decisions:**
 
 ```
 Input → Classifier →
-  ├─ Condición A → Agent A → Output
-  └─ Condición B → Agent B → Output
+  ├─ Condition A → Agent A → Output
+  └─ Condition B → Agent B → Output
 ```
 
-**Patrón 4 — Con Integraciones:**
+**Pattern 4 — With Integrations:**
 
 ```
-Input → Agent A → Integration Agent → Sistema Externo
+Input → Agent A → Integration Agent → External System
                         ↓
                   Agent B → Output
 ```
 
-**Patrón 5 — Paralelo con Consolidación:**
+**Pattern 5 — Parallel with Consolidation:**
 
 ```
 Input → Dispatcher →
@@ -247,45 +247,45 @@ Input → Dispatcher →
 
 ## 10. Context Management — Context Ledger
 
-En flujos secuenciales multi-agente, el workflow gestiona la transferencia de contexto entre agentes mediante un **Context Ledger**: un archivo temporal `context-ledger.md` que persiste el output de cada step y permite al orquestador filtrar selectivamente qué información pasa al siguiente agente.
+In sequential multi-agent flows, the workflow manages context transfer between agents via a **Context Ledger**: a temporary `context-ledger.md` file that persists the output of each step and allows the orchestrator to selectively filter what information passes to the next agent.
 
-### Principio
+### Principle
 
-El **workflow** es la única entidad que conoce el flujo completo y, por tanto, la única que decide **qué contexto fluye y hacia dónde**. Los agentes no leen ni escriben en el ledger directamente — el orquestador lo hace por ellos.
+The **workflow** is the only entity that knows the complete flow and, therefore, the only one that decides **what context flows and where**. Agents do not read or write to the ledger directly — the orchestrator does it for them.
 
-### Flujo
+### Flow
 
 ```
-1. Workflow inicializa el context-ledger.md
-2. Workflow invoca Agent A
-3. Workflow escribe el output de Agent A en el ledger
-4. Workflow lee el ledger, filtra según el Context Map, y construye el input para Agent B
-5. Workflow invoca Agent B con el input filtrado
-6. Workflow escribe el output de Agent B en el ledger
-7. [Repite para cada step siguiente]
+1. Workflow initializes context-ledger.md
+2. Workflow invokes Agent A
+3. Workflow writes Agent A's output to the ledger
+4. Workflow reads the ledger, filters according to Context Map, and builds the input for Agent B
+5. Workflow invokes Agent B with the filtered input
+6. Workflow writes Agent B's output to the ledger
+7. [Repeats for each following step]
 ```
 
 ### Context Map
 
-Cada workflow que usa el patrón debe incluir una sección **Context Map** que define, por cada step, qué campos del output de qué steps anteriores necesita como input:
+Each workflow that uses the pattern must include a **Context Map** section that defines, for each step, which fields from which previous steps' outputs it needs as input:
 
 ```markdown
-| Step destino | Consume de      | Campos / Secciones    | Modo     |
-| ------------ | --------------- | --------------------- | -------- |
-| Step 2       | Step 1 → output | proceso, diagrama     | parcial  |
-| Step 3       | Step 2 → output | entidades, orden      | completo |
-| Step 3       | Step 1 → output | nombre, restricciones | parcial  |
+| Destination Step | Consumes from   | Fields / Sections | Mode     |
+| ---------------- | --------------- | ----------------- | -------- |
+| Step 2           | Step 1 → output | process, diagram  | partial  |
+| Step 3           | Step 2 → output | entities, order   | complete |
+| Step 3           | Step 1 → output | name, constraints | partial  |
 ```
 
-- **Modo `completo`**: el output íntegro del step referenciado.
-- **Modo `parcial`**: solo los campos listados en "Campos / Secciones".
+- **Mode `complete`**: the full output of the referenced step.
+- **Mode `partial`**: only the fields listed in "Fields / Sections".
 
-### Cuándo aplicar este patrón
+### When to apply this pattern
 
-- Workflows con **2+ agentes en secuencia** que necesitan datos de agentes anteriores.
-- Workflows donde el contexto debe ser **trazable** (auditoría, debugging).
-- No es necesario en workflows de un solo agente ni en commands.
+- Workflows with **2+ agents in sequence** that need data from previous agents.
+- Workflows where context must be **traceable** (auditing, debugging).
+- Not necessary in single-agent workflows or in commands.
 
-### Skill de soporte
+### Support Skill
 
-Para crear y operar el ledger, los workflows pueden usar la skill `ski-context-ledger` (`./skills/ski-context-ledger/SKILL.md`).
+To create and operate the ledger, workflows can use the skill `ski-context-ledger` (`./skills/ski-context-ledger/SKILL.md`).

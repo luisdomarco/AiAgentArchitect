@@ -1,95 +1,95 @@
 ---
 name: res-architect-execution-phases
-description: Detalle estructural de las fases de ejecución del orquestador, endpoints y flujo QA.
+description: Structural detail of the orchestrator's execution phases, endpoints, and QA flow.
 tags: [workflow, routing, phases, orchestration, S1, S2, S3]
 ---
 
 # Architect Execution Phases
 
-Este documento detalla la lógica operativa y los bucles de interacción que ejecuta el orquestador principal (`wor-agentic-architect`) campo a través durante el discovery, arquitectura y generación humana/QA.
+This document details the operational logic and interaction loops that the main orchestrator (`wor-agentic-architect`) executes throughout discovery, architecture, and human/QA generation.
 
-## Tracking de métricas
+## Metrics tracking
 
-Mantener el objeto de métricas `{ "regeneraciones", "iteraciones" }` por Step (ver `kno-handoff-schemas` §3). Incrementar en regeneraciones (opción C) o iteraciones (opción B). Pasar al Evaluador junto al contexto de cada fase.
+Maintain the metrics object `{ "regenerations", "iterations" }` per Step (see `kno-handoff-schemas` §3). Increment on regenerations (option C) or iterations (option B). Pass to the Evaluator along with each phase context.
 
 ---
 
 ## Step 0 — Input Structuring & Enrichment
 
-**Activa:** `age-spe-input-enricher` recibiendo el input crudo o formato parcial. Estructura e infiere vacíos iniciales proponiendo mejoras para validar la idea antes del discovery fuerte.
+**Activates:** `age-spe-input-enricher` receiving the raw or partial format input. Structures and infers initial gaps by proposing improvements to validate the idea before heavy discovery.
 
-**Checkpoint S0:** A) ✅ Aprobar estructura base → Step 1 · B) ✏️ Ajustar este resultado · C) 🔄 Regenerar usando distinto enfoque · D) ↩️ Volver atrás
+**Checkpoint S0:** A) ✅ Approve base structure → Step 1 · B) ✏️ Adjust this result · C) 🔄 Regenerate using a different approach · D) ↩️ Go back
 
-**Context Ledger:** Tras validar el Checkpoint S0, ejecutar `ski-context-ledger` operación `write` con step=0, agent=`age-spe-input-enricher`, output=Resumen del input estructurado.
+**Context Ledger:** After validating Checkpoint S0, execute `ski-context-ledger` operation `write` with step=0, agent=`age-spe-input-enricher`, output=Summary of the structured input.
 
-> `/skip-qa S0` omite el QA para esta fase preparatoria.
+> `/skip-qa S0` skips QA for this preparatory phase.
 
 ---
 
 ## Step 1 — Process Discovery
 
-**Activa:** `age-spe-process-discovery` con el modo y descripción inicial. El agente conduce la entrevista completa y devuelve el handoff S1→S2 (schema en `kno-handoff-schemas` §1).
+**Activates:** `age-spe-process-discovery` with the mode and initial description. The agent conducts the complete interview and returns the S1→S2 handoff (schema in `kno-handoff-schemas` §1).
 
-**Context Ledger:** Tras obtener el JSON de handoff S1, ejecutar `ski-context-ledger` operación `write` con step=1, agent=`age-spe-process-discovery`, output=JSON S1.
+**Context Ledger:** After obtaining the S1 handoff JSON, execute `ski-context-ledger` operation `write` with step=1, agent=`age-spe-process-discovery`, output=S1 JSON.
 
-**Checkpoint S1:** A) ✅ Aprobar → Step 2 · B) ✏️ Editar resumen · C) 🔄 Regenerar · D) ↩️ Volver atrás
+**Checkpoint S1:** A) ✅ Approve → Step 2 · B) ✏️ Edit summary · C) 🔄 Regenerate · D) ↩️ Go back
 
-**QA automático tras aprobación:**
+**Automatic QA after approval:**
 
-1. `age-spe-auditor` — Lee Rules activas + JSON S1 desde disco → produce tabla de cumplimiento.
-2. `age-spe-evaluator` — Puntúa S1. Crea el `qa-report.md` en la raíz del sistema generado (`{export-path}/qa-report.md`) con [Audit S1] + [Score S1].
+1. `age-spe-auditor` — Reads active Rules + S1 JSON from disk → produces compliance table.
+2. `age-spe-evaluator` — Scores S1. Creates `qa-report.md` at the root of the generated system (`{export-path}/qa-report.md`) with [Audit S1] + [Score S1].
 
-- Mostrar: `🔍 QA S1 — {N} criterios | ✅ {X} / ⚠️ {Y} / ❌ {Z} — Score: {X.X}/10 ({nivel})`
-- Si hay alertas: bullet con el criterio más crítico.
+- Display: `🔍 QA S1 — {N} criteria | ✅ {X} / ⚠️ {Y} / ❌ {Z} — Score: {X.X}/10 ({level})`
+- If there are alerts: bullet with the most critical criterion.
 
-> `/skip-qa S1` omite el ciclo QA para esta fase.
+> `/skip-qa S1` skips the QA cycle for this phase.
 
 ---
 
 ## Step 2 — Architecture Design
 
-**Context Ledger (read):** Antes de invocar al agente, ejecutar `ski-context-ledger` operación `read` con step_destino=2 y el Context Map del workflow. Esto extrae el JSON S1 completo del ledger.
+**Context Ledger (read):** Before invoking the agent, execute `ski-context-ledger` operation `read` with step_destination=2 and the workflow's Context Map. This extracts the complete S1 JSON from the ledger.
 
-**Activa:** `age-spe-architecture-designer` con el contexto filtrado por el ledger. El agente diseña el Blueprint y devuelve el handoff S2→S3 (schema en `kno-handoff-schemas` §2).
+**Activates:** `age-spe-architecture-designer` with the context filtered by the ledger. The agent designs the Blueprint and returns the S2→S3 handoff (schema in `kno-handoff-schemas` §2).
 
-**Context Ledger (write):** Tras obtener el JSON de handoff S2, ejecutar `ski-context-ledger` operación `write` con step=2, agent=`age-spe-architecture-designer`, output=JSON S2.
+**Context Ledger (write):** After obtaining the S2 handoff JSON, execute `ski-context-ledger` operation `write` with step=2, agent=`age-spe-architecture-designer`, output=S2 JSON.
 
-**Checkpoint S2:** A) ✅ Aprobar Blueprint → Step 3 · B) ✏️ Ajustar entidad · C) 🔄 Rediseñar arquitectura · D) ↩️ Volver a S1
+**Checkpoint S2:** A) ✅ Approve Blueprint → Step 3 · B) ✏️ Adjust entity · C) 🔄 Redesign architecture · D) ↩️ Return to S1
 
-**QA automático tras aprobación:**
+**Automatic QA after approval:**
 
-1. `age-spe-auditor` — Lee Rules activas + Blueprint desde disco → tabla de cumplimiento.
-2. `age-spe-evaluator` — Puntúa S2. Añade [Audit S2] + [Score S2] al `qa-report.md`.
+1. `age-spe-auditor` — Reads active Rules + Blueprint from disk → compliance table.
+2. `age-spe-evaluator` — Scores S2. Adds [Audit S2] + [Score S2] to `qa-report.md`.
 
-- Mostrar: `🔍 QA S2 — {N} criterios | ✅ {X} / ⚠️ {Y} / ❌ {Z} — Score: {X.X}/10`
+- Display: `🔍 QA S2 — {N} criteria | ✅ {X} / ⚠️ {Y} / ❌ {Z} — Score: {X.X}/10`
 
-> `/skip-qa S2` omite el ciclo QA para esta fase.
+> `/skip-qa S2` skips the QA cycle for this phase.
 
 ---
 
 ## Step 3 — Entity Implementation
 
-**Context Ledger (read):** Antes de invocar al agente, ejecutar `ski-context-ledger` operación `read` con step_destino=3 y el Context Map del workflow. Esto extrae: JSON S2 completo + campos parciales de S1 (`proceso.nombre`, `proceso.restricciones`, `diagrama_as_is`).
+**Context Ledger (read):** Before invoking the agent, execute `ski-context-ledger` operation `read` with step_destination=3 and the workflow's Context Map. This extracts: complete S2 JSON + partial fields from S1 (`process.name`, `process.constraints`, `diagram_as_is`).
 
-**Activa:** `age-spe-entity-builder` con el contexto filtrado por el ledger. El agente genera entidades una a una.
+**Activates:** `age-spe-entity-builder` with the context filtered by the ledger. The agent generates entities one by one.
 
-**Context Ledger (write):** Tras la aprobación final de todas las entidades y el `process-overview.md`, ejecutar `ski-context-ledger` operación `write` con step=3, agent=`age-spe-entity-builder`, output=lista de archivos generados.
+**Context Ledger (write):** After final approval of all entities and `process-overview.md`, execute `ski-context-ledger` operation `write` with step=3, agent=`age-spe-entity-builder`, output=list of generated files.
 
-**Checkpoint por entidad:** A) ✅ Aprobar → siguiente entidad · B) ✏️ Ajustar · C) 🔄 Regenerar · D) ↩️ Volver al Blueprint
+**Per-entity checkpoint:** A) ✅ Approve → next entity · B) ✏️ Adjust · C) 🔄 Regenerate · D) ↩️ Return to Blueprint
 
-**Audit automático tras cada aprobación:**
+**Automatic Audit after each approval:**
 
-- **Lotes normales (≤ 7 entidades):** `age-spe-auditor` sobre el archivo recién generado. Añade [Audit S3-{nombre}] al `qa-report.md`. Presenta resumen en pantalla (máx. 5 líneas).
-- **Lotes grandes (> 7 entidades):** Para no interrumpir al usuario, `age-spe-auditor` actúa en **background silencioso** acumulando el [Audit] en disco sin pedir confirmación bloqueante ni emitir resumen por pantalla (a menos que haya un ❌ crítico).
+- **Normal batches (≤ 7 entities):** `age-spe-auditor` on the newly generated file. Adds [Audit S3-{name}] to `qa-report.md`. Presents summary on screen (max. 5 lines).
+- **Large batches (> 7 entities):** To not interrupt the user, `age-spe-auditor` acts in **silent background** mode accumulating the [Audit] on disk without requesting blocking confirmation or emitting a screen summary (unless there is a critical ❌).
 
-Al finalizar todas las entidades, el agente genera `process-overview.md`.
+After all entities are complete, the agent generates `process-overview.md`.
 
-**Checkpoint de cierre:** A) ✅ Aprobar → empaquetado final · B) ✏️ Ajustar process-overview · C) 🔄 Volver a S3 · D) ↩️ Volver al Blueprint
+**Closing checkpoint:** A) ✅ Approve → final packaging · B) ✏️ Adjust process-overview · C) 🔄 Return to S3 · D) ↩️ Return to Blueprint
 
-**QA global tras aprobación:**
+**Global QA after approval:**
 
-1. `age-spe-evaluator` — Score S3: promedio de audits individuales. Métricas = suma acumulada de S3.
-2. `age-spe-evaluator` — Score global ponderado (S1×25% + S2×35% + S3×40%). Añade [Evaluación Global] al `qa-report.md` y entrada al `qa-meta-report.md`.
-3. `age-spe-optimizer` — Lee `qa-report.md` desde disco. Usa `ski-pattern-analyzer`. Añade [Optimization Proposals] al `qa-report.md`.
+1. `age-spe-evaluator` — S3 Score: average of individual audits. Metrics = cumulative sum of S3.
+2. `age-spe-evaluator` — Weighted global score (S1×25% + S2×35% + S3×40%). Adds [Global Evaluation] to `qa-report.md` and entry to `qa-meta-report.md`.
+3. `age-spe-optimizer` — Reads `qa-report.md` from disk. Uses `ski-pattern-analyzer`. Adds [Optimization Proposals] to `qa-report.md`.
 
-- Mostrar: `📊 Score: {X.X}/10 — {nivel} | S1:{X.X} S2:{X.X} S3:{X.X} | 🔧 {N} propuestas (ver qa-report.md)`
+- Display: `📊 Score: {X.X}/10 — {level} | S1:{X.X} S2:{X.X} S3:{X.X} | 🔧 {N} proposals (see qa-report.md)`

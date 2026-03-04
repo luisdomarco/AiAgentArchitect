@@ -9,46 +9,46 @@ description: Reads the current content of active Rules from disk paths, extracts
 
 **Input:**
 
-- `rules_content`: array de objetos `{ rule_name, content }` con el contenido actual de cada Rule leída desde disco
-- `output_to_audit`: el contenido del output de la fase (JSON de handoff, archivo de entidad, etc.)
-- `fase`: identificador de la fase auditada (`S1 | S2 | S3-N`)
-- `reasoning_trace`: (Opcional) El log de pensamiento del agente estructurado en `<sys-eval>`.
+- `rules_content`: array of objects `{ rule_name, content }` with the current content of each Rule read from disk
+- `output_to_audit`: the content of the phase output (handoff JSON, entity file, etc.)
+- `phase`: identifier of the audited phase (`S1 | S2 | S3-N`)
+- `reasoning_trace`: (Optional) The agent's thought log structured in `<sys-eval>`.
 
 **Output:**
 
-- `compliance_table`: array de objetos `{ criterio, rule, estado, evidencia }`
+- `compliance_table`: array of objects `{ criterion, rule, status, evidence }`
 - `summary`: `{ total: N, passed: X, warnings: Y, failed: Z }`
 
 ## Procedure
 
-### Paso 1 — Extracción de criterios
+### Step 1 — Criteria extraction
 
-Para cada Rule en `rules_content`:
+For each Rule in `rules_content`:
 
-1. Identificar la sección `## Hard Constraints` → criterios obligatorios (fallo = ❌)
-2. Identificar la sección `## Soft Constraints` → criterios recomendados (fallo = ⚠️)
-3. Extraer cada criterio como una condición verificable
+1. Identify the `## Hard Constraints` section → mandatory criteria (failure = ❌)
+2. Identify the `## Soft Constraints` section → recommended criteria (failure = ⚠️)
+3. Extract each criterion as a verifiable condition
 
-### Paso 2 — Verificación
+### Step 2 — Verification
 
-Para cada criterio extraído:
+For each extracted criterion:
 
-1. Buscar en `output_to_audit` y en `reasoning_trace` la evidencia de cumplimiento o incumplimiento
-2. Asignar estado:
-   - `✅` — El output cumple explícitamente el criterio con evidencia clara. Si el criterio requería razonamiento (Hard Constraint LLM), el `reasoning_trace` contiene prueba de obediencia.
-   - `⚠️` — El output cumple parcialmente o la evidencia es ambigua (Soft Constraint). O si el output cumple, pero el agente omitió el razonamiento dictado por `rul-strict-compliance`.
-   - `❌` — El output no cumple el criterio (Hard Constraint violado) o flagrante negligencia cognitiva.
-3. Registrar la evidencia concreta: cita textual del output o del trace que justifica el estado.
+1. Search in `output_to_audit` and in `reasoning_trace` for compliance or non-compliance evidence
+2. Assign status:
+   - `✅` — The output explicitly complies with the criterion with clear evidence. If the criterion required reasoning (Hard Constraint LLM), the `reasoning_trace` contains proof of obedience.
+   - `⚠️` — The output partially complies or evidence is ambiguous (Soft Constraint). Or if the output complies but the agent omitted the reasoning dictated by `rul-strict-compliance`.
+   - `❌` — The output does not comply with the criterion (Hard Constraint violated) or blatant cognitive negligence.
+3. Record the concrete evidence: verbatim quote from the output or trace that justifies the status.
 
-### Paso 3 — Composición de la tabla
+### Step 3 — Table composition
 
 ```markdown
-| Criterio                         | Rule         | Estado     | Evidencia                         |
-| -------------------------------- | ------------ | ---------- | --------------------------------- |
-| {descripción corta del criterio} | {rul-nombre} | {✅/⚠️/❌} | {cita o descripción de evidencia} |
+| Criterion                        | Rule       | Status     | Evidence                           |
+| -------------------------------- | ---------- | ---------- | ---------------------------------- |
+| {short description of criterion} | {rul-name} | {✅/⚠️/❌} | {quote or description of evidence} |
 ```
 
-### Paso 4 — Generación del resumen
+### Step 4 — Summary generation
 
 ```json
 {
@@ -61,11 +61,11 @@ Para cada criterio extraído:
 
 ## Examples
 
-**Input simplificado:**
+**Simplified input:**
 
 ```
 rules_content: [
-  { rule_name: "rul-naming-conventions", content: "## Hard Constraints\n- Todos los agents deben usar prefijo age-spe- o age-sup-\n- Nombres en kebab-case, máx. 40 caracteres..." }
+  { rule_name: "rul-naming-conventions", content: "## Hard Constraints\n- All agents must use prefix age-spe- or age-sup-\n- Names in kebab-case, max. 40 characters..." }
 ]
 output_to_audit: "name: age-architecture-designer\ndescription: ..."
 ```
@@ -76,10 +76,10 @@ output_to_audit: "name: age-architecture-designer\ndescription: ..."
 {
   "compliance_table": [
     {
-      "criterio": "Prefijo correcto para agent specialist",
+      "criterion": "Correct prefix for agent specialist",
       "rule": "rul-naming-conventions",
-      "estado": "❌",
-      "evidencia": "El nombre 'age-architecture-designer' usa 'age-' en lugar de 'age-spe-'"
+      "status": "❌",
+      "evidence": "The name 'age-architecture-designer' uses 'age-' instead of 'age-spe-'"
     }
   ],
   "summary": { "total": 1, "passed": 0, "warnings": 0, "failed": 1 }
@@ -88,6 +88,6 @@ output_to_audit: "name: age-architecture-designer\ndescription: ..."
 
 ## Error Handling
 
-- Si una Rule no tiene sección `## Hard Constraints` ni `## Soft Constraints`: registrar `⚠️ Rule sin criterios verificables — revisar formato`
-- Si el output_to_audit está vacío o malformado: registrar `❌ Output vacío o sin estructura — no auditable`
-- Si no se puede determinar el cumplimiento con certeza: asignar `⚠️` con evidencia `"No determinable con el output disponible"`
+- If a Rule has no `## Hard Constraints` or `## Soft Constraints` section: record `⚠️ Rule without verifiable criteria — check format`
+- If output_to_audit is empty or malformed: record `❌ Empty or unstructured output — not auditable`
+- If compliance cannot be determined with certainty: assign `⚠️` with evidence `"Not determinable with available output"`

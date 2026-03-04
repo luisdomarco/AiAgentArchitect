@@ -5,191 +5,195 @@ description: Generates Mermaid diagrams for process flows, AS-IS states, and ent
 
 # Diagram Generator Skill
 
-Genera diagramas en sintaxis Mermaid para representar procesos, flujos y arquitecturas de entidades agénticas. Los diagramas son importables directamente en draw.io/diagrams.net.
+Generates diagrams in Mermaid syntax to represent processes, flows, and agentic entity architectures. Diagrams are importable directly into draw.io/diagrams.net.
 
 ## Input / Output
 
 **Input:**
-- Tipo de diagrama a generar: `as-is` | `architecture` | `sequence` | `flow`
-- Datos del proceso o arquitectura a representar (del JSON de handoff correspondiente)
+
+- Type of diagram to generate: `as-is` | `architecture` | `sequence` | `flow`
+- Process or architecture data to represent (from the corresponding handoff JSON)
 
 **Output:**
-- Bloque de código Mermaid listo para renderizar y exportar a draw.io
+
+- Mermaid code block ready to render and export to draw.io
 
 ---
 
 ## Procedure
 
-### 1. Selección del tipo de diagrama
+### 1. Diagram type selection
 
-| Tipo | Cuándo usarlo | Sintaxis Mermaid |
-|---|---|---|
-| `as-is` | Al cerrar el Step 1 para reflejar el proceso actual | `flowchart TD` |
-| `architecture` | Al cerrar el Step 2 para mostrar entidades y relaciones | `flowchart TD` |
-| `sequence` | Cuando el orden de interacciones entre entidades es crítico | `sequenceDiagram` |
-| `flow` | Para el diagrama de flujo del `process-overview.md` | `flowchart TD` |
+| Type           | When to use it                                              | Mermaid syntax    |
+| -------------- | ----------------------------------------------------------- | ----------------- |
+| `as-is`        | When closing Step 1 to reflect the current process          | `flowchart TD`    |
+| `architecture` | When closing Step 2 to show entities and relationships      | `flowchart TD`    |
+| `sequence`     | When the order of interactions between entities is critical | `sequenceDiagram` |
+| `flow`         | For the flow diagram in `process-overview.md`               | `flowchart TD`    |
 
 ---
 
-### 2. Convenciones de estilo
+### 2. Style conventions
 
-**Formas de nodos según su rol:**
-
-```
-([texto])   → Inicio / Fin (stadium shape)
-[texto]     → Proceso / Entidad (rectángulo)
-{texto}     → Decisión (rombo)
-[(texto)]   → Base de datos / Sistema externo (cilindro)
-((texto))   → Evento (círculo)
-```
-
-**Etiquetas de flechas:**
+**Node shapes according to role:**
 
 ```
-A -->|"acción o dato"| B     → flujo con etiqueta
-A -.->|"opcional"| B         → flujo opcional o condicional
-A ==>|"crítico"| B           → flujo principal o crítico
+([text])   → Start / End (stadium shape)
+[text]     → Process / Entity (rectangle)
+{text}     → Decision (diamond)
+[(text)]   → Database / External system (cylinder)
+((text))   → Event (circle)
 ```
 
-**Subgrafos para agrupar entidades relacionadas:**
+**Arrow labels:**
 
 ```
-subgraph "Nombre del grupo"
-  entidad1
-  entidad2
+A -->|"action or data"| B     → flow with label
+A -.->|"optional"| B          → optional or conditional flow
+A ==>|"critical"| B           → main or critical flow
+```
+
+**Subgraphs for grouping related entities:**
+
+```
+subgraph "Group name"
+  entity1
+  entity2
 end
 ```
 
 ---
 
-### 3. Construcción del diagrama AS-IS
+### 3. AS-IS diagram construction
 
-Representa el proceso tal como fue descrito en el Step 1.
+Represents the process as it was described in Step 1.
 
-Estructura obligatoria:
-1. Nodo de inicio con el trigger
-2. Pasos del proceso como nodos rectangulares
-3. Decisiones como nodos de rombo con las dos ramas etiquetadas
-4. Sistemas externos como nodos cilíndricos
-5. Checkpoints humanos con etiqueta explícita
-6. Nodo de fin con el output
+Required structure:
 
-**Plantilla:**
+1. Start node with the trigger
+2. Process steps as rectangular nodes
+3. Decisions as diamond nodes with two labeled branches
+4. External systems as cylindrical nodes
+5. Human checkpoints with explicit label
+6. End node with the output
+
+**Template:**
 
 ```mermaid
 flowchart TD
-    START([Trigger: nombre del trigger])
-    
-    P1[Paso 1]
-    P2[Paso 2]
-    D1{¿Condición?}
-    P3A[Paso si Sí]
-    P3B[Paso si No]
-    EXT[(Sistema externo)]
-    CP1{{"👤 Checkpoint: aprobación humana"}}
-    END([Output: descripción del output])
-    
+    START([Trigger: trigger name])
+
+    P1[Step 1]
+    P2[Step 2]
+    D1{Condition?}
+    P3A[Step if Yes]
+    P3B[Step if No]
+    EXT[(External system)]
+    CP1{{"👤 Checkpoint: human approval"}}
+    END([Output: output description])
+
     START --> P1
     P1 --> P2
     P2 --> D1
-    D1 -->|Sí| P3A
+    D1 -->|Yes| P3A
     D1 -->|No| P3B
     P3A --> EXT
     EXT --> CP1
-    CP1 -->|Aprobado| END
-    CP1 -->|Rechazado| P1
+    CP1 -->|Approved| END
+    CP1 -->|Rejected| P1
 ```
 
 ---
 
-### 4. Construcción del diagrama de arquitectura
+### 4. Architecture diagram construction
 
-Representa las entidades del Blueprint y sus relaciones.
+Represents the Blueprint entities and their relationships.
 
-Convención de prefijos en nodos para identificar tipo de entidad:
+Node prefix convention to identify entity type:
 
 ```
-WF[wor-nombre]          → Workflow
-AGS[age-spe-nombre]     → Agent Specialist
-AGU[age-sup-nombre]     → Agent Supervisor
-SK[ski-nombre]          → Skill
-CMD[com-nombre]         → Command
-RUL[rul-nombre]         → Rule
-KB[(kno-nombre)]        → Knowledge-base
-EXT[(Sistema externo)]  → Sistema externo
+WF[wor-name]          → Workflow
+AGS[age-spe-name]     → Agent Specialist
+AGU[age-sup-name]     → Agent Supervisor
+SK[ski-name]          → Skill
+CMD[com-name]         → Command
+RUL[rul-name]         → Rule
+KB[(kno-name)]        → Knowledge-base
+EXT[(External system)] → External system
 ```
 
-**Plantilla:**
+**Template:**
 
 ```mermaid
 flowchart TD
-    U([Usuario])
-    WF[wor-nombre-workflow]
-    
+    U([User])
+    WF[wor-workflow-name]
+
     subgraph "Agents"
         AG1[age-spe-agent-1]
         AG2[age-spe-agent-2]
     end
-    
+
     subgraph "Skills"
         SK1[ski-skill-1]
         SK2[ski-skill-2]
     end
-    
-    subgraph "Recursos"
+
+    subgraph "Resources"
         RUL1[rul-rule-1]
         KB1[(kno-knowledge-base)]
     end
-    
+
     U -->|input| WF
-    WF -->|invoca| AG1
-    WF -->|invoca| AG2
-    AG1 -->|usa| SK1
-    AG2 -->|usa| SK1
-    AG2 -->|usa| SK2
-    AG1 -.->|consulta| KB1
-    AG1 -.->|condicionado por| RUL1
-    AG2 -.->|condicionado por| RUL1
+    WF -->|invokes| AG1
+    WF -->|invokes| AG2
+    AG1 -->|uses| SK1
+    AG2 -->|uses| SK1
+    AG2 -->|uses| SK2
+    AG1 -.->|consults| KB1
+    AG1 -.->|conditioned by| RUL1
+    AG2 -.->|conditioned by| RUL1
     WF -->|output| U
 ```
 
 ---
 
-### 5. Presentación al usuario
+### 5. Presentation to the user
 
-Siempre presenta el diagrama con:
-1. Una línea de contexto: *"Este es el diagrama [tipo] del proceso [nombre]."*
-2. El bloque de código Mermaid.
-3. Una instrucción de importación: *"Para abrirlo en draw.io: Extras → Edit Diagram → pegar el código."*
-4. La pregunta de validación: *"¿Refleja correctamente el [proceso / arquitectura]?"*
+Always present the diagram with:
+
+1. A context line: _"This is the [type] diagram of the [name] process."_
+2. The Mermaid code block.
+3. An import instruction: _"To open it in draw.io: Extras → Edit Diagram → paste the code."_
+4. The validation question: _"Does it correctly reflect the [process / architecture]?"_
 
 ---
 
 ## Examples
 
-**Ejemplo — Diagrama AS-IS de clasificación de emails**
+**Example — AS-IS diagram of email classification**
 
 ```mermaid
 flowchart TD
-    START([📧 Email entrante])
-    
-    P1[Leer y analizar email]
-    D1{¿Tipo de solicitud?}
-    P2A[Ruta: Facturación]
-    P2B[Ruta: Soporte técnico]
-    P2C[Ruta: Comercial]
+    START([📧 Incoming email])
+
+    P1[Read and analyze email]
+    D1{Type of request?}
+    P2A[Route: Billing]
+    P2B[Route: Technical support]
+    P2C[Route: Commercial]
     EXT[(CRM Zendesk)]
-    CP1{{"👤 Checkpoint: casos ambiguos"}}
-    END([✅ Ticket creado y asignado])
-    
+    CP1{{"👤 Checkpoint: ambiguous cases"}}
+    END([✅ Ticket created and assigned])
+
     START --> P1
     P1 --> D1
-    D1 -->|Facturación| P2A
-    D1 -->|Técnico| P2B
-    D1 -->|Comercial| P2C
-    D1 -->|Ambiguo| CP1
+    D1 -->|Billing| P2A
+    D1 -->|Technical| P2B
+    D1 -->|Commercial| P2C
+    D1 -->|Ambiguous| CP1
     P2A & P2B & P2C --> EXT
-    CP1 -->|Clasificado| EXT
+    CP1 -->|Classified| EXT
     EXT --> END
 ```
 
@@ -197,6 +201,6 @@ flowchart TD
 
 ## Error Handling
 
-- **Diagrama demasiado complejo para renderizar:** Dividir en dos diagramas (uno por subproceso o por capa de arquitectura).
-- **Nodo con nombre muy largo:** Acortar a un alias descriptivo en el nodo y añadir leyenda si es necesario.
-- **El usuario indica que el diagrama no refleja el proceso:** Preguntar qué parte es incorrecta y corregir solo esa parte, no regenerar todo.
+- **Diagram too complex to render:** Split into two diagrams (one per sub-process or architecture layer).
+- **Node with very long name:** Shorten to a descriptive alias on the node and add a legend if necessary.
+- **User indicates the diagram does not reflect the process:** Ask which part is incorrect and correct only that part, not regenerate everything.

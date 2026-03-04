@@ -6,71 +6,71 @@ tags: [qa, audit, evaluation, optimization]
 
 ## Context
 
-Esta rule define el comportamiento del ciclo QA (Auditoría + Evaluación + Optimización) como una capa transversal del sistema. El QA Layer corre automáticamente tras cada checkpoint aprobado, sin necesidad de que el usuario lo active. Su objetivo es garantizar que el sistema se auto-evalúa de forma continua y acumula conocimiento para mejorar.
+This rule defines the behavior of the QA cycle (Audit + Evaluation + Optimization) as a transversal layer of the system. The QA Layer runs automatically after each approved checkpoint, without requiring the user to activate it. Its goal is to ensure the system continuously self-evaluates and accumulates knowledge to improve.
 
-El QA Layer es externo al proceso creativo: observa, mide y propone, pero nunca modifica ni toma decisiones por el usuario.
+The QA Layer is external to the creative process: it observes, measures, and proposes, but never modifies or makes decisions on behalf of the user.
 
 ## Hard Constraints
 
-- El QA Layer se activa **después** de que el usuario aprueba un checkpoint, nunca antes ni en lugar de él.
-- El Auditor (`age-spe-auditor`) y el Evaluador (`age-spe-evaluator`) **no modifican ningún archivo** del sistema auditado.
-- El Optimizador (`age-spe-optimizer`) **no aplica ninguna propuesta automáticamente** — toda modificación requiere decisión explícita del usuario.
-- El `qa-report.md` se actualiza siempre en modo **append** — nunca se sobreescribe ni se eliminan bloques anteriores. **Esta actualización debe hacerse en disco de forma inmediata** en el momento de la auditoría, no al final del proceso.
-- El Auditor **siempre lee los archivos de entidades y Rules desde disco** en el momento de la auditoría, nunca desde versiones en memoria.
-- TRAS ESCRIBIR EL REPORTE EN DISCO: El Auditor o Evaluador **siempre debe emitir un resumen visible por chat al usuario** de máximo 5 líneas. El ciclo QA no es silencioso; el usuario debe saber qué se ha evaluado.
+- The QA Layer activates **after** the user approves a checkpoint, never before or instead of it.
+- The Auditor (`age-spe-auditor`) and the Evaluator (`age-spe-evaluator`) **do not modify any file** of the audited system.
+- The Optimizer (`age-spe-optimizer`) **does not automatically apply any proposal** — every modification requires an explicit user decision.
+- The `qa-report.md` is always updated in **append** mode — it is never overwritten and no previous blocks are deleted. **This update must be written to disk immediately** at the moment of the audit, not at the end of the process.
+- The Auditor **always reads entity files and Rules from disk** at the time of the audit, never from in-memory versions.
+- AFTER WRITING THE REPORT TO DISK: The Auditor or Evaluator **must always emit a chat-visible summary to the user** of at most 5 lines. The QA cycle is not silent; the user must know what has been evaluated.
 
 ## Soft Constraints
 
-- Si el score de una fase es `< 4.0` (Crítico), el orquestador puede opcionalmente notificar al usuario con una advertencia antes de continuar al siguiente paso.
-- El ciclo QA en CP-S3-N (por entidad) puede limitarse solo al Auditor (sin Evaluador) si el número de entidades es > 7, para no alargar el proceso.
-- Si el usuario rechaza explícitamente el QA (`/skip-qa`), el ciclo puede omitirse para esa fase, pero se registra la omisión en el `qa-report.md`.
+- If a phase score is `< 4.0` (Critical), the orchestrator may optionally notify the user with a warning before continuing to the next step.
+- The QA cycle in CP-S3-N (per entity) may be limited to the Auditor only (without the Evaluator) if the number of entities is > 7, to avoid extending the process.
+- If the user explicitly rejects the QA (`/skip-qa`), the cycle may be skipped for that phase, but the omission is recorded in `qa-report.md`.
 
-## Activación automática
+## Automatic Activation
 
-| Evento             | Activar                          | Output                                         |
-| ------------------ | -------------------------------- | ---------------------------------------------- |
-| CP-S0 aprobado     | Auditor (S0) → Evaluador (S0)    | Bloque [Audit S0] + [Score S0] en qa-report.md |
-| CP-S1 aprobado     | Auditor (S1) → Evaluador (S1)    | Bloque [Audit S1] + [Score S1] en qa-report.md |
-| CP-S2 aprobado     | Auditor (S2) → Evaluador (S2)    | Bloque [Audit S2] + [Score S2] en qa-report.md |
-| CP-S3-N aprobado   | Auditor (entidad N)              | Bloque [Audit S3-{entidad}] en qa-report.md    |
-| CP-CIERRE aprobado | Evaluador (global) → Optimizador | Scorecard global + Proposals en qa-report.md   |
+| Event             | Activate                       | Output                                        |
+| ----------------- | ------------------------------ | --------------------------------------------- |
+| CP-S0 approved    | Auditor (S0) → Evaluator (S0)  | Block [Audit S0] + [Score S0] in qa-report.md |
+| CP-S1 approved    | Auditor (S1) → Evaluator (S1)  | Block [Audit S1] + [Score S1] in qa-report.md |
+| CP-S2 approved    | Auditor (S2) → Evaluator (S2)  | Block [Audit S2] + [Score S2] in qa-report.md |
+| CP-S3-N approved  | Auditor (entity N)             | Block [Audit S3-{entity}] in qa-report.md     |
+| CP-CLOSE approved | Evaluator (global) → Optimizer | Global Scorecard + Proposals in qa-report.md  |
 
-## Re-audit bajo demanda
+## On-demand Re-audit
 
-El usuario puede lanzar en cualquier momento:
-
-```
-/re-audit [entidad | fase | sistema]
-```
-
-Ejemplos válidos:
-
-- `/re-audit rul-naming-conventions` → re-audita ese archivo específico
-- `/re-audit S2` → re-audita toda la fase S2 con el contenido actual
-- `/re-audit sistema` → re-audita todas las entidades generadas
-
-El re-audit añade un bloque `## [Re-audit — {target} — {timestamp}]` al final del `qa-report.md`. Nunca sobreescribe auditorías anteriores.
-
-## Omisión voluntaria
-
-El usuario puede omitir el QA para una fase con:
+The user may trigger at any time:
 
 ```
-/skip-qa [fase]
+/re-audit [entity | phase | system]
 ```
 
-Esto registra en el `qa-report.md`:
+Valid examples:
+
+- `/re-audit rul-naming-conventions` → re-audits that specific file
+- `/re-audit S2` → re-audits the entire S2 phase with current content
+- `/re-audit system` → re-audits all generated entities
+
+The re-audit appends a block `## [Re-audit — {target} — {timestamp}]` to the end of `qa-report.md`. It never overwrites previous audits.
+
+## Voluntary Omission
+
+The user may skip QA for a phase with:
+
+```
+/skip-qa [phase]
+```
+
+This records in `qa-report.md`:
 
 ```markdown
-## [QA Omitido — {fase}] — {timestamp}
+## [QA Skipped — {phase}] — {timestamp}
 
-_El usuario omitió el ciclo QA para esta fase._
+_The user skipped the QA cycle for this phase._
 ```
 
-## Responsabilidades por agente
+## Agent Responsibilities
 
-| Agente              | Puede                                              | No puede                                         |
-| ------------------- | -------------------------------------------------- | ------------------------------------------------ |
-| `age-spe-auditor`   | Leer archivos, reportar cumplimiento               | Modificar, sugerir mejoras de contenido          |
-| `age-spe-evaluator` | Calcular scores, escribir en qa-report.md          | Modificar entidades, emitir juicios cualitativos |
-| `age-spe-optimizer` | Proponer mejoras con target y descripción concreta | Aplicar cambios, modificar ningún archivo        |
+| Agent               | Can                                                       | Cannot                                        |
+| ------------------- | --------------------------------------------------------- | --------------------------------------------- |
+| `age-spe-auditor`   | Read files, report compliance                             | Modify, suggest content improvements          |
+| `age-spe-evaluator` | Calculate scores, write to qa-report.md                   | Modify entities, issue qualitative judgements |
+| `age-spe-optimizer` | Propose improvements with concrete target and description | Apply changes, modify any file                |

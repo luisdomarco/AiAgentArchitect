@@ -1,23 +1,23 @@
-# Sistema Dual: .agents/ y .claude/
+# Dual System: .agents/ and .claude/
 
-Este proyecto mantiene dos implementaciones del mismo sistema agéntico, cada una optimizada para su plataforma de ejecución.
-
----
-
-## Visión general
-
-AiAgentArchitect genera sistemas agénticos completos. Para soportar múltiples plataformas, el propio sistema de diseño se mantiene en dos estructuras paralelas:
-
-| Directorio | Plataforma | Propósito |
-|------------|------------|-----------|
-| `.agents/` | Google Antigravity | Estructura original, source of truth para convenciones |
-| `.claude/` | Claude Code | Estructura adaptada a las convenciones de Claude Code |
-
-Ambas contienen las **mismas entidades** con el **mismo contenido funcional**. Las diferencias son exclusivamente estructurales (organización de directorios) y de enrutamiento (rutas relativas entre archivos).
+This project maintains two implementations of the same agentic system, each optimized for its execution platform.
 
 ---
 
-## Estructura comparativa
+## Overview
+
+AiAgentArchitect generates complete agentic systems. To support multiple platforms, the design system itself is maintained in two parallel structures:
+
+| Directory  | Platform           | Purpose                                             |
+| ---------- | ------------------ | --------------------------------------------------- |
+| `.agents/` | Google Antigravity | Original structure, source of truth for conventions |
+| `.claude/` | Claude Code        | Structure adapted to Claude Code conventions        |
+
+Both contain the **same entities** with the **same functional content**. The differences are exclusively structural (directory organization) and routing (relative paths between files).
+
+---
+
+## Comparative Structure
 
 ```
 .agents/ (Google Antigravity)          .claude/ (Claude Code)
@@ -28,223 +28,230 @@ Ambas contienen las **mismas entidades** con el **mismo contenido funcional**. L
 │   ├── com-*.md                      →│   ├── age-spe-*.md
 │   └── test.md                        │   └── age-sup-*.md
 ├── skills/                            ├── skills/
-│   └── ski-*/                         │   └── ski-*.md (aplanado)
+│   └── ski-*/                         │   └── ski-*.md (flattened)
 │       └── SKILL.md ─────────────────→│
 ├── rules/                             ├── rules/
-│   └── rul-*.md ─────────────────────→│   └── rul-*.md (idéntico)
+│   └── rul-*.md ─────────────────────→│   └── rul-*.md (identical)
 ├── knowledge-base/                    ├── knowledge-base/
-│   └── kno-*.md ─────────────────────→│   └── kno-*.md (idéntico)
+│   └── kno-*.md ─────────────────────→│   └── kno-*.md (identical)
 ├── resources/                         ├── resources/
-│   └── res-*.md ─────────────────────→│   └── res-*.md (idéntico)
-                                       ├── settings.local.json (solo Claude)
-                                       └── plans/ (solo Claude)
+│   └── res-*.md ─────────────────────→│   └── res-*.md (identical)
+                                       ├── settings.local.json (Claude only)
+                                       └── plans/ (Claude only)
 ```
 
 ---
 
-## Mapeo de entidades
+## Entity Mapping
 
-| Tipo | .agents/ | .claude/ | Transformación |
-|------|----------|----------|----------------|
-| Workflow | `workflows/wor-*.md` | `commands/wor-*.md` | Cambio de directorio + rutas |
-| Agent Specialist | `workflows/age-spe-*.md` | `agents/age-spe-*.md` | Cambio de directorio + rutas |
-| Agent Supervisor | `workflows/age-sup-*.md` | `agents/age-sup-*.md` | Cambio de directorio + rutas |
-| Command | `workflows/com-*.md` | `commands/com-*.md` | Cambio de directorio + rutas |
-| Skill | `skills/ski-*/SKILL.md` | `skills/ski-*.md` | Aplanado de estructura |
-| Rule | `rules/rul-*.md` | `rules/rul-*.md` | Copia directa |
-| Knowledge-base | `knowledge-base/kno-*.md` | `knowledge-base/kno-*.md` | Copia directa |
-| Resource | `resources/res-*.md` | `resources/res-*.md` | Copia directa |
+| Type             | .agents/                  | .claude/                  | Transformation           |
+| ---------------- | ------------------------- | ------------------------- | ------------------------ |
+| Workflow         | `workflows/wor-*.md`      | `commands/wor-*.md`       | Directory change + paths |
+| Agent Specialist | `workflows/age-spe-*.md`  | `agents/age-spe-*.md`     | Directory change + paths |
+| Agent Supervisor | `workflows/age-sup-*.md`  | `agents/age-sup-*.md`     | Directory change + paths |
+| Command          | `workflows/com-*.md`      | `commands/com-*.md`       | Directory change + paths |
+| Skill            | `skills/ski-*/SKILL.md`   | `skills/ski-*.md`         | Flattened structure      |
+| Rule             | `rules/rul-*.md`          | `rules/rul-*.md`          | Direct copy              |
+| Knowledge-base   | `knowledge-base/kno-*.md` | `knowledge-base/kno-*.md` | Direct copy              |
+| Resource         | `resources/res-*.md`      | `resources/res-*.md`      | Direct copy              |
 
 ---
 
-## Transformaciones de rutas
+## Path Transformations
 
-Las entidades referencian otras entidades con rutas relativas. Cuando la estructura de directorios cambia, las rutas se transforman automáticamente.
+Entities reference other entities with relative paths. When the directory structure changes, paths are automatically transformed.
 
-### Rutas que cambian
+### Paths that change
 
-| Referencia | En .agents/ | En .claude/ |
-|------------|-------------|-------------|
-| Agent desde workflow | `./age-spe-*.md` | `../agents/age-spe-*.md` |
-| Supervisor desde workflow | `./age-sup-*.md` | `../agents/age-sup-*.md` |
-| Skill desde agent/workflow | `../skills/ski-*/SKILL.md` | `../skills/ski-*.md` |
+| Reference                 | In .agents/                | In .claude/              |
+| ------------------------- | -------------------------- | ------------------------ |
+| Agent from workflow       | `./age-spe-*.md`           | `../agents/age-spe-*.md` |
+| Supervisor from workflow  | `./age-sup-*.md`           | `../agents/age-sup-*.md` |
+| Skill from agent/workflow | `../skills/ski-*/SKILL.md` | `../skills/ski-*.md`     |
 
-### Rutas que NO cambian
+### Paths that do NOT change
 
-| Referencia | Ruta (igual en ambos) |
-|------------|----------------------|
-| Rule | `../rules/rul-*.md` |
+| Reference      | Path (same in both)          |
+| -------------- | ---------------------------- |
+| Rule           | `../rules/rul-*.md`          |
 | Knowledge-base | `../knowledge-base/kno-*.md` |
-| Resource | `../resources/res-*.md` |
+| Resource       | `../resources/res-*.md`      |
 
-### Protecciones
+### Protections
 
-Las transformaciones de rutas **no afectan** a:
-- Templates/plantillas genéricas (ej: `../skills/[nombre-skill]/SKILL.md` en documentación de cómo generar sistemas)
-- Rutas con patrones genéricos entre corchetes `[nombre]`
-- Contenido dentro de bloques de código que documentan la arquitectura de sistemas generados
+Path transformations **do not affect**:
 
----
-
-## Archivos específicos por plataforma
-
-Estos archivos **no se sincronizan** porque son exclusivos de su plataforma:
-
-| Archivo | Plataforma | Propósito |
-|---------|------------|-----------|
-| `.claude/settings.local.json` | Claude Code | Permisos de ejecución |
-| `.claude/plans/` | Claude Code | Planes de implementación |
+- Generic templates/placeholders (e.g. `../skills/[skill-name]/SKILL.md` in system generation documentation)
+- Paths with generic patterns in brackets `[name]`
+- Content inside code blocks that document the architecture of generated systems
 
 ---
 
-## Sincronización automática
+## Platform-specific Files
 
-### Mecanismo: Git Pre-commit Hook
+These files **are not synced** because they are exclusive to their platform:
 
-Cada vez que haces `git commit`, un hook automático:
+| File                          | Platform    | Purpose               |
+| ----------------------------- | ----------- | --------------------- |
+| `.claude/settings.local.json` | Claude Code | Execution permissions |
+| `.claude/plans/`              | Claude Code | Implementation plans  |
 
-1. Detecta si hay archivos `.md` modificados en `.agents/` o `.claude/`
-2. Sincroniza hacia el lado contrario aplicando las transformaciones
-3. Añade los archivos sincronizados al commit
+---
+
+## Automatic Synchronization
+
+### Mechanism: Git Pre-commit Hook
+
+Every time you run `git commit`, an automatic hook:
+
+1. Detects if any `.md` files have been modified in `.agents/` or `.claude/`
+2. Syncs toward the opposite side applying the transformations
+3. Adds the synced files to the commit
 
 ```
-  Editas .agents/workflows/age-spe-auditor.md
+  You edit .agents/workflows/age-spe-auditor.md
        ↓
   git add .agents/workflows/age-spe-auditor.md
        ↓
   git commit -m "update auditor"
        ↓
-  [pre-commit hook] Detecta cambio en .agents/
+  [pre-commit hook] Detects change in .agents/
        ↓
-  [sync-dual.sh] Copia → .claude/agents/age-spe-auditor.md
-                  Transforma rutas de skills
+  [sync-dual.sh] Copies → .claude/agents/age-spe-auditor.md
+                  Transforms skill paths
        ↓
   [pre-commit hook] git add .claude/agents/age-spe-auditor.md
        ↓
-  Commit incluye ambos archivos automáticamente
+  Commit includes both files automatically
 ```
 
-### Protección contra conflictos
+### Conflict Protection
 
-Si se detectan cambios en **ambos lados** simultáneamente, el hook **bloquea el commit** y pide resolución manual:
+If changes are detected on **both sides** simultaneously, the hook **blocks the commit** and requests manual resolution:
 
 ```
-[pre-commit] Cambios detectados en ambos lados simultáneamente.
-[pre-commit] Por favor, sincroniza manualmente primero:
-  ./scripts/sync-dual.sh --agents-to-claude  (si .agents/ es el source)
-  ./scripts/sync-dual.sh --claude-to-agents  (si .claude/ es el source)
+[pre-commit] Changes detected on both sides simultaneously.
+[pre-commit] Please sync manually first:
+  ./scripts/sync-dual.sh --agents-to-claude  (if .agents/ is the source)
+  ./scripts/sync-dual.sh --claude-to-agents  (if .claude/ is the source)
 ```
 
 ---
 
-## Uso manual del script
+## Manual Script Usage
 
-### Comandos disponibles
+### Available Commands
 
 ```bash
-# Detectar automáticamente qué lado cambió y sincronizar
+# Auto-detect which side changed and sync
 ./scripts/sync-dual.sh --auto
 
-# Forzar sincronización en una dirección
+# Force sync in a specific direction
 ./scripts/sync-dual.sh --agents-to-claude
 ./scripts/sync-dual.sh --claude-to-agents
 
-# Sincronizar un archivo específico
+# Sync a specific file
 ./scripts/sync-dual.sh --file .agents/rules/rul-audit-behavior.md
 
-# Solo validar que ambas estructuras están sincronizadas
+# Validate that both structures are in sync
 ./scripts/sync-dual.sh --validate
 ```
 
-### Watch en tiempo real (opcional)
+### Real-time Watch (optional)
 
-Para sincronización en tiempo real mientras editas (requiere `fswatch`):
+For real-time synchronization while editing (requires `fswatch`):
 
 ```bash
-# Instalar fswatch si no está disponible
+# Install fswatch if not available
 brew install fswatch
 
-# Iniciar el watcher
+# Start the watcher
 ./scripts/watch-sync.sh
 ```
 
-El watcher detecta cambios en el filesystem y sincroniza automáticamente sin necesidad de commit.
+The watcher detects filesystem changes and syncs automatically without requiring a commit.
 
 ---
 
-## Flujo de trabajo diario
+## Daily Workflow
 
-### Opción A: Trabajar con git hook (recomendado)
+### Option A: Work with git hook (recommended)
 
-1. Edita archivos en `.agents/` o `.claude/` (el que prefieras)
-2. Haz `git add` de tus cambios
-3. Haz `git commit` — el hook sincroniza automáticamente
-4. Ambos lados quedan actualizados en el mismo commit
+1. Edit files in `.agents/` or `.claude/` (whichever you prefer)
+2. Run `git add` for your changes
+3. Run `git commit` — the hook syncs automatically
+4. Both sides are updated in the same commit
 
-### Opción B: Trabajar con watch en tiempo real
+### Option B: Work with real-time watch
 
-1. Ejecuta `./scripts/watch-sync.sh` en una terminal
-2. Edita archivos en cualquier lado
-3. Los cambios se replican al instante
-4. Cuando termines, haz commit normal
+1. Run `./scripts/watch-sync.sh` in a terminal
+2. Edit files on either side
+3. Changes are replicated instantly
+4. When done, commit normally
 
-### Opción C: Sincronización manual bajo demanda
+### Option C: Manual on-demand sync
 
-1. Edita archivos en un lado
-2. Ejecuta `./scripts/sync-dual.sh --auto`
-3. Verifica con `./scripts/sync-dual.sh --validate`
-4. Haz commit
+1. Edit files on one side
+2. Run `./scripts/sync-dual.sh --auto`
+3. Verify with `./scripts/sync-dual.sh --validate`
+4. Commit
 
 ---
 
-## Resolución de problemas
+## Troubleshooting
 
-### El hook bloqueó mi commit
+### The hook blocked my commit
 
-**Causa:** Hay cambios staged en `.agents/` Y `.claude/` simultáneamente.
+**Cause:** There are staged changes in `.agents/` AND `.claude/` simultaneously.
 
-**Solución:** Decide cuál es el source y sincroniza manualmente:
+**Solution:** Decide which is the source and sync manually:
+
 ```bash
-./scripts/sync-dual.sh --agents-to-claude   # si editaste .agents/
-./scripts/sync-dual.sh --claude-to-agents   # si editaste .claude/
+./scripts/sync-dual.sh --agents-to-claude   # if you edited .agents/
+./scripts/sync-dual.sh --claude-to-agents   # if you edited .claude/
 git add .agents/ .claude/
-git commit -m "tu mensaje"
+git commit -m "your message"
 ```
 
-### Los archivos están desincronizados
+### Files are out of sync
 
-**Verificar:**
+**Check:**
+
 ```bash
 ./scripts/sync-dual.sh --validate
 ```
 
-**Forzar resincronización completa:**
+**Force full resync:**
+
 ```bash
-./scripts/sync-dual.sh --agents-to-claude   # .agents/ como source of truth
+./scripts/sync-dual.sh --agents-to-claude   # .agents/ as source of truth
 ```
 
-### Añadí una nueva entidad y no se sincroniza
+### I added a new entity and it's not syncing
 
-Verifica que el nombre del archivo sigue las convenciones de nomenclatura (`wor-*`, `age-spe-*`, `ski-*`, `rul-*`, `kno-*`, `res-*`). El script solo sincroniza archivos que matchean estos patrones.
+Verify that the file name follows the naming conventions (`wor-*`, `age-spe-*`, `ski-*`, `rul-*`, `kno-*`, `res-*`). The script only syncs files that match these patterns.
 
-### El watch no detecta cambios
+### The watch is not detecting changes
 
-Verifica que `fswatch` está instalado:
+Verify that `fswatch` is installed:
+
 ```bash
 brew install fswatch
 ```
 
 ---
 
-## Inventario actual
+## Current Inventory
 
-### Entidades compartidas (34 archivos)
+### Shared Entities (34 files)
 
 **Commands/Workflows (2):**
+
 - `wor-agentic-architect.md`
 - `test.md`
 
 **Agents (6):**
+
 - `age-spe-process-discovery.md`
 - `age-spe-architecture-designer.md`
 - `age-spe-entity-builder.md`
@@ -253,6 +260,7 @@ brew install fswatch
 - `age-spe-optimizer.md`
 
 **Skills (9):**
+
 - `ski-compliance-checker`
 - `ski-diagram-generator`
 - `ski-entity-file-builder`
@@ -264,12 +272,14 @@ brew install fswatch
 - `ski-rubric-scorer`
 
 **Rules (4):**
+
 - `rul-audit-behavior.md`
 - `rul-checkpoint-behavior.md`
 - `rul-interview-standards.md`
 - `rul-naming-conventions.md`
 
 **Knowledge-base (7):**
+
 - `kno-entity-selection.md`
 - `kno-evaluation-criteria.md`
 - `kno-fundamentals-entities.md`
@@ -279,6 +289,7 @@ brew install fswatch
 - `kno-system-architecture.md`
 
 **Resources (6):**
+
 - `res-architect-execution-phases.md`
 - `res-architecture-component-metrics.md`
 - `res-entity-formatting-templates.md`

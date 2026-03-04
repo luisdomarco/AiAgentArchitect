@@ -1,138 +1,138 @@
 ---
-description: Arquitectura de persistencia de entidades agénticas. Define la estructura root folder, convenciones de rutas y arquitectura dual Antigravity y Claude Code.
+description: Persistence architecture for agentic entities. Defines the root folder structure, path conventions, and dual Antigravity and Claude Code architecture.
 tags: [architecture, file-structure, deployment]
 ---
 
 ## Table of Contents
 
-- [1. Arquitectura root folder](#1-arquitectura-root-folder)
-- [2. Arquitectura para aplicaciones](#2-arquitectura-para-aplicaciones)
-- [3. Arquitectura dual: Antigravity y Claude Code](#3-arquitectura-dual-antigravity-y-claude-code)
-- [4. Rutas relativas entre entidades](#4-rutas-relativas-entre-entidades)
+- [1. Root folder architecture](#1-root-folder-architecture)
+- [2. Architecture for applications](#2-architecture-for-applications)
+- [3. Export architecture](#3-export-architecture)
+- [4. Relative paths between entities](#4-relative-paths-between-entities)
 
 ---
 
-## 1. Arquitectura root folder
+## 1. Root folder architecture
 
-La carpeta root es el **source of truth** de todas las entidades. Es agnóstica a la plataforma de destino.
+The root folder is the **source of truth** for all entities. It is platform-agnostic.
 
 ```
 (Project Root)
 ├── .agents/
 │   ├── workflows/
-│   │   ├── wor-[nombre].md
-│   │   ├── age-spe-[nombre].md
-│   │   ├── age-sup-[nombre].md
-│   │   └── com-[nombre].md
+│   │   ├── wor-[name].md
+│   │   ├── age-spe-[name].md
+│   │   ├── age-sup-[name].md
+│   │   └── com-[name].md
 │   │
 │   ├── skills/
-│   │   └── ski-[nombre]/
+│   │   └── ski-[name]/
 │   │       └── SKILL.md
 │   │
 │   ├── rules/
-│   │   └── rul-[nombre].md
+│   │   └── rul-[name].md
 │   │
 │   ├── knowledge-base/
-│   │   └── kno-[nombre].md
+│   │   └── kno-[name].md
 │   │
 │   └── resources/
-│       └── res-[nombre].md
+│       └── res-[name].md
 │
 ├── exports/
-│   └── [nombre-sistema]/
+│   └── [system-name]/
 │
 └── repository/
-    └── [tipo]-repo.md
+    └── [type]-repo.md
 ```
 
-Desde este catálogo, un agente de exportación se encarga de distribuir las entidades a sus correspondientes arquitecturas según la plataforma de destino.
+From this catalog, an export agent distributes entities to their corresponding architectures according to the destination platform.
 
 ---
 
-## 2. Arquitectura para aplicaciones
+## 2. Architecture for applications
 
-Se aplica cuando la plataforma de destino es una aplicación de chat: Claude.ai Projects, Gemini, Dust, ChatGPT.
+Applies when the destination platform is a chat application: Claude.ai Projects, Gemini, Dust, ChatGPT.
 
-| Entidad         | Formato en la plataforma                            |
-| --------------- | --------------------------------------------------- |
-| Workflows       | Instrucciones en un único archivo `.md`             |
-| Agents          | Instrucciones en un único archivo `.md`             |
-| Skills          | Estructura de carpeta contenida igual que el origen |
-| Rules           | N archivos `.md` adjuntos al proyecto               |
-| Knowledge-bases | N archivos `.md` adjuntos al proyecto               |
-| Commands        | Se ejecutan directamente en el chat como prompt     |
+| Entity          | Format on the platform                            |
+| --------------- | ------------------------------------------------- |
+| Workflows       | Instructions in a single `.md` file               |
+| Agents          | Instructions in a single `.md` file               |
+| Skills          | Folder structure contained the same as the source |
+| Rules           | N `.md` files attached to the project             |
+| Knowledge-bases | N `.md` files attached to the project             |
+| Commands        | Executed directly in the chat as a prompt         |
 
 ---
 
-## 3. Arquitectura de exportación
+## 3. Export architecture
 
-Define cómo se estructuran los sistemas generados en `exports/` según la plataforma de destino.
+Defines how generated systems in `exports/` are structured according to the destination platform.
 
-### Export por defecto: Google Antigravity
+### Default export: Google Antigravity
 
-Todos los sistemas generados se exportan primero a Google Antigravity. La estructura coloca todas las entidades dentro de `.agents/` para máxima compatibilidad.
+All generated systems are first exported to Google Antigravity. The structure places all entities inside `.agents/` for maximum compatibility.
 
 ```
-exports/{nombre-sistema}/google-antigravity/
+exports/{system-name}/google-antigravity/
 └── .agents/
-    ├── workflows/              ← archivos .md de workflows, agents y commands
-    ├── skills/                 ← carpetas ski-nombre/SKILL.md
-    ├── rules/                  ← archivos .md de rules
-    ├── knowledge-base/         ← archivos .md (referenciados desde workflows/agents)
-    ├── resources/              ← archivos .md de recursos de apoyo
-    └── process-overview.md     ← documentación del sistema
+    ├── workflows/              ← .md files for workflows, agents and commands
+    ├── skills/                 ← ski-name/SKILL.md folders
+    ├── rules/                  ← .md files for rules
+    ├── knowledge-base/         ← .md files (referenced from workflows/agents)
+    ├── resources/              ← .md files for support resources
+    └── process-overview.md     ← system documentation
 ```
 
-**Nota sobre paths**: Los workflows y agents usan rutas relativas internas como `./workflows/age-xxx.md` o `./skills/ski-xxx/SKILL.md`.
-Cada plataforma de destino genera una copia independiente (N copias totales) de los archivos originales. Las rutas relativas se resuelven siempre localmente dentro del directorio de la exportación (p.ej., `.agents/` en Antigravity, `.claude/` en Claude Code, o el raíz en otras aplicaciones). Ninguna referencia de un export debe apuntar a la carpeta original ni a otra exportación.
+**Note on paths**: Workflows and agents use internal relative paths like `./workflows/age-xxx.md` or `./skills/ski-xxx/SKILL.md`.
+Each destination platform generates an independent copy (N total copies) of the original files. Relative paths are always resolved locally within the export directory (e.g. `.agents/` in Antigravity, `.claude/` in Claude Code, or the root in other applications). No export reference should point to the original folder or another export.
 
 ---
 
-### Exports opcionales (bajo demanda)
+### Optional exports (on demand)
 
-Tras el export a Antigravity, el usuario puede solicitar exports adicionales a otras plataformas usando `ski-platform-exporter`.
+After the Antigravity export, the user can request additional exports to other platforms using `ski-platform-exporter`.
 
 #### Claude Code
 
 ```
-exports/{nombre-sistema}/claude-code/
+exports/{system-name}/claude-code/
 ├── .claude/
-│   ├── knowledge-base/         ← archivos .md de base de conocimiento
-│   ├── rules/                  ← archivos .md de rules
-│   ├── resources/              ← archivos .md de recursos de apoyo
-│   ├── skills/                 ← carpetas ski-nombre/SKILL.md
-│   ├── agents/                 ← archivos .md de agents
-│   ├── commands/               ← workflows convertidos a commands (.md)
-│   ├── settings.json           ← configuración de permisos
-│   └── CLAUDE.md               ← contexto global + referenciación
-└── process-overview.md         ← overview del sistema
+│   ├── knowledge-base/         ← .md files for knowledge base
+│   ├── rules/                  ← .md files for rules
+│   ├── resources/              ← .md files for support resources
+│   ├── skills/                 ← ski-name/SKILL.md folders
+│   ├── agents/                 ← .md files for agents
+│   ├── commands/               ← workflows converted to commands (.md)
+│   ├── settings.json           ← permission configuration
+│   └── CLAUDE.md               ← global context + referencing
+└── process-overview.md         ← system overview
 ```
 
-**Conversión Workflow → Command**: Los workflows se convierten en commands para Claude Code. Solamente es exportarlos en la carpeta `/commands` ya que siguen la misma estructura.
+**Workflow → Command conversion**: Workflows are converted to commands for Claude Code. They are simply exported to the `/commands` folder since they follow the same structure.
 
-**Rules**: Claude Code (`CLAUDE.md`) posee conocimiento de las reglas, cuándo se aplican, y las referencia. Las reglas siguen depositadas físicamente en `/rules`.
+**Rules**: Claude Code (`CLAUDE.md`) has knowledge of the rules, when they apply, and references them. Rules remain physically stored in `/rules`.
 
 ---
 
-#### Aplicaciones (ChatGPT, Claude.ai, Dust, Gemini)
+#### Applications (ChatGPT, Claude.ai, Dust, Gemini)
 
 ```
-exports/{nombre-sistema}/{nombre-aplicación}/
-├── knowledge-base/             ← archivos .md
-├── rules/                      ← archivos .md
-├── skills/                     ← carpetas ski-nombre/SKILL.md
-├── workflows/                  ← archivos .md de workflows, agents y commands
-├── resources/                  ← archivos .md
-└── process-overview.md         ← overview del sistema
+exports/{system-name}/{app-name}/
+├── knowledge-base/             ← .md files
+├── rules/                      ← .md files
+├── skills/                     ← ski-name/SKILL.md folders
+├── workflows/                  ← .md files for workflows, agents and commands
+├── resources/                  ← .md files
+└── process-overview.md         ← system overview
 ```
 
-**Formato**: Archivos `.md` individuales para workflows, agents, rules, knowledge-bases y resources. El usuario sube estos archivos manualmente al proyecto de la plataforma correspondiente.
+**Format**: Individual `.md` files for workflows, agents, rules, knowledge-bases and resources. The user uploads these files manually to the corresponding platform project.
 
 ---
 
-### Tabla de mapeo: source → plataformas
+### Mapping table: source → platforms
 
-| Entidad          | Antigravity Export                  | Claude Code Export                  | Aplicaciones Export         |
+| Entity           | Antigravity Export                  | Claude Code Export                  | Applications Export         |
 | ---------------- | ----------------------------------- | ----------------------------------- | --------------------------- |
 | Workflow         | `.agents/workflows/wor-xxx.md`      | `.claude/commands/wor-xxx.md`       | `workflows/wor-xxx.md`      |
 | Agent            | `.agents/workflows/age-xxx.md`      | `.claude/agents/age-xxx.md`         | `workflows/age-xxx.md`      |
@@ -145,30 +145,30 @@ exports/{nombre-sistema}/{nombre-aplicación}/
 
 ---
 
-### Skill de conversión: ski-platform-exporter
+### Conversion skill: ski-platform-exporter
 
-Para generar exports adicionales, el sistema usa `ski-platform-exporter`:
+To generate additional exports, the system uses `ski-platform-exporter`:
 
-**Input**: ruta del export Antigravity (`exports/{nombre}/google-antigravity/`) + plataforma destino
+**Input**: path to the Antigravity export (`exports/{name}/google-antigravity/`) + destination platform
 
-**Output**: archivos generados en `exports/{nombre}/{plataforma}/`
+**Output**: files generated in `exports/{name}/{platform}/`
 
-**Plataformas soportadas**: `claude-code`, `chatgpt`, `claude-ai`, `dust`, `gemini`
+**Supported platforms**: `claude-code`, `chatgpt`, `claude-ai`, `dust`, `gemini`
 
-**Invocación**: desde el workflow (checkpoint post-empaquetado) o directamente por el usuario en cualquier momento
+**Invocation**: from the workflow (post-packaging checkpoint) or directly by the user at any time
 
 ---
 
-## 4. Rutas relativas entre entidades
+## 4. Relative paths between entities
 
-Todas las rutas de referencia cruzada se expresan de forma relativa desde el root de la arquitectura:
+All cross-reference paths are expressed relative to the architecture root:
 
-| Entidad referenciada | Ruta relativa                      |
-| -------------------- | ---------------------------------- |
-| Skill                | `./skills/ski-[nombre]/SKILL.md`   |
-| Agent Specialist     | `./workflows/age-spe-[nombre].md`  |
-| Agent Supervisor     | `./workflows/age-sup-[nombre].md`  |
-| Workflow             | `./workflows/wor-[nombre].md`      |
-| Rule                 | `./rules/rul-[nombre].md`          |
-| Knowledge-base       | `./knowledge-base/kno-[nombre].md` |
-| Command              | `./workflows/com-[nombre].md`      |
+| Referenced entity | Relative path                    |
+| ----------------- | -------------------------------- |
+| Skill             | `./skills/ski-[name]/SKILL.md`   |
+| Agent Specialist  | `./workflows/age-spe-[name].md`  |
+| Agent Supervisor  | `./workflows/age-sup-[name].md`  |
+| Workflow          | `./workflows/wor-[name].md`      |
+| Rule              | `./rules/rul-[name].md`          |
+| Knowledge-base    | `./knowledge-base/kno-[name].md` |
+| Command           | `./workflows/com-[name].md`      |

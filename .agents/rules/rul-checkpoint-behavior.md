@@ -6,70 +6,70 @@ tags: [checkpoints, validation, interaction]
 
 ## Context
 
-Esta rule define cómo presentar resúmenes, gestionar validaciones y comportarse en los checkpoints entre fases y entre entidades. Un checkpoint mal gestionado lleva a malentendidos, retrabajo y pérdida de contexto. Un checkpoint bien gestionado da al usuario control total sobre el proceso sin fricción innecesaria.
+This rule defines how to present summaries, manage validations, and behave at checkpoints between phases and between entities. A poorly managed checkpoint leads to misunderstandings, rework, and loss of context. A well-managed checkpoint gives the user full control over the process without unnecessary friction.
 
 ## Hard Constraints
 
-- Nunca avanzar de fase o de entidad sin aprobación explícita del usuario — siempre mediante la opción A del checkpoint.
-- Nunca interpretar silencio o respuesta ambigua como aprobación.
-- Nunca omitir el checkpoint de fase aunque el usuario parezca impaciente.
-- Nunca presentar un checkpoint sin las 4 opciones estándar.
-- Nunca proceder con una edición sin pedir primero al usuario que especifique qué cambiar.
+- Never advance to the next phase or entity without explicit user approval — always via option A of the checkpoint.
+- Never interpret silence or an ambiguous response as approval.
+- Never skip the phase checkpoint even if the user seems impatient.
+- Never present a checkpoint without the 4 standard options.
+- Never proceed with an edit without first asking the user to specify what to change.
 
 ## Soft Constraints
 
-- Presentar los resúmenes de forma concisa: lo suficiente para que el usuario pueda validar, sin repetir todo lo ya dicho.
-- Si el usuario elige la opción B (editar), preguntar qué quiere cambiar antes de modificar nada.
-- Si el usuario elige la opción C (regenerar), confirmar si quiere regenerar desde cero o con alguna indicación específica.
-- Si el usuario elige la opción D (volver atrás), confirmar a qué punto exacto quiere retroceder.
+- Present summaries concisely: enough for the user to validate, without repeating everything already said.
+- If the user chooses option B (edit), ask what they want to change before modifying anything.
+- If the user chooses option C (regenerate), confirm whether they want to regenerate from scratch or with a specific instruction.
+- If the user chooses option D (go back), confirm exactly which point they want to return to.
 
-## Formato estándar de checkpoint
+## Standard Checkpoint Format
 
-Todo checkpoint debe seguir esta estructura:
+Every checkpoint must follow this structure:
 
 ```
-[Resumen de lo completado en esta fase/entidad]
+[Summary of what was completed in this phase/entity]
 
-¿Cómo quieres continuar?
-A) ✅ Aprobar y [siguiente acción]
-B) ✏️  Ajustar [qué se puede ajustar]
-C) 🔄 Regenerar [qué se regenera]
-D) ↩️  Volver a [fase o entidad anterior]
+How do you want to continue?
+A) ✅ Approve and [next action]
+B) ✏️  Adjust [what can be adjusted]
+C) 🔄 Regenerate [what is regenerated]
+D) ↩️  Return to [phase or previous entity]
 ```
 
-## Checkpoints del sistema
+## System Checkpoints
 
-| Checkpoint | Momento                             | Siguiente acción si A                            |
-| ---------- | ----------------------------------- | ------------------------------------------------ |
-| CP-S0      | Tras estructurar el input inicial   | Ejecutar ciclo Automático QA → Pasar al Step 1   |
-| CP-S1      | Al cerrar el Step 1                 | Ejecutar ciclo Automático QA → Pasar al Step 2   |
-| CP-S2      | Al cerrar el Step 2                 | Ejecutar ciclo Automático QA → Pasar al Step 3   |
-| CP-S3-N    | Tras generar cada entidad           | Registrar Audit QA → Generar siguiente entidad   |
-| CP-CIERRE  | Al presentar el process-overview.md | Ejecutar ciclo Automático QA → Cerrar el proceso |
+| Checkpoint | Moment                              | Next action if A                           |
+| ---------- | ----------------------------------- | ------------------------------------------ |
+| CP-S0      | After structuring the initial input | Run Automatic QA cycle → Move to Step 1    |
+| CP-S1      | At the close of Step 1              | Run Automatic QA cycle → Move to Step 2    |
+| CP-S2      | At the close of Step 2              | Run Automatic QA cycle → Move to Step 3    |
+| CP-S3-N    | After generating each entity        | Register QA Audit → Generate next entity   |
+| CP-CLOSE   | When presenting process-overview.md | Run Automatic QA cycle → Close the process |
 
-## Gestión de respuestas ambiguas
+## Handling Ambiguous Responses
 
-Si el usuario responde de forma que no corresponde a ninguna de las 4 opciones:
+If the user responds in a way that does not correspond to any of the 4 options:
 
-1. No interpretar ni asumir la intención.
-2. Responder: _"¿Quieres [opción A], [opción B], [opción C] o [opción D]?"_
-3. Esperar respuesta explícita antes de actuar.
+1. Do not interpret or assume intent.
+2. Respond: _"Do you want [option A], [option B], [option C], or [option D]?"_
+3. Wait for an explicit response before acting.
 
-## Gestión de cambios durante un checkpoint
+## Handling Changes During a Checkpoint
 
-Si el usuario elige B (editar):
+If the user chooses B (edit):
 
-- Preguntar: _"¿Qué parte quieres ajustar?"_
-- Aplicar solo el cambio indicado, sin modificar el resto.
-- Presentar de nuevo el elemento modificado con un nuevo checkpoint.
+- Ask: _"Which part do you want to adjust?"_
+- Apply only the indicated change, without modifying anything else.
+- Present the modified element again with a new checkpoint.
 
-Si el usuario elige C (regenerar):
+If the user chooses C (regenerate):
 
-- Preguntar: _"¿Quieres regenerar con alguna indicación específica o desde cero?"_
-- Si da indicaciones, incorporarlas antes de regenerar.
-- Presentar el resultado con un nuevo checkpoint.
+- Ask: _"Do you want to regenerate with a specific instruction or from scratch?"_
+- If they provide instructions, incorporate them before regenerating.
+- Present the result with a new checkpoint.
 
-Si el usuario elige D (volver):
+If the user chooses D (go back):
 
-- Confirmar: _"¿Vuelves al Step [X] / a la entidad [nombre]?"_
-- Retomar desde ese punto con el contexto íntegro de lo que había sido aprobado hasta entonces.
+- Confirm: _"Are you returning to Step [X] / to entity [name]?"_
+- Resume from that point with the full context of everything that had been approved up to then.

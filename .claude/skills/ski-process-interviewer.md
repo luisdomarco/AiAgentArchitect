@@ -5,102 +5,102 @@ description: Structured interview technique for process discovery. Use it to con
 
 # Process Interviewer Skill
 
-Protocolo de entrevista estructurada para descubrir procesos con profundidad y precisión. Combina técnicas de BPM, BPA e ingeniería inversa.
+Structured interview protocol to discover processes with depth and precision. Combines BPM, BPA, and reverse engineering techniques.
 
 ## Input / Output
 
 **Input:**
 
-- Descripción inicial del proceso en lenguaje natural
-- Modo activo: `express` o `architect`
+- Initial description of the process in natural language
+- Active mode: `express` or `architect`
 
 **Output:**
 
-- Conjunto de preguntas estructuradas por bloque
-- Validaciones de calidad de respuesta
-- Señales de alerta para detectar complejidad oculta
+- Set of structured questions by block
+- Response quality validations
+- Alert signals to detect hidden complexity
 
 ---
 
 ## Procedure
 
-### 1. Análisis previo a la primera pregunta
+### 1. Analysis before the first question
 
-Antes de formular ninguna pregunta, analiza la descripción inicial e identifica:
+Before formulating any question, analyze the initial description and identify:
 
-- **Lo que se sabe:** información explícita en la descripción.
-- **Lo que está implícito:** información que se puede inferir pero no se ha dicho.
-- **Lo que falta:** información sin la que no se puede diseñar nada.
+- **What is known:** explicit information in the description.
+- **What is implicit:** information that can be inferred but has not been stated.
+- **What is missing:** information without which nothing can be designed.
 
-Prioriza las preguntas sobre lo que falta. No preguntes lo que ya sabes.
-
----
-
-### 2. Principios de la entrevista
-
-**Una pregunta a la vez.** Nunca formular dos preguntas en el mismo mensaje, aunque parezcan relacionadas.
-
-**Validar antes de avanzar.** Si la respuesta es vaga o incompleta, repregunta antes de pasar al siguiente tema.
-
-**Descomponer lo vago.** Si el usuario usa términos genéricos, descompón en lo concreto.
-
-**No asumir.** Ningún campo del proceso puede completarse por inferencia sin validación explícita del usuario.
+Prioritize questions about what is missing. Do not ask what you already know.
 
 ---
 
-### 3. Ejecución Estructural desde Recursos
+### 2. Interview principles
 
-Las plantillas de ingeniería inversa (para desambiguar términos), el Cuestionario Express y los Bloques Complejos para Arquitectos ya no residen codificados en esta Skill, sino en un recurso centralizado para aligerar la carga de la memoria estática.
+**One question at a time.** Never formulate two questions in the same message, even if they seem related.
 
-> **El skill de entrevistador requiere que previamente cargues y estudies el siguiente recurso:**
+**Validate before advancing.** If the answer is vague or incomplete, re-ask before moving to the next topic.
+
+**Decompose the vague.** If the user uses generic terms, decompose into specifics.
+
+**Do not assume.** No process field can be completed by inference without explicit validation from the user.
+
+---
+
+### 3. Structural Execution from Resources
+
+The reverse engineering templates (to disambiguate terms), the Express Questionnaire, and the Complex Blocks for Architects no longer reside hardcoded in this Skill, but rather in a centralized resource to lighten the static memory load.
+
+> **The interviewer skill requires that you first load and study the following resource:**
 > `../../resources/res-interview-question-trees.md`
 
-Extrae de allí la matriz que corresponda a tu modo operativo (Express = Cuestionario Corto, Architect = Bloques 1-6 con Descomposición Dinámica) e interroga respetando la cadencia de una pregunta por turno.
+Extract from there the matrix corresponding to your operating mode (Express = Short Questionnaire, Architect = Blocks 1-6 with Dynamic Decomposition) and interview while respecting the cadence of one question per turn.
 
 ---
 
-### 6. Challenge del flujo
+### 6. Flow challenge
 
-Antes de cerrar la entrevista en Modo Architect, valida activamente la comprensión:
+Before closing the interview in Architect Mode, actively validate understanding:
 
-**Paso 1 — Reflejo del proceso:**
-_"Antes de continuar, quiero confirmar que lo he entendido correctamente. El proceso es: [resumen en 3-5 pasos]. ¿Es correcto?"_
+**Step 1 — Process reflection:**
+_"Before continuing, I want to confirm I understood correctly. The process is: [summary in 3-5 steps]. Is that correct?"_
 
-**Paso 2 — Challenge con casos extremos:**
-Una vez confirmado el flujo, haz al menos 2 preguntas de challenge sobre:
+**Step 2 — Challenge with extreme cases:**
+Once the flow is confirmed, ask at least 2 challenge questions about:
 
-- El caso de error más probable
-- El caso excepcional más relevante que hayas detectado durante la entrevista
+- The most likely error case
+- The most relevant exceptional case you detected during the interview
 
-Ejemplo: _"Has mencionado que el sistema envía una respuesta al cliente. ¿Qué ocurre si el cliente no responde en X tiempo? ¿Hay un reintento o se escala a un humano?"_
+Example: _"You mentioned the system sends a response to the client. What happens if the client doesn't respond within X time? Is there a retry or does it escalate to a human?"_
 
 ---
 
 ## Examples
 
-**Ejemplo 1 — Descomposición de descripción vaga**
+**Example 1 — Decomposition of vague description**
 
-Usuario: _"Quiero agentizar la atención al cliente."_
+User: _"I want to agentize customer support."_
 
-Aplicación de ingeniería inversa:
+Reverse engineering application:
 
-1. _"¿Por qué canales entran las solicitudes de clientes? (email, chat, teléfono, formulario web...)"_
-2. _[respuesta: email y chat]_ → _"¿Qué tipo de solicitudes son las más frecuentes? ¿Tienes los 3 casos más comunes?"_
-3. _[respuesta: dudas sobre facturación, cambios de plan, incidencias técnicas]_ → _"¿Qué sistema usáis hoy para gestionar estas solicitudes? ¿Hay un CRM o helpdesk?"_
+1. _"Through what channels do customer requests come in? (email, chat, phone, web form...)"_
+2. _[answer: email and chat]_ → _"What type of requests are most frequent? Do you have the 3 most common cases?"_
+3. _[answer: billing questions, plan changes, technical incidents]_ → _"What system do you use today to manage these requests? Is there a CRM or helpdesk?"_
 
-**Ejemplo 2 — Detección de complejidad oculta**
+**Example 2 — Detection of hidden complexity**
 
-Usuario: _"Es simple, solo necesito que clasifique los emails y los reenvíe al departamento correcto."_
+User: _"It's simple, I just need it to classify emails and forward them to the correct department."_
 
-Challenge: _"Cuando dices 'departamento correcto', ¿cuántos departamentos hay? ¿Qué ocurre si un email podría ir a más de uno? ¿Y si la clasificación no es clara?"_
+Challenge: _"When you say 'correct department', how many departments are there? What happens if an email could go to more than one? And if the classification is not clear?"_
 
-→ Si el usuario revela 5+ departamentos y casos de ambigüedad, señal de escalado a Architect.
+→ If the user reveals 5+ departments and cases of ambiguity, signal to escalate to Architect.
 
 ---
 
 ## Error Handling
 
-- **Respuesta demasiado breve:** Repregunta con una formulación más específica. No avances.
-- **Respuesta contradictoria:** Señala la contradicción directamente: _"Antes mencionaste X, pero ahora describes Y. ¿Cuál es el comportamiento correcto?"_
-- **El usuario no sabe responder:** Ofrece opciones concretas para que elija: _"¿El trigger es A, B o C?"_
-- **El usuario da información de más bloques a la vez:** Anótala internamente para el bloque correspondiente, pero sigue el orden de bloques sin saltar.
+- **Answer too brief:** Re-ask with a more specific formulation. Do not advance.
+- **Contradictory answer:** Point out the contradiction directly: _"Earlier you mentioned X, but now you describe Y. Which is the correct behavior?"_
+- **User doesn't know how to answer:** Offer concrete options to choose from: _"Is the trigger A, B, or C?"_
+- **User gives information from more blocks at once:** Record it internally for the corresponding block, but continue following the block order without skipping.
