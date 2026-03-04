@@ -122,6 +122,12 @@ See [DUAL-SYSTEM.md](DUAL-SYSTEM.md) for full sync documentation.
 
 ---
 
+## Feedback & Suggestions
+
+Have an idea or found something to improve? Open an [issue](https://github.com/luisdomarco/AiAgentArchitect/issues) — no account needed to read, GitHub account needed to post.
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE)
