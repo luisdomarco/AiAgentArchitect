@@ -68,8 +68,8 @@ G1: Extract all information before designing · G2: Select entities per `kno-ent
 ### Step 0: Input Structuring & Enrichment
 
 1. **Activate Input Enricher:** Invoke `age-spe-input-enricher` passing it the raw or partial format input.
-2. **Checkpoint S0:** Wait for explicit confirmation (Option A) from the human on the proposed structure and detected gaps.
-3. **Save Context:** After validation, execute `ski-context-ledger` (write) to record the structured input. Extract the `<sys-eval>` from the agent's response and pass it as `reasoning_trace`.
+2. **CP-S0:** Wait for explicit confirmation (Option A) from the human on the proposed structure and detected gaps.
+3. **Save Context:** After CP-S0 validation, execute `ski-context-ledger` (write) to record the structured input. Extract the `<sys-eval>` from the agent's response and pass it as `reasoning_trace`.
 
 ### Context Map
 

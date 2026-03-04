@@ -18,9 +18,9 @@ Maintain the metrics object `{ "regenerations", "iterations" }` per Step (see `k
 
 **Activates:** `age-spe-input-enricher` receiving the raw or partial format input. Structures and infers initial gaps by proposing improvements to validate the idea before heavy discovery.
 
-**Checkpoint S0:** A) ✅ Approve base structure → Step 1 · B) ✏️ Adjust this result · C) 🔄 Regenerate using a different approach · D) ↩️ Go back
+**CP-S0:** A) ✅ Approve base structure → Step 1 · B) ✏️ Adjust this result · C) 🔄 Regenerate using a different approach · D) ↩️ Go back
 
-**Context Ledger:** After validating Checkpoint S0, execute `ski-context-ledger` operation `write` with step=0, agent=`age-spe-input-enricher`, output=Summary of the structured input.
+**Context Ledger:** After validating CP-S0, execute `ski-context-ledger` operation `write` with step=0, agent=`age-spe-input-enricher`, output=Summary of the structured input.
 
 > `/skip-qa S0` skips QA for this preparatory phase.
 
