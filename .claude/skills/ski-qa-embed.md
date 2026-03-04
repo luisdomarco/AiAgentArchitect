@@ -1,6 +1,6 @@
 ---
 name: ski-qa-embed
-description: Transversal skill that takes a freshly generated system path and embeds the QA Layer (3 agents + 3 skills + 1 rule + 1 knowledge-base) into it. Parametrizes templates from kno-qa-layer-template with the target system's name and rules. Also inserts QA hooks into the target system's workflow and initializes a blank qa-report.md. Use after the packaging step when the user opts to embed QA in the new system.
+description: Embeds the QA Layer (3 agents + 4 skills + 2 rules + 1 knowledge-base) into a freshly generated system. Parametrizes templates, inserts QA hooks into the orchestrator workflow, and initializes qa-report.md. Use after packaging step.
 ---
 
 # QA Embed

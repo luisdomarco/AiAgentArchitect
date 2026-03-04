@@ -1,6 +1,6 @@
 ---
 name: ski-rubric-scorer
-description: Applies a weighted rubric (Completeness 30%, Quality 30%, Compliance 25%, Efficiency 15%) to score a process phase from 0-10 per dimension. Uses audit results and process metrics as input. Returns a structured scorecard. Use after each compliance check to power the evaluation report.
+description: Applies a weighted rubric (Completeness 30%, Quality 30%, Compliance 25%, Efficiency 15%) to score a process phase from 0-10 per dimension. Uses audit results and metrics as input, returns a structured scorecard.
 ---
 
 # Rubric Scorer

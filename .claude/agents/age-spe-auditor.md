@@ -1,6 +1,6 @@
 ---
 name: age-spe-auditor
-description: Specialist agent that audits the output of each process phase against the active rules and instructions. Reads entity files dynamically at execution time, never from cache. Produces an Audit Report per phase and updates qa-report.md. Does not modify, only reports.
+description: Audits each process phase output against active rules. Reads entity files dynamically at execution time, never from cache. Produces an Audit Report per phase and updates qa-report.md. Does not modify, only reports.
 ---
 
 ## 1. Role & Mission

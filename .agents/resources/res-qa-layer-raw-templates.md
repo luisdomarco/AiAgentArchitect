@@ -1,6 +1,6 @@
 ---
 name: res-qa-layer-raw-templates
-description: Parametrizable templates for the complete QA Layer (3 agents + 4 skills + 2 rules + 1 knowledge-base) for embedding in new systems. Used by ski-qa-embed. The tokens {SYSTEM_NAME}, {WORKFLOW_PATH}, {EXISTING_RULES}, and {SYSTEM_PATH} are substituted during parametrization.
+description: Parametrizable QA Layer raw templates (3 agents + 4 skills + 2 rules + 1 knowledge-base) for embedding in new systems. Used by ski-qa-embed. Tokens {SYSTEM_NAME}, {WORKFLOW_PATH}, {EXISTING_RULES}, {SYSTEM_PATH} are replaced at embed time.
 tags: [qa, templates, embed, propagation]
 ---
 

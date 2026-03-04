@@ -300,8 +300,8 @@ validate() {
     fi
 
     # Verificar conteo por directorio
-    local expected_commands=2 expected_agents=6 expected_skills=9
-    local expected_rules=4 expected_kb=7 expected_resources=6
+    local expected_commands=1 expected_agents=7 expected_skills=10
+    local expected_rules=5 expected_kb=8 expected_resources=6
 
     local actual_commands actual_agents actual_skills actual_rules actual_kb actual_resources
     actual_commands=$(find "$CLAUDE_DIR/commands" -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')

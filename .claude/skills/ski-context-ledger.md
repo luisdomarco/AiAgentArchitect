@@ -10,6 +10,12 @@ Reusable skill that provides the necessary operations to manage the `context-led
 
 **The workflow decides what flows; this skill executes the mechanics.**
 
+## Input / Output
+
+**Input (common to all operations):** `system`, `workflow`, `target_dir`, `step`, `agent`, `status`, `input`, `output`, `reasoning_trace`, `step_destination`, `context_map` — varies by operation (see below).
+
+**Output:** Created or updated `context-ledger.md` file (for `init`/`write`) or a filtered context block ready for injection (for `read`).
+
 ## Operations
 
 ### `init` — Initialize the ledger
@@ -110,9 +116,23 @@ Reads the ledger and extracts the relevant context for a destination step accord
 
 **When:** Before invoking each agent (except the first one, which receives direct input).
 
+## Procedure
+
+See the **Operations** section above for each step-by-step procedure (`init`, `write`, `read`). Use them in order per workflow run:
+
+1. `init` — at workflow start, before the first sub-agent
+2. `write` — after each agent completes and checkpoint is approved
+3. `read` — before each subsequent agent to inject filtered context
+
 ## Usage notes
 
 - The workflow is responsible for defining the **Context Map** in its own structure. This skill only executes it.
 - If the ledger does not exist when attempting `write` or `read`, emit an error and notify the workflow.
 - The `context-ledger.md` is maintained throughout the entire workflow execution. It is not deleted at close — it serves as a traceability record.
 - In flows with human checkpoint, the `write` must execute **after** the checkpoint approval, not before.
+
+## Error Handling
+
+- **`write` or `read` called without prior `init`:** Emit error `"context-ledger.md not found at {target_dir} — run init first"` and halt.
+- **`context_map` references a step not yet in the ledger:** Return empty block with warning `"Step {N} not found in ledger"`.
+- **Ledger file is corrupt or unreadable:** Notify the workflow orchestrator and suggest running `init` to reset.

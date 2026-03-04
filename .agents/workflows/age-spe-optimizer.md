@@ -1,6 +1,6 @@
 ---
 name: age-spe-optimizer
-description: Specialist agent that reads the completed qa-report.md and the current state of all system entities, detects failure and success patterns, and proposes specific, actionable improvements to the system. Never modifies files automatically — all proposals require user decision.
+description: Reads qa-report.md and system entity state, detects failure and success patterns, and proposes specific, actionable improvements. Never modifies files automatically — all proposals require explicit user decision.
 ---
 
 ## 1. Role & Mission

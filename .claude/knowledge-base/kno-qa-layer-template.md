@@ -1,5 +1,5 @@
 ---
-description: Parametrizable templates for the complete QA Layer (3 agents + 3 skills + 1 rule + 1 knowledge-base) for embedding in new systems. Used by ski-qa-embed. The tokens {SYSTEM_NAME}, {WORKFLOW_PATH}, {EXISTING_RULES}, and {SYSTEM_PATH} are substituted during parametrization.
+description: Parametrizable templates for the complete QA Layer (3 agents + 3 skills + 1 rule + 1 knowledge-base) for embedding in new systems. Used by ski-qa-embed. Tokens {SYSTEM_NAME}, {WORKFLOW_PATH}, {EXISTING_RULES}, {SYSTEM_PATH} are substituted.
 tags: [qa, templates, embed, propagation]
 ---
 
