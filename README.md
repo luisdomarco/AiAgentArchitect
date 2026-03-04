@@ -113,6 +113,20 @@ See [DUAL-SYSTEM.md](DUAL-SYSTEM.md) for full sync documentation.
 
 ---
 
+## Built-in QA System
+
+Every session runs a three-role quality cycle automatically — no setup required.
+
+- **Auditor** — verifies rule compliance after each approved checkpoint. Reads rules from disk at audit time. Never modifies anything.
+- **Evaluator** — scores each phase on four dimensions: Completeness, Quality, Compliance, and Efficiency. Produces a weighted scorecard at process close.
+- **Optimizer** — reads the complete audit and score history, detects recurring patterns, and generates prioritized improvement proposals. Never applies them automatically.
+
+QA output is saved as timestamped reports in `qa-reports/` inside the active generation directory. The cycle is non-blocking: it never stops execution, only accumulates evidence.
+
+**→ Full QA specification: [QA-SYSTEM.md](QA-SYSTEM.md)**
+
+---
+
 ## Documentation
 
 - [Entity Fundamentals](.agents/knowledge-base/kno-fundamentals-entities.md)
