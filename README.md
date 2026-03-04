@@ -1,90 +1,108 @@
-# 🤖 AiAgentArchitect
+# AiAgentArchitect
 
-> **The Engine for Modular, Multi-Agent Systems.**
+> Build production-ready multi-agent systems in three structured steps.
 
-AiAgentArchitect is a meta-system designed to discover, architect, and implement high-performance agentic systems. By combining **BPM/BPA techniques** with a strictly decoupled **Entity-Based Architecture**, it transforms vague requirements into ready-to-use multi-agent structures.
-
----
-
-## 🏛️ System Philosophy
-
-The core of AiAgentArchitect is the decoupling of logic, capability, and rule. Every system is composed of 6 atomic entities:
-
-| Entity                 | Purpose       | Role                                                         |
-| :--------------------- | :------------ | :----------------------------------------------------------- |
-| **Workflow** (`wor-`)  | Orchestration | The "brain" that coordinates agents and steps.               |
-| **Agent** (`age-`)     | Execution     | Specialized entity with a specific domain of responsibility. |
-| **Skill** (`ski-`)     | Capability    | Reusable packages (tools, APIs) that extend agent power.     |
-| **Command** (`com-`)   | Direct Action | Deterministic, high-speed shortcuts for frequent tasks.      |
-| **Rule** (`rul-`)      | Constraint    | The guardrails that guarantee quality and consistency.       |
-| **Knowledge** (`kno-`) | Context       | Static data or documentation consulted on-demand.            |
+Designing agentic systems is hard: vague requirements, no standard structure, and every implementation looks different. AiAgentArchitect solves this with a guided pipeline — from raw idea to ready-to-deploy `.md` files — using a strict entity-based architecture and built-in QA scoring.
 
 ---
 
-## ⚙️ Core Mechanism: The 3tep Journey
+## How It Works
 
-AiAgentArchitect operates through a structured pipeline that ensures zero ambiguity from start to finish.
+AiAgentArchitect operates through a 3-step pipeline:
 
-### Step 1: Process Discovery
+**Step 1 — Process Discovery**
+A specialist agent interviews you using BPM/BPA techniques. It reverse-engineers vague requests, detects hidden complexity, and produces an AS-IS diagram and a structured handoff to Step 2.
 
-The **Specialist Discovery Agent** conducts a structured interview using BPA/BPM techniques. It performs inverse engineering on vague requests and generates an **AS-IS Diagram** in Mermaid.
+**Step 2 — Architecture Design**
+An architecture agent translates the discovered process into a Blueprint: the right entities, correct responsibilities, assigned intricacy levels, and a To-Be diagram.
 
-### Step 2: Architecture Design
-
-The **Architecture Designer** translates the discovered process into a **Blueprint**. It selects the optimal combination of entities, assigns intricacy levels, and generates a **To-Be Architecture Diagram**.
-
-### Step 3: Entity Implementation
-
-The **Entity Builder** materializes the Blueprint into functional `.md` files. It applies strict formatting rules, manages character limits, and integrates the **Context Ledger** for inter-agent state management.
+**Step 3 — Entity Implementation**
+An entity builder materializes the Blueprint into correctly formatted `.md` files, placed in the output directory and ready to use.
 
 ---
 
-## 🛠️ Key Components & Features
+## What You Get
 
-### 🗂️ Context Management (Context Ledger)
-
-Unlike traditional "stateless" agent flows, we implement a **Persistent Context Pattern**. The workflow manages a `context-ledger.md` to persist, filter, and route information between sequential agents, ensuring that each agent receives exactly what it needs and nothing more.
-
-### 🛡️ Built-in QA Layer
-
-Optionally, every generated system can include a dedicated QA Layer. This adds:
-
-- **Auditor Agent**: Real-time compliance check against rules.
-- **Evaluador Agent**: Weighted scoring of performance and quality.
-- **Optimizer Agent**: Pattern detection to propose systemic improvements.
-
-### 🏗️ Directory Structure
+Every generated system follows this structure:
 
 ```text
-(Project Root)
-├── .agents/            # The Source of Truth
-│   ├── workflows/      # Orchestrators and Agents
-│   ├── skills/         # Modular capabilities
-│   ├── rules/          # System guardrails
-│   ├── knowledge-base/ # Static documentation
-│   └── resources/      # Support templates and logic
-├── repository/         # Index for entity reuse
-└── scripts/           # Automation and utility scripts
+exports/{system-name}/google-antigravity/
+└── .agents/
+    ├── workflows/          # Orchestrators + specialist agents
+    ├── skills/             # Reusable capability packages
+    ├── rules/              # Guardrails and compliance rules
+    ├── knowledge-base/     # Static documentation consulted on demand
+    ├── resources/          # Templates and support logic
+    └── process-overview.md # Full system documentation
 ```
 
----
+**Example: `user-story-agent-v1`** — generated entirely by AiAgentArchitect:
 
-## 🚀 Getting Started
-
-To invoke the architect and start building your own agentic system:
-
-1. **Invoke the Workflow**: Call `/wor-agentic-architect`.
-2. **Follow the Steps**: The system will guide you through Discovery, Architecture, and Implementation.
-3. **Approve Checkpoints**: Each phase requires your explicit validation before proceeding.
+- 4 specialist agents (story definer, scope definer, criteria generator, auditor)
+- 3 skills, 4 rules, 4 knowledge-base files, 1 resource
+- Built-in QA Layer (Auditor + Evaluator + Optimizer)
+- Final QA score: **9.4/10**
 
 ---
 
-## 🔗 Related Documentation
+## Entity Architecture
+
+Every system is built from 6 atomic entity types:
+
+| Entity           | Prefix     | Role                                               |
+| :--------------- | :--------- | :------------------------------------------------- |
+| Workflow         | `wor-`     | Orchestrator — coordinates agents and steps        |
+| Agent Specialist | `age-spe-` | Executes a specific domain of responsibility       |
+| Agent Supervisor | `age-sup-` | Reviews or validates output from other agents      |
+| Skill            | `ski-`     | Reusable capability package (tool, API, protocol)  |
+| Rule             | `rul-`     | Constraint that guarantees quality and consistency |
+| Knowledge-base   | `kno-`     | Static context consulted on demand                 |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Google Antigravity](https://antigravity.dev) — reads `.agents/` structure
+- [Claude Code](https://claude.ai/code) — reads `.claude/` structure (auto-synced)
+- `fswatch` (optional, for real-time sync): `brew install fswatch`
+
+### Quick Start
+
+1. **Invoke the workflow**: Run `/wor-agentic-architect` in your AI environment.
+2. **Follow the steps**: The system guides you through Discovery, Architecture, and Implementation.
+3. **Approve checkpoints**: Each phase requires your explicit validation before proceeding.
+
+The system generates all files in `exports/{system-name}/google-antigravity/.agents/`.
+
+---
+
+## Project Structure
+
+AiAgentArchitect uses a **dual-system architecture**: every entity lives in both `.agents/` (Google Antigravity format) and `.claude/` (Claude Code format), kept in sync automatically via a git pre-commit hook.
+
+```text
+.agents/          ← Source of truth (Google Antigravity)
+.claude/          ← Auto-synced mirror (Claude Code)
+exports/          ← Output directory for generated systems
+  └── template/  ← Starter template for new systems
+scripts/          ← sync-dual.sh and utilities
+```
+
+See [DUAL-SYSTEM.md](DUAL-SYSTEM.md) for full sync documentation.
+
+---
+
+## Documentation
 
 - [Entity Fundamentals](.agents/knowledge-base/kno-fundamentals-entities.md)
-- [System Architecture Details](.agents/knowledge-base/kno-system-architecture.md)
-- [Handoff & Context Schemas](.agents/knowledge-base/kno-handoff-schemas.md)
+- [System Architecture](.agents/knowledge-base/kno-system-architecture.md)
+- [Handoff Schemas](.agents/knowledge-base/kno-handoff-schemas.md)
+- [Dual System Sync](DUAL-SYSTEM.md)
 
 ---
 
-_Created with ❤️ for Advanced Agentic Coding._
+## License
+
+MIT — see [LICENSE](LICENSE)
