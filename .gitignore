@@ -1,3 +1,8 @@
 .DS_Store
 .obsidian/
 .claude/plans/
+
+# Exports — ignorar todo excepto la carpeta template
+exports/*
+!exports/template
+!exports/template/**
