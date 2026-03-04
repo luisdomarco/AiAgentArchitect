@@ -119,6 +119,7 @@ See [DUAL-SYSTEM.md](DUAL-SYSTEM.md) for full sync documentation.
 - [System Architecture](.agents/knowledge-base/kno-system-architecture.md)
 - [Handoff Schemas](.agents/knowledge-base/kno-handoff-schemas.md)
 - [Dual System Sync](DUAL-SYSTEM.md)
+- [QA System](QA-SYSTEM.md)
 
 ---
 
