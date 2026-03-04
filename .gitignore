@@ -6,3 +6,6 @@
 exports/*
 !exports/template
 !exports/template/**
+
+# Repository index — no sincronizar con GitHub
+repository/
