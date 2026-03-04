@@ -36,12 +36,12 @@ exports/{system-name}/google-antigravity/
     └── process-overview.md # Full system documentation
 ```
 
-**Example: `user-story-agent-v1`** — generated entirely by AiAgentArchitect:
+**Example: `assistant-documentation-generator`** — generated entirely by AiAgentArchitect:
 
-- 4 specialist agents (story definer, scope definer, criteria generator, auditor)
-- 3 skills, 4 rules, 4 knowledge-base files, 1 resource
+- 5 specialist agents (content analyzer, doc builder, auditor, evaluator, optimizer)
+- 4 skills, 4 rules, 3 knowledge-base files, 1 resource
 - Built-in QA Layer (Auditor + Evaluator + Optimizer)
-- Final QA score: **9.4/10**
+- Exported to both Google Antigravity and Claude Code
 
 ---
 
