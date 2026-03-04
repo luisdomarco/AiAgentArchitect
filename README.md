@@ -68,13 +68,32 @@ Every system is built from 6 atomic entity types:
 - [Claude Code](https://claude.ai/code) — reads `.claude/` structure (auto-synced)
 - `fswatch` (optional, for real-time sync): `brew install fswatch`
 
-### Quick Start
+### Invocation
 
-1. **Invoke the workflow**: Run `/wor-agentic-architect` in your AI environment.
-2. **Follow the steps**: The system guides you through Discovery, Architecture, and Implementation.
-3. **Approve checkpoints**: Each phase requires your explicit validation before proceeding.
+**Google Antigravity** — type the slash command in the chat:
 
-The system generates all files in `exports/{system-name}/google-antigravity/.agents/`.
+```
+/wor-agentic-architect
+```
+
+**Claude Code** — same slash command from the command palette:
+
+```
+/wor-agentic-architect
+```
+
+Both platforms run the same workflow. Antigravity reads `.agents/`, Claude Code reads `.claude/`, synced automatically.
+
+### Tip: skip the interview
+
+Pre-fill a template before starting to skip most questions:
+
+```
+exports/template/%Master - Docs/template-input-architect.md   ← full systems
+exports/template/%Master - Docs/template-input-express.md     ← single entities
+```
+
+**→ Full usage guide, stage walkthrough, and checkpoint reference: [USAGE.md](USAGE.md)**
 
 ---
 
