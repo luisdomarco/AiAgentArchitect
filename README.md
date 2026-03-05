@@ -139,10 +139,4 @@ QA output is saved as timestamped reports in `qa-reports/` inside the active gen
 
 ## Feedback & Suggestions
 
-Have an idea or found something to improve? Open an [issue](https://github.com/luisdomarco/AiAgentArchitect/issues) — no account needed to read, GitHub account needed to post.
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE)
+Have an idea or found something to improve? Open an [issue](https://github.com/luisdomarco/AiAgentArchitect/issues).
