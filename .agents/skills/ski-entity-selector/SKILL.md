@@ -1,6 +1,6 @@
 ---
 name: ski-entity-selector
-description: Applies the entity decision tree to determine the correct entity type for each identified responsibility. Use it during architecture design to select Workflow, Agent, Skill, Command, Rule or Knowledge-base systematically.
+description: Applies the entity decision tree to determine the correct entity type for each identified responsibility in a process. Use during architecture design (Step 2) to systematically select from all 8 entity types and justify each choice against the decision criteria.
 ---
 
 # Entity Selector Skill

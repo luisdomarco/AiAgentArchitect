@@ -1,6 +1,7 @@
 ---
 name: age-spe-input-enricher
-description: Specialist agent responsible for receiving the user's raw or partial format input, analyzing it, structuring it, and suggesting enrichment before the Discovery phase begins.
+description: Receives the user's raw or partial input, analyzes it for completeness, structures it into a validated format, and proposes enrichments to fill detected gaps. Use at Step 0 before Discovery begins, whenever the initial user input is ambiguous, incomplete, or in free-form natural language.
+model: gemini-2.0-flash
 ---
 
 ## Role & Mission

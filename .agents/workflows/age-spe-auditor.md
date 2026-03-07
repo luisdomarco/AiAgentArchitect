@@ -1,6 +1,7 @@
 ---
 name: age-spe-auditor
-description: Audits each process phase output against active rules. Reads entity files dynamically at execution time, never from cache. Produces an Audit Report per phase and updates qa-report.md. Does not modify, only reports.
+description: Audits each process phase output against active rules by dynamically reading entity files from disk. Produces an Audit Report and appends it to qa-report.md without modifying any entity. Use after each checkpoint is approved (CP-S0 through CP-S3-N) to validate compliance before advancing to the next phase.
+model: gemini-2.0-flash
 ---
 
 ## 1. Role & Mission

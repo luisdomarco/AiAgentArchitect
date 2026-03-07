@@ -1,6 +1,6 @@
 ---
 name: res-entity-formatting-templates
-description: Core markdown schemas and baseline templates for all AI Agent Architect entity types.
+description: Core markdown schemas and baseline templates for all 8 AI Agent Architect entity types. Use when the Entity Builder needs to generate a new entity file or when verifying that an existing entity conforms to the expected structure and frontmatter.
 tags: [template, formatting, schema, core, entity]
 ---
 
@@ -99,10 +99,16 @@ Defines what context flows between the Steps/Agents of this workflow (see `kno-f
 
 ## 2. Agent (`age-spe-[name]` | `age-sup-[name]`)
 
+> **Platform note:** The `model` field and optional execution fields are platform-specific. For **Claude Code**: use `model: sonnet | opus | haiku` and optionally `tools`, `disallowedTools`, and `permissionMode`. For **Google Antigravity**: use `model: gemini-2.0-flash | gemini-2.5-pro`; the CC-native fields (`disallowedTools`, `permissionMode`) are injected by `ski-platform-exporter` during CC export.
+
 ```markdown
 ---
 name: age-spe-[name] | age-sup-[name]
-description: [max. 250 characters — role and mission of the agent]
+description: [max. 250 chars — QUÉ hace the agent + CUÁNDO invocarla; third person, keywords for auto-discovery]
+model: sonnet | opus | haiku                     # CC: cost/capability control; GA: gemini-2.0-flash | gemini-2.5-pro
+tools: [ToolA, ToolB]                            # Optional (CC): whitelist of allowed tools
+disallowedTools: [ToolC, ToolD]                  # Optional (CC): blacklist of prohibited tools
+permissionMode: default | acceptEdits | plan     # Optional (CC): agent autonomy level
 ---
 
 ## 1. Role & Mission
@@ -168,10 +174,14 @@ description: [max. 250 characters — role and mission of the agent]
 
 ## 3. Skill (`ski-[name]/SKILL.md`)
 
+> **Platform note:** The fields `allowed-tools` and `user-invocable` are **Claude Code–native**. For **Google Antigravity**, these fields are injected by `ski-platform-exporter` during CC export. They should be defined in the source entity to document intended capabilities regardless of platform.
+
 ```markdown
 ---
 name: ski-[kebab-case-name]
-description: [max. 250 characters — what it does AND when to use it]
+description: [max. 250 chars — QUÉ hace + CUÁNDO usarla; third person, keywords for auto-discovery]
+allowed-tools: ToolA ToolB ToolC     # Optional (CC): tools this skill is allowed to use
+user-invocable: true | false         # Optional (CC): false = only Claude can invoke it
 ---
 
 # [Human-readable Skill Name]

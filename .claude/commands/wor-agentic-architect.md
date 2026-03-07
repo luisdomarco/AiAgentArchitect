@@ -1,6 +1,6 @@
 ---
 name: wor-agentic-architect
-description: Orchestrates the design and implementation of agentic systems in 3 Steps (Discovery, Architecture, Implementation). Express and Architect modes. Generates files in exports/{name}/google-antigravity/ by default.
+description: Orchestrates the complete design and generation of agentic systems through 3 steps (Discovery, Architecture, Implementation) in Express or Architect mode. Use when a user wants to create a new agentic system from scratch, design a multi-agent workflow, or generate entity files for Google Antigravity or Claude Code platforms.
 ---
 
 ## 1. Role & Mission
@@ -48,7 +48,7 @@ G1: Extract all information before designing · G2: Select entities per `kno-ent
 
 | Knowledge base              | **Route**                                        | Description                                             |
 | --------------------------- | ------------------------------------------------ | ------------------------------------------------------- |
-| `kno-fundamentals-entities` | `../knowledge-base/kno-fundamentals-entities.md` | Definition and specifications of the 6 entities         |
+| `kno-fundamentals-entities` | `../knowledge-base/kno-fundamentals-entities.md` | Definition and specifications of the 8 entity types     |
 | `kno-entity-selection`      | `../knowledge-base/kno-entity-selection.md`      | Decision tree and edge cases                            |
 | `kno-system-architecture`   | `../knowledge-base/kno-system-architecture.md`   | Export structure and platform mapping                   |
 | `kno-handoff-schemas`       | `../knowledge-base/kno-handoff-schemas.md`       | Handoff JSON schemas S1→S2 and S2→S3 and metrics object |
@@ -105,7 +105,7 @@ Natural language description of the process to agentize or entity to create. Opt
 
 ## 10. Output
 
-Files in `exports/{system-name}/google-antigravity/.agents/`, ready for Google Antigravity. Optional: additional exports in `exports/{system-name}/{platform}/` per requested platforms.
+Files in `exports/{system-name}/google-antigravity/.agents/`, ready for Google Antigravity. Optional: additional exports in `exports/{system-name}/{platform}/` per requested platforms. When generating Claude Code exports via `ski-platform-exporter`, output also includes `.claude/settings.json` with hooks configuration for automated QA layer activation.
 
 ## 11. Rules
 

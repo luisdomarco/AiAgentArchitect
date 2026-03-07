@@ -1,6 +1,7 @@
 ---
 name: ski-process-interviewer
-description: Structured interview technique for process discovery. Use it to conduct BPM/BPA interviews, apply inverse engineering on vague descriptions, and extract complete process information through organized question blocks.
+description: Structured interview technique for process discovery using BPM/BPA methods, inverse engineering on vague descriptions, and organized question blocks. Use when age-spe-process-discovery needs to elicit complete, unambiguous process information from the user through a structured dialogue.
+user-invocable: false
 ---
 
 # Process Interviewer Skill

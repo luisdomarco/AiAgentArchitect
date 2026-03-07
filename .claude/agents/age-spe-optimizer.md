@@ -1,6 +1,11 @@
 ---
 name: age-spe-optimizer
-description: Reads qa-report.md and system entity state, detects failure and success patterns, and proposes specific, actionable improvements. Never modifies files automatically — all proposals require explicit user decision.
+description: Reads qa-report.md and current entity state to detect recurring failure and success patterns, then proposes prioritized, actionable improvements. Use at CP-CLOSE after all phases are complete, or on-demand when recurring quality issues are detected across multiple audits. Never modifies files.
+model: claude-sonnet-4-5
+disallowedTools:
+  - Write
+  - Edit
+  - Bash
 ---
 
 ## 1. Role & Mission

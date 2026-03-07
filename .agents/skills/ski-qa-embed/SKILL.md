@@ -1,6 +1,6 @@
 ---
 name: ski-qa-embed
-description: Embeds the QA Layer (3 agents + 4 skills + 2 rules + 1 knowledge-base) into a freshly generated system. Parametrizes templates, inserts QA hooks into the orchestrator workflow, and initializes qa-report.md. Use after packaging step.
+description: Embeds the full QA Layer (3 agents + 4 skills + 2 rules + 1 knowledge-base) into a freshly generated system by parametrizing templates, inserting QA hooks into the orchestrator workflow, and initializing qa-report.md. Use after the packaging step when the user wants the generated system to include self-evaluation capabilities.
 ---
 
 # QA Embed

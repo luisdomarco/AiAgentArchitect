@@ -1,5 +1,5 @@
 ---
-description: Definition, purpose, activation, responsibilities, and format specifications of the 6 agentic entities of the system.
+description: Definition, purpose, activation, responsibilities, and format specifications of the 8 entity types of the system: Workflow, Agent (Specialist / Supervisor), Skill, Command, Rule, Knowledge-base, and Resources.
 tags: [entities, fundamentals, architecture]
 ---
 
@@ -185,9 +185,25 @@ ski-[name]/
 
 ## 7. Resources
 
-**Definition:** A directory at the same level as "/workflows" or "/knowledge-base" where other resources are created/stored that are not one of the types considered so far and that are necessary or provide support to different entities or processes.
+**Definition:** Support documents that extend the content of other entities when a single entity file would exceed its recommended size limit. Resources break down complex specifications, large tables, examples, templates, or reference data into dedicated files that are referenced from the main entity.
+
+**Objective:** Prevent entity files from becoming monolithic, keeping main entities concise and focused while offloading detailed supporting content to dedicated resource files.
+
+**Characteristics:**
+
+- Does not execute or coordinate: it is static reference content, like Knowledge-base.
+- Always referenced from another entity (never standalone).
+- Preferred over embedding large content directly in a workflow, agent, or knowledge-base file.
+- Can contain: detailed templates, decision trees, raw data tables, long examples, execution manuals.
+
+**When to create a Resource:**
+
+- When a workflow, agent, or knowledge-base file approaches its recommended character limit.
+- When a section of content is too detailed to inline without burying the main instructions.
+- When the same reference content is needed by more than one entity (favors reuse).
 
 **File prefix:** `res-`
+**Structure:** YAML Frontmatter (`name`, `description`, `tags`) + Markdown Body (free format, organized with headings).
 
 ---
 
@@ -195,12 +211,13 @@ ski-[name]/
 
 | Entity         | Name (max.) | Description (max.) | Recommended content | Maximum content |
 | -------------- | ----------- | ------------------ | ------------------- | --------------- |
-| Workflow       | 64          | 250                | <6000               | 12,000          |
-| Agent          | 64          | 250                | <3000               | 12,000          |
-| Skill          | 64          | 250                | <1500               | 12,000          |
-| Command        | 64          | 250                | <1500               | 12,000          |
-| Rule           | 64          | 250                | <3000               | 12,000          |
-| Knowledge-base | 64          | 250                | <6000               | 12,000          |
+| Workflow       | 64          | 250                | <6,000              | 12,000          |
+| Agent          | 64          | 250                | <3,000              | 12,000          |
+| Skill          | 64          | 250                | <1,500              | 12,000          |
+| Command        | 64          | 250                | <1,500              | 12,000          |
+| Rule           | 64          | 250                | <3,000              | 12,000          |
+| Knowledge-base | 64          | 250                | <6,000              | 12,000          |
+| Resources      | 64          | 250                | <6,000              | 12,000          |
 
 ---
 

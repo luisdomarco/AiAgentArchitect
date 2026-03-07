@@ -1,6 +1,8 @@
 ---
 name: ski-entity-file-builder
-description: Generates complete, correctly formatted instruction files for each entity type (Workflow, Agent, Skill, Command, Rule, Knowledge-base) per assigned intricacy level. Use in Step 3 to materialize entities from the blueprint.
+description: Generates complete, correctly formatted instruction files for all 8 entity types (Workflow, Agent, Skill, Command, Rule, Knowledge-base, Resources) per assigned intricacy level. Use in Step 3 to materialize each entity from the architectural blueprint as a deployable file.
+user-invocable: false
+allowed-tools: Write Edit Read
 ---
 
 # Entity File Builder Skill

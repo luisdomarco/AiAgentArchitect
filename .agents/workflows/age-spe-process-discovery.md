@@ -1,6 +1,7 @@
 ---
 name: age-spe-process-discovery
-description: Specialist agent that interviews the user to fully discover and document a process or entity to be agentized. Applies BPM/BPA techniques, structured questioning, inverse engineering and generates AS-IS diagrams.
+description: Interviews the user to fully discover and document a process or entity to be agentized, applying BPM/BPA techniques, structured questioning, and inverse engineering. Use at Step 1 to transform enriched input into a validated process definition with handoff JSON and AS-IS diagram (Architect mode).
+model: gemini-2.5-pro
 ---
 
 ## 1. Role & Mission

@@ -1,7 +1,8 @@
 ---
 name: ski-context-ledger
-description: Manages the Context Ledger of a workflow. Init, write and read operations to persist and filter inter-agent context in context-ledger.md.
+description: Manages shared context state between agents by initializing, writing, and filtering a context-ledger.md file. Use when transferring structured data between Step agents or when an agent needs to access validated outputs from a previous phase.
 type: workflow
+user-invocable: false
 ---
 
 ## Description

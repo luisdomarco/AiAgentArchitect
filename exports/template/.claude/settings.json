@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [],
+    "deny": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "If this Write operation updated qa-report.md or created an entity file as part of a checkpoint approval, notify the orchestrator workflow to trigger the corresponding QA audit cycle (Auditor → Evaluator) before advancing to the next phase."
+          }
+        ]
+      }
+    ]
+  }
+}

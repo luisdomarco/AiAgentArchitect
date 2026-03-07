@@ -1,6 +1,7 @@
 ---
 name: age-spe-evaluator
-description: Specialist agent that scores the quality of each process phase using a weighted rubric (Completeness, Quality, Compliance, Efficiency). Generates and updates the cumulative qa-report.md with score blocks per phase and a final global scorecard.
+description: Scores the quality of each process phase using a weighted rubric (Completeness, Quality, Compliance, Efficiency) and appends score blocks to qa-report.md. Use after age-spe-auditor completes a phase audit to generate a quantified quality score and accumulate a global scorecard.
+model: gemini-2.0-flash
 ---
 
 ## 1. Role & Mission

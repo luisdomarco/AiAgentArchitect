@@ -1,6 +1,7 @@
 ---
 name: ski-platform-exporter
-description: Converts a Google Antigravity export to other platforms (Claude Code, ChatGPT, Claude.ai, Dust, Gemini). Applies the correct mapping per destination platform and generates the corresponding file structure. Invokable from post-packaging or directly.
+description: Converts a Google Antigravity export to other platforms (Claude Code, ChatGPT, Claude.ai, Dust, Gemini) by applying the correct mapping and generating the corresponding file structure. For Claude Code, also generates .claude/settings.json with hooks for QA automation. Use post-packaging or on-demand when additional platform exports are requested.
+allowed-tools: Write Edit Read Glob
 ---
 
 # Platform Exporter Skill
@@ -84,11 +85,26 @@ exports/{name}/claude-code/
 
 **Generate `settings.json`:**
 
+Includes base permissions and PostToolUse hooks to automate QA layer activation:
+
 ```json
 {
   "permissions": {
     "allow": [],
     "deny": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "If this Write operation updated qa-report.md or created an entity file as part of a checkpoint approval, notify the orchestrator workflow to trigger the corresponding QA audit cycle (Auditor → Evaluator) before advancing to the next phase."
+          }
+        ]
+      }
+    ]
   }
 }
 ```
