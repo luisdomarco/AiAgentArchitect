@@ -9,3 +9,6 @@ exports/*
 
 # Repository index — no sincronizar con GitHub
 repository/
+
+# QA Report
+info/qa-report.md
