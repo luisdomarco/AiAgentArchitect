@@ -160,10 +160,10 @@ During generation, maintain an internal record of already approved entities:
 - **Names:** Use exactly the same name (kebab-case with prefix) in all cross-references.
 - **Paths:** Build correct relative paths according to the root folder architecture:
   - Skills: `../skills/[skill-name]/SKILL.md`
-  - Agents: `./workflows/[agent-name].md`
+  - Agents: `./[agent-name].md`
   - Rules: `../rules/[rule-name].md`
   - Knowledge-base: `../knowledge-base/[kb-name].md`
-  - Workflows: `./workflows/[workflow-name].md`
+  - Workflows: `./[workflow-name].md`
 - **Reused Skills:** If a Skill was already created or is reused, reference it with the correct path in all Agents that use it.
 - **Context Ledger:** If the generated workflow has 2+ agents in sequence, include the **Context Map** section (see `kno-fundamentals-entities` §10) and register `ski-context-ledger` in its Skills table. If the target system doesn't include `ski-context-ledger`, generate it as an additional entity.
 

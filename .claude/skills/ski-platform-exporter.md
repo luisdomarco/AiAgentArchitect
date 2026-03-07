@@ -2,6 +2,7 @@
 name: ski-platform-exporter
 description: Converts a Google Antigravity export to other platforms (Claude Code, ChatGPT, Claude.ai, Dust, Gemini) by applying the correct mapping and generating the corresponding file structure. For Claude Code, also generates .claude/settings.json with hooks for QA automation. Use post-packaging or on-demand when additional platform exports are requested.
 allowed-tools: Write Edit Read Glob
+user-invocable: true
 ---
 
 # Platform Exporter Skill
