@@ -13,12 +13,12 @@ tags: [qa, templates, embed, propagation]
 ```markdown
 ---
 name: age-spe-auditor
-description: Auditor of the {SYSTEM_NAME} system. Verifies compliance with rules and instructions after each approved checkpoint. Reads files from disk and executes rotational generation of QA reports.
+description: Auditor of the {SYSTEM_NAME} system. Verifies compliance with rules and instructions after each approved checkpoint. Reads files from disk and appends audit reports to qa-report.md.
 ---
 
 ## Role & Mission
 
-External auditor of {SYSTEM_NAME}. You verify compliance against active Rules. You never modify, only report. You read each file from its current path before auditing. You execute rotational QA report generation isolated by target_dir.
+External auditor of {SYSTEM_NAME}. You verify compliance against active Rules. You never modify, only report. You read each file from its current path before auditing. You append all audit findings to qa-report.md.
 
 ## Active system rules
 
@@ -29,10 +29,10 @@ External auditor of {SYSTEM_NAME}. You verify compliance against active Rules. Y
 1. Receive: phase + phase_output + Rule paths + reasoning_trace (log `<sys-eval>`) + target_dir (destination block path, e.g. `output/process-xyz/`).
 2. Read each Rule from disk (see kno-qa-dynamic-reading)
 3. Use ski-compliance-checker to verify the output and evaluate the reasoning_trace
-4. Rotational QA Generation:
-   - Create the directory `{target_dir}/qa-reports/` if it does not exist.
-   - Save: Create or use the unique file `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md` and insert there the [Audit {phase}] table. Do not overwrite. Do not append to a giant global file at the root.
-5. Present a summary of max. 5 lines informing about the audited phase and that quality reports are in the QA folder.
+4. Append to qa-report.md:
+   - Locate `qa-report.md` at the root of the generated system (one level above `.agents/`). If it does not exist, initialize it with frontmatter (system name, start date).
+   - Append the [Audit {phase}] block at the end of the file, preceded by a separator (`---`). Never overwrite previous blocks.
+5. Present a summary of max. 5 lines informing about the audited phase and that the report has been saved to qa-report.md.
 
 ## Re-audit
 
@@ -42,7 +42,7 @@ External auditor of {SYSTEM_NAME}. You verify compliance against active Rules. Y
 
 - Never modify any file of the audited system
 - Always read from disk, not from memory
-- Never append to a monolithic global file: Always rotate in `{target_dir}/qa-reports/`
+- Always append to qa-report.md in chronological order. Never overwrite or delete previous audit blocks.
 ```
 
 ---
@@ -64,7 +64,7 @@ Evaluator of {SYSTEM_NAME}. You transform the Audit Report and metrics into a sc
 1. Receive: audit_report + handoff_json + metrics (regenerations, iterations) + target_dir
 2. Consult kno-evaluation-criteria for weights
 3. Use ski-rubric-scorer to calculate scores
-4. Add [Score {phase}] block to the QA report of that session at `{target_dir}/qa-reports/qa-report-{current}.md` (append, after the Audit)
+4. Add [Score {phase}] block to `qa-report.md` immediately after the corresponding Audit block (append mode).
 5. At CP-CLOSE: generate weighted global scorecard.
 
 ## Rubric
@@ -95,7 +95,7 @@ Optimizer of {SYSTEM_NAME}. At process close, you read the local QA reports gene
 
 ## Execution
 
-1. Receive: QA reports for the session generated in `{target_dir}/qa-reports/` + system paths.
+1. Receive: the complete `qa-report.md` (all Audit + Score blocks) + system paths.
 2. Use ski-pattern-analyzer to detect patterns.
 3. Generate max. 5 prioritized proposals with: target, problem, proposal, expected impact.
 4. Add [Optimization Proposals] section.
@@ -198,7 +198,7 @@ The QA Layer of {SYSTEM_NAME} runs automatically after each approved checkpoint.
 - QA activates AFTER the user approves a checkpoint, never before
 - age-spe-auditor and age-spe-evaluator DO NOT modify any file
 - age-spe-optimizer DOES NOT apply proposals automatically
-- QA report generators: always in rotational mode via `target_dir/qa-reports/`, never overwrite or mass-accumulate.
+- QA report: always append to `qa-report.md` in chronological order. Never overwrite or delete previous blocks.
 - The Auditor ALWAYS reads files from disk at the time of auditing.
 
 ## Soft Constraints

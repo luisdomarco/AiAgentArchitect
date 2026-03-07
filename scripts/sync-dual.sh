@@ -300,7 +300,7 @@ validate() {
     fi
 
     # Verificar conteo por directorio
-    local expected_commands=1 expected_agents=7 expected_skills=10
+    local expected_commands=2 expected_agents=7 expected_skills=10
     local expected_rules=5 expected_kb=8 expected_resources=6
 
     local actual_commands actual_agents actual_skills actual_rules actual_kb actual_resources

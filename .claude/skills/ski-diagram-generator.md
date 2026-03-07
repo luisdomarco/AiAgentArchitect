@@ -1,8 +1,6 @@
 ---
 name: ski-diagram-generator
 description: Generates Mermaid diagrams for process flows, AS-IS states, and entity architectures. Use whenever a visual representation of a process or architecture is needed for validation or documentation, such as at Step 1 (AS-IS) and Step 2 (architecture blueprint).
-allowed-tools: Write
-user-invocable: false
 ---
 
 # Diagram Generator Skill

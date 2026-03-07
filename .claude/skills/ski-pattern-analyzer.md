@@ -1,8 +1,6 @@
 ---
 name: ski-pattern-analyzer
 description: Analyzes Audit and Score blocks in qa-report.md to detect recurring failure and success patterns across phases and entities. Returns structured pattern data and prioritized improvement targets. Use at CP-CLOSE to power the Optimizer.
-user-invocable: false
-allowed-tools: Read
 ---
 
 # Pattern Analyzer

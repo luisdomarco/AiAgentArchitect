@@ -1,8 +1,6 @@
 ---
 name: ski-compliance-checker
 description: Reads the current content of active Rules from disk paths, extracts compliance criteria, and verifies them against the provided phase output. Returns a structured compliance table. Use after any phase checkpoint to power the audit report.
-user-invocable: false
-allowed-tools: Read Glob
 ---
 
 # Compliance Checker

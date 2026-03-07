@@ -118,7 +118,7 @@ Added entities:
 - 2 rules: rul-audit-behavior, rul-strict-compliance
 - 1 knowledge-base: kno-qa-dynamic-reading
 
-The {system_name} orchestrator has been configured to ask for its target_dir interactively and audit itself in rotational silos.
+The {system_name} orchestrator has been configured to ask for its target_dir interactively and audit itself by appending all findings to qa-report.md.
 ```
 
 ## Error Handling

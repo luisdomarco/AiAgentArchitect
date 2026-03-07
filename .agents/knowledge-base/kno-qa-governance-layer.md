@@ -74,7 +74,7 @@ Only and exclusively when the user types/selects Option `A`, the Orchestrator ac
 
 ---
 
-## 5. QA Cycle and Rotational Evaluations (QA-Reports)
+## 5. QA Cycle and Append-Only Evaluations (qa-report.md)
 
 The Quality Assurance block is designed to audit the LLM against itself. The audit is prohibited from stopping execution unless it finds a destructive failure; its function is to leave an indexable compliance trail and penalize deviations detected in the background.
 
@@ -87,8 +87,8 @@ The Quality Assurance block is designed to audit the LLM against itself. The aud
    - The initially computed _`target_dir`_.
 2. **Dynamic Reading by the Auditor:** The Auditor must go to disk (`/rules`) and read the strict text of the rules that had to be obeyed in that specific step. **It must read them from disk** (`kno-qa-dynamic-reading`), never relying on its internalized training.
 3. **Semantic Verification (`ski-compliance-checker`):** The Auditor crosses the extracted rules with the `reasoning_trace`. It must answer this framework question: _Did the agent reason before acting and contemplate restriction X, or was it deliberately ignored?_ Judgments are evaluated and emitted visually (✅/❌/⚠️).
-4. **Rotational Report Storage:**
-   - The Auditor is **structurally prohibited from appending** to a megalithic giant QA document. This practice exhausts the token window.
-   - The Auditor accesses the `target_dir` variable and programmatically creates the audit subdirectory: `{target_dir}/qa-reports/`.
-   - Creates an evaluation file with an exact and unique timestamp: `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md`.
-   - Dumps there the Markdown compliance rubric for that particular step.
+4. **Append-Only Report Storage:**
+   - The Auditor writes all findings to a single `qa-report.md` file located at the root of the generated system directory (one level above `.agents/`), following the path convention documented in `kno-qa-dynamic-reading`.
+   - Each audit block is appended at the end of the file with a separator (`---`). Previous blocks are never overwritten or deleted.
+   - The file is initialized with frontmatter (system name, start date) on the first audit run. At process close, the frontmatter is updated with the close date and global score.
+   - Cross-session accumulation is handled separately by `qa-meta-report.md`, which records summary entries per session for the Optimizer's historical analysis.

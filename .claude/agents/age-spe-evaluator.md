@@ -1,11 +1,7 @@
 ---
 name: age-spe-evaluator
 description: Scores the quality of each process phase using a weighted rubric (Completeness, Quality, Compliance, Efficiency) and appends score blocks to qa-report.md. Use after age-spe-auditor completes a phase audit to generate a quantified quality score and accumulate a global scorecard.
-model: claude-sonnet-4-5
-disallowedTools:
-  - Write
-  - Edit
-  - Bash
+model: gemini-2.0-flash
 ---
 
 ## 1. Role & Mission

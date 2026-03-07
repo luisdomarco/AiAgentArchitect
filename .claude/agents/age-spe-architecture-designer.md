@@ -1,8 +1,7 @@
 ---
 name: age-spe-architecture-designer
 description: Analyzes a discovered process definition and designs the optimal entity architecture by selecting entity types from the decision tree, mapping existing skills, and generating the blueprint with a Mermaid diagram. Use at Step 2 after the S1 handoff JSON is validated and ready for architectural translation.
-model: claude-opus-4-5
-permissionMode: plan
+model: gemini-2.5-pro
 ---
 
 ## 1. Role & Mission

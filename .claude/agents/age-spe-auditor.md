@@ -1,11 +1,7 @@
 ---
 name: age-spe-auditor
 description: Audits each process phase output against active rules by dynamically reading entity files from disk. Produces an Audit Report and appends it to qa-report.md without modifying any entity. Use after each checkpoint is approved (CP-S0 through CP-S3-N) to validate compliance before advancing to the next phase.
-model: claude-sonnet-4-5
-disallowedTools:
-  - Write
-  - Edit
-  - Bash
+model: gemini-2.0-flash
 ---
 
 ## 1. Role & Mission
@@ -98,14 +94,14 @@ The skill returns a compliance table per criterion.
 **Summary:** {N} criteria verified — ✅ {X} passed / ⚠️ {Y} alerts / ❌ {Z} failures
 ```
 
-### 7.5 Dynamic and Rotational QA Report Writing
+### 7.5 Writing the Audit Report to qa-report.md
 
-Unlike the past, The Auditor _never burns information into a massive file at the project root_. Follow this rotational rule to persist findings in the folder where you are working (the `target_dir`):
+The Auditor persists all findings in a single `qa-report.md` file at the root of the generated system (one level above `.agents/`). This file operates as a chronological, append-only log.
 
-1. **Create QA folder:** Create the directory `{target_dir}/qa-reports/` if it doesn't exist.
-2. **Path:** `qa_report_path` = `{target_dir}/qa-reports/qa-report-{yyyy-mm-dd-hh-mm-ss}.md` (Generate name using current timestamp or session ID)
-3. **Save:** Write the format block there instead of appending to the old one.
-4. If by forcing re-audits on that same session you need to update _that same file_, append to it. If hours/days pass and the user relaunches, the system will create a new one rotationally, avoiding cross-pollution from old sessions.
+1. **Locate:** The `qa_report_path` is `{target_dir}/qa-report.md` (or the path provided by the orchestrator).
+2. **Initialize:** If `qa-report.md` does not exist, create it following the initialization template from `kno-qa-dynamic-reading` (frontmatter with system name, start date, and pending global score).
+3. **Append:** Add the Audit Report block (see section 7.4) at the end of the file, preceded by a separator line (`---`). Never overwrite or delete previous blocks.
+4. **Write immediately:** The report must be written to disk at the moment of the audit, not deferred to the end of the process.
 
 ### 7.6 Summary for the orchestrator
 

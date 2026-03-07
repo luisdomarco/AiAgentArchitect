@@ -130,7 +130,7 @@ At process close, phases are weighted differently to reflect their impact on the
 
 ## Report Anatomy
 
-All QA output lives in `qa-reports/` inside the target directory of the current generation run. Each session creates a timestamped report file — the system never appends to a stale file from a previous session, and never overwrites historical blocks.
+All QA output lives in a single `qa-report.md` file at the root of the generated system directory. Each audit, score, and proposal block is appended chronologically — the system never overwrites or deletes previous blocks. Cross-session history is accumulated in `qa-meta-report.md`.
 
 ### Audit block
 
@@ -198,7 +198,7 @@ During the packaging step, the QA layer is injected automatically into the expor
 
 - The generated orchestrator workflow has QA hooks wired into every checkpoint
 - The three QA roles (Auditor, Evaluator, Optimizer) are present and active in the export
-- The report directory (`qa-reports/`) is created on first audit run
+- The `qa-report.md` file is initialized on first audit run
 - A `qa-meta-report.md` accumulates global scores across sessions, giving the Optimizer historical context on the second run and beyond
 
 The level of QA detail in a generated system scales with its complexity. Simple systems (Express Mode) get a lighter cycle; complex multi-agent systems (Architect Mode) get the full Auditor → Evaluator → Optimizer chain.

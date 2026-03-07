@@ -121,7 +121,7 @@ Every session runs a three-role quality cycle automatically — no setup require
 - **Evaluator** — scores each phase on four dimensions: Completeness, Quality, Compliance, and Efficiency. Produces a weighted scorecard at process close.
 - **Optimizer** — reads the complete audit and score history, detects recurring patterns, and generates prioritized improvement proposals. Never applies them automatically.
 
-QA output is saved as timestamped reports in `qa-reports/` inside the active generation directory. The cycle is non-blocking: it never stops execution, only accumulates evidence.
+QA output is appended to a single `qa-report.md` at the root of the generated system. The cycle is non-blocking: it never stops execution, only accumulates evidence.
 
 **→ Full QA specification: [QA-SYSTEM.md](QA-SYSTEM.md)**
 

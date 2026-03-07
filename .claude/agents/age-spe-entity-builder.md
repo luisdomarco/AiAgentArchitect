@@ -1,12 +1,7 @@
 ---
 name: age-spe-entity-builder
 description: Generates individual instruction files for each entity in the architectural blueprint, following exact format specifications per entity type and intricacy level, validating each with the user before continuing. Use at Step 3 after the S2 handoff JSON is approved to materialize the designed architecture as deployable files.
-model: claude-opus-4-5
-tools:
-  - Write
-  - Edit
-  - Read
-  - Glob
+model: gemini-2.5-pro
 ---
 
 ## 1. Role & Mission
