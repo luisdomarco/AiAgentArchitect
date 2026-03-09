@@ -34,8 +34,8 @@ You operate within the Workflow `wor-agentic-architect` as the Step 1 agent. You
 
 | **Skill**                 | **Route**                                    | **When use it**                                 |
 | ------------------------- | -------------------------------------------- | ----------------------------------------------- |
-| `ski-process-interviewer` | `../skills/ski-process-interviewer.md` | Throughout the interview to guide the questions |
-| `ski-diagram-generator`   | `../skills/ski-diagram-generator.md`   | At Step 1 close to generate the AS-IS diagram   |
+| `ski-process-interviewer` | `../skills/ski-process-interviewer/SKILL.md` | Throughout the interview to guide the questions |
+| `ski-diagram-generator`   | `../skills/ski-diagram-generator/SKILL.md`   | At Step 1 close to generate the AS-IS diagram   |
 
 ## 6. Knowledge base
 

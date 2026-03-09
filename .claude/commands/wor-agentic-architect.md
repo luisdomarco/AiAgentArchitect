@@ -40,9 +40,9 @@ G1: Extract all information before designing · G2: Select entities per `kno-ent
 
 | **Skill**               | **Route**                                  | **When**                                                     |
 | ----------------------- | ------------------------------------------ | ------------------------------------------------------------ |
-| `ski-platform-exporter` | `../skills/ski-platform-exporter.md` | Post-packaging: convert export to other platforms            |
-| `ski-qa-embed`          | `../skills/ski-qa-embed.md`          | Post-packaging: embed the QA Layer into the generated system |
-| `ski-context-ledger`    | `../skills/ski-context-ledger.md`    | Start: initialize ledger. After each Step: write/read        |
+| `ski-platform-exporter` | `../skills/ski-platform-exporter/SKILL.md` | Post-packaging: convert export to other platforms            |
+| `ski-qa-embed`          | `../skills/ski-qa-embed/SKILL.md`          | Post-packaging: embed the QA Layer into the generated system |
+| `ski-context-ledger`    | `../skills/ski-context-ledger/SKILL.md`    | Start: initialize ledger. After each Step: write/read        |
 
 ## 7. Knowledge base
 

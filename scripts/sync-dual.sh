@@ -58,8 +58,7 @@ transform_agents_to_claude() {
     sed -i '' 's|\./age-spe-|../agents/age-spe-|g' "$file"
     sed -i '' 's|\./age-sup-|../agents/age-sup-|g' "$file"
 
-    # Referencias a skills: ../skills/ski-NAME/SKILL.md → ../skills/ski-NAME.md
-    sed -i '' 's|\.\./skills/ski-\([^/]*\)/SKILL\.md|../skills/ski-\1.md|g' "$file"
+    # Skills paths are now identical between platforms (ski-NAME/SKILL.md) — no transformation needed
 }
 
 # Transforma rutas de .claude/ a .agents/
@@ -70,8 +69,7 @@ transform_claude_to_agents() {
     sed -i '' 's|\.\./agents/age-spe-|./age-spe-|g' "$file"
     sed -i '' 's|\.\./agents/age-sup-|./age-sup-|g' "$file"
 
-    # Referencias a skills: ../skills/ski-NAME.md → ../skills/ski-NAME/SKILL.md
-    sed -i '' 's|\.\./skills/ski-\([^/.]*\)\.md|../skills/ski-\1/SKILL.md|g' "$file"
+    # Skills paths are now identical between platforms (ski-NAME/SKILL.md) — no transformation needed
 }
 
 # ─── Sincronización por archivo ──────────────────────────────────────────────
@@ -93,9 +91,10 @@ sync_file_to_claude() {
             needs_transform=true
             ;;
         skills/ski-*/SKILL.md)
-            local skill_name
-            skill_name=$(echo "$relative" | sed 's|skills/\(ski-[^/]*\)/SKILL.md|\1|')
-            dest="$CLAUDE_DIR/skills/${skill_name}.md"
+            local skill_dir
+            skill_dir=$(echo "$relative" | sed 's|skills/\(ski-[^/]*\)/SKILL.md|\1|')
+            mkdir -p "$CLAUDE_DIR/skills/${skill_dir}"
+            dest="$CLAUDE_DIR/skills/${skill_dir}/SKILL.md"
             ;;
         rules/*.md|knowledge-base/*.md|resources/*.md)
             dest="$CLAUDE_DIR/$relative"
@@ -130,11 +129,11 @@ sync_file_to_agents() {
             dest="$AGENTS_DIR/workflows/$(basename "$src")"
             needs_transform=true
             ;;
-        skills/ski-*.md)
-            local skill_name
-            skill_name=$(basename "$src" .md)
-            mkdir -p "$AGENTS_DIR/skills/${skill_name}"
-            dest="$AGENTS_DIR/skills/${skill_name}/SKILL.md"
+        skills/ski-*/SKILL.md)
+            local skill_dir
+            skill_dir=$(echo "$relative" | sed 's|skills/\(ski-[^/]*\)/SKILL.md|\1|')
+            mkdir -p "$AGENTS_DIR/skills/${skill_dir}"
+            dest="$AGENTS_DIR/skills/${skill_dir}/SKILL.md"
             ;;
         rules/*.md|knowledge-base/*.md|resources/*.md)
             dest="$AGENTS_DIR/$relative"
@@ -167,7 +166,7 @@ sync_agents_to_claude() {
         [ -f "$f" ] && sync_file_to_claude "$f"
     done
 
-    # Skills (aplanar)
+    # Skills (estructura idéntica — copia directa)
     for skill_dir in "$AGENTS_DIR"/skills/ski-*/; do
         [ -f "${skill_dir}SKILL.md" ] && sync_file_to_claude "${skill_dir}SKILL.md"
     done
@@ -204,9 +203,9 @@ sync_claude_to_agents() {
         [ -f "$f" ] && sync_file_to_agents "$f"
     done
 
-    # Skills (des-aplanar)
-    for f in "$CLAUDE_DIR"/skills/ski-*.md; do
-        [ -f "$f" ] && sync_file_to_agents "$f"
+    # Skills (estructura idéntica — copia directa)
+    for skill_dir in "$CLAUDE_DIR"/skills/ski-*/; do
+        [ -f "${skill_dir}SKILL.md" ] && sync_file_to_agents "${skill_dir}SKILL.md"
     done
 
     # Rules
@@ -324,8 +323,9 @@ validate() {
         errors=$((errors + 1))
     fi
 
-    if grep -rq 'SKILL\.md' "$CLAUDE_DIR/commands/" "$CLAUDE_DIR/agents/" 2>/dev/null | grep -v '\[nombre-skill\]' | grep -q .; then
-        log_error "Encontradas referencias a SKILL.md sin transformar en .claude/"
+    # Verificar que skills en .claude/ usan estructura subdirectorio (no archivos planos)
+    if find "$CLAUDE_DIR/skills" -maxdepth 1 -name "*.md" -type f 2>/dev/null | grep -q .; then
+        log_error "Encontrados archivos .md planos en .claude/skills/ (deben ser ski-*/SKILL.md)"
         errors=$((errors + 1))
     fi
 

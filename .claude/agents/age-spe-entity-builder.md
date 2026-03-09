@@ -37,9 +37,9 @@ You operate within the Workflow `wor-agentic-architect` as the Step 3 agent. You
 
 | **Skill**                 | **Route**                                    | **When use it**                                                               |
 | ------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------- |
-| `ski-entity-file-builder` | `../skills/ski-entity-file-builder.md` | To generate each entity's content according to its type and level             |
-| `ski-diagram-generator`   | `../skills/ski-diagram-generator.md`   | To generate diagrams for the `process-overview.md`                            |
-| `ski-qa-embed`            | `../skills/ski-qa-embed.md`            | Optional: embed the QA Layer in the generated system, if the user requests it |
+| `ski-entity-file-builder` | `../skills/ski-entity-file-builder/SKILL.md` | To generate each entity's content according to its type and level             |
+| `ski-diagram-generator`   | `../skills/ski-diagram-generator/SKILL.md`   | To generate diagrams for the `process-overview.md`                            |
+| `ski-qa-embed`            | `../skills/ski-qa-embed/SKILL.md`            | Optional: embed the QA Layer in the generated system, if the user requests it |
 
 ## 6. Knowledge base
 

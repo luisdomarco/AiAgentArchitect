@@ -40,7 +40,7 @@ Structure adapted for Claude Code:
 - `.claude/`
   - `commands/` — Main workflows (`wor-*`)
   - `agents/` — Specialized agents (`age-spe-*`)
-  - `skills/` — Skills with flat structure (`ski-*.md`)
+  - `skills/` — Skills with subdirectory structure (`ski-*/SKILL.md`)
   - `rules/` — Rules (`rul-*`)
   - `knowledge-base/` — Knowledge base (`kno-*`)
   - `resources/` — Reference resources (`res-*`)
@@ -49,7 +49,6 @@ Structure adapted for Claude Code:
 **Key differences between `.agents/` and `.claude/`:**
 
 - Workflows and Agents separated: `workflows/` → `commands/` (workflows) + `agents/` (agents)
-- Flattened skills: `skills/ski-*/SKILL.md` → `skills/ski-*.md`
 - References automatically adjusted per context
 
 ### 3. Generated Systems (`exports/`)
@@ -75,4 +74,4 @@ The following rules apply in both implementations (`.agents/` and `.claude/`):
 Both implementations must remain in sync. Changes in one structure must be replicated in the other, adjusting paths accordingly:
 
 - `.agents/workflows/` ↔ `.claude/commands/` + `.claude/agents/`
-- `.agents/skills/ski-*/SKILL.md` ↔ `.claude/skills/ski-*.md`
+- `.agents/skills/ski-*/SKILL.md` ↔ `.claude/skills/ski-*/SKILL.md`

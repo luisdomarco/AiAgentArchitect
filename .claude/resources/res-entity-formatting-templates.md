@@ -176,6 +176,8 @@ permissionMode: default | acceptEdits | plan     # Optional (CC): agent autonomy
 
 > **Platform note:** The fields `allowed-tools` and `user-invocable` are **Claude Code–native**. For **Google Antigravity**, these fields are injected by `ski-platform-exporter` during CC export. They should be defined in the source entity to document intended capabilities regardless of platform.
 
+> **Structure note:** Skill files use the `ski-[name]/SKILL.md` subdirectory structure in **both** platforms (`.agents/skills/` and `.claude/skills/`). The subdirectory name is the entity identifier; the file is always named `SKILL.md`. Never create a flat `ski-name.md` file on either platform.
+
 ```markdown
 ---
 name: ski-[kebab-case-name]

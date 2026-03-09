@@ -28,8 +28,8 @@ Both contain the **same entities** with the **same functional content**. The dif
 │   ├── com-*.md                      →│   ├── age-spe-*.md
 │   └── test.md                        │   └── age-sup-*.md
 ├── skills/                            ├── skills/
-│   └── ski-*/                         │   └── ski-*.md (flattened)
-│       └── SKILL.md ─────────────────→│
+│   └── ski-*/                         │   └── ski-*/
+│       └── SKILL.md ─────────────────→│       └── SKILL.md (identical)
 ├── rules/                             ├── rules/
 │   └── rul-*.md ─────────────────────→│   └── rul-*.md (identical)
 ├── knowledge-base/                    ├── knowledge-base/
@@ -50,7 +50,7 @@ Both contain the **same entities** with the **same functional content**. The dif
 | Agent Specialist | `workflows/age-spe-*.md`  | `agents/age-spe-*.md`     | Directory change + paths |
 | Agent Supervisor | `workflows/age-sup-*.md`  | `agents/age-sup-*.md`     | Directory change + paths |
 | Command          | `workflows/com-*.md`      | `commands/com-*.md`       | Directory change + paths |
-| Skill            | `skills/ski-*/SKILL.md`   | `skills/ski-*.md`         | Flattened structure      |
+| Skill            | `skills/ski-*/SKILL.md`   | `skills/ski-*/SKILL.md`   | Direct copy              |
 | Rule             | `rules/rul-*.md`          | `rules/rul-*.md`          | Direct copy              |
 | Knowledge-base   | `knowledge-base/kno-*.md` | `knowledge-base/kno-*.md` | Direct copy              |
 | Resource         | `resources/res-*.md`      | `resources/res-*.md`      | Direct copy              |
@@ -63,19 +63,19 @@ Entities reference other entities with relative paths. When the directory struct
 
 ### Paths that change
 
-| Reference                 | In .agents/                | In .claude/              |
-| ------------------------- | -------------------------- | ------------------------ |
-| Agent from workflow       | `./age-spe-*.md`           | `../agents/age-spe-*.md` |
-| Supervisor from workflow  | `./age-sup-*.md`           | `../agents/age-sup-*.md` |
-| Skill from agent/workflow | `../skills/ski-*/SKILL.md` | `../skills/ski-*.md`     |
+| Reference                | In .agents/      | In .claude/              |
+| ------------------------ | ---------------- | ------------------------ |
+| Agent from workflow      | `./age-spe-*.md` | `../agents/age-spe-*.md` |
+| Supervisor from workflow | `./age-sup-*.md` | `../agents/age-sup-*.md` |
 
 ### Paths that do NOT change
 
-| Reference      | Path (same in both)          |
-| -------------- | ---------------------------- |
-| Rule           | `../rules/rul-*.md`          |
-| Knowledge-base | `../knowledge-base/kno-*.md` |
-| Resource       | `../resources/res-*.md`      |
+| Reference             | Path (same in both)            |
+| --------------------- | ------------------------------ |
+| Skill from agent      | `../skills/ski-*/SKILL.md`     |
+| Rule                  | `../rules/rul-*.md`            |
+| Knowledge-base        | `../knowledge-base/kno-*.md`   |
+| Resource              | `../resources/res-*.md`        |
 
 ### Protections
 

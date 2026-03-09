@@ -37,7 +37,7 @@ You can also be activated manually via `/re-audit [entity | phase | system]` fro
 
 | **Skill**                | **Route**                                   | **When use it**                                             |
 | ------------------------ | ------------------------------------------- | ----------------------------------------------------------- |
-| `ski-compliance-checker` | `../skills/ski-compliance-checker.md` | To execute the compliance checklist reading Rules from disk |
+| `ski-compliance-checker` | `../skills/ski-compliance-checker/SKILL.md` | To execute the compliance checklist reading Rules from disk |
 
 ## 6. Knowledge base
 

@@ -34,7 +34,7 @@ You operate within `wor-agentic-architect` as a transversal agent. You are activ
 
 | **Skill**           | **Route**                              | **When use it**                                                 |
 | ------------------- | -------------------------------------- | --------------------------------------------------------------- |
-| `ski-rubric-scorer` | `../skills/ski-rubric-scorer.md` | To calculate scores per dimension using the configurable rubric |
+| `ski-rubric-scorer` | `../skills/ski-rubric-scorer/SKILL.md` | To calculate scores per dimension using the configurable rubric |
 
 ## 6. Knowledge base
 

@@ -111,6 +111,8 @@ Before including any reference to another entity, verify that:
 | Command        | `./workflows/[command-name].md`      |
 | Resources      | `./resources/res-[resource-name].md` |
 
+> **Platform note (Skills):** Both Google Antigravity (`.agents/skills/`) and Claude Code (`.claude/skills/`) use the `ski-[name]/SKILL.md` subdirectory structure. When generating a Skill entity, always create the subdirectory and name the file `SKILL.md` — never use a flat `ski-name.md` file on either platform.
+
 ---
 
 ### 6. Content Structuring and Partitioning (/resources)

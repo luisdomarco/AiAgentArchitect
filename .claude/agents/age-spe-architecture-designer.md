@@ -37,8 +37,8 @@ You operate within the Workflow `wor-agentic-architect` as the Step 2 agent. You
 
 | **Skill**               | **Route**                                  | **When use it**                                        |
 | ----------------------- | ------------------------------------------ | ------------------------------------------------------ |
-| `ski-entity-selector`   | `../skills/ski-entity-selector.md`   | To select the correct type for each entity             |
-| `ski-diagram-generator` | `../skills/ski-diagram-generator.md` | To generate the architecture diagram in Architect Mode |
+| `ski-entity-selector`   | `../skills/ski-entity-selector/SKILL.md`   | To select the correct type for each entity             |
+| `ski-diagram-generator` | `../skills/ski-diagram-generator/SKILL.md` | To generate the architecture diagram in Architect Mode |
 
 ## 6. Knowledge base
 

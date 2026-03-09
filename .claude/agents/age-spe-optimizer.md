@@ -35,7 +35,7 @@ You operate at CP-CLOSE, after the Evaluator has closed the global scorecard. Yo
 
 | **Skill**              | **Route**                                 | **When use it**                                            |
 | ---------------------- | ----------------------------------------- | ---------------------------------------------------------- |
-| `ski-pattern-analyzer` | `../skills/ski-pattern-analyzer.md` | For statistical pattern analysis in Audit and Score blocks |
+| `ski-pattern-analyzer` | `../skills/ski-pattern-analyzer/SKILL.md` | For statistical pattern analysis in Audit and Score blocks |
 
 ## 6. Knowledge base
 
