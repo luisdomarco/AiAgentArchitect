@@ -1,0 +1,41 @@
+{
+  "name": "aiagent-architect-lite",
+  "version": "0.1.0-lite",
+  "description": "Lite preview of AiAgentArchitect: a meta-system for designing and generating agentic systems across Antigravity, Claude Code, and OpenAI Codex.",
+  "type": "module",
+  "bin": {
+    "aiagent-architect": "./scripts/install.mjs"
+  },
+  "scripts": {
+    "install:wizard": "node scripts/install.mjs",
+    "resolve-config": "python3 scripts/resolve-config.py",
+    "sync": "bash scripts/sync-dual.sh",
+    "build:codex": "python3 scripts/build-codex.py"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
+    "@iarna/toml": "^2.2.5",
+    "js-yaml": "^4.1.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "agentic-systems",
+    "ai-agents",
+    "claude-code",
+    "antigravity",
+    "codex",
+    "meta-framework"
+  ],
+  "files": [
+    ".agents",
+    ".claude",
+    ".codex",
+    "config",
+    "scripts",
+    "install.sh",
+    "*.md"
+  ]
+}

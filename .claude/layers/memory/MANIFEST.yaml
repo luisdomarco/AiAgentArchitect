@@ -1,0 +1,76 @@
+---
+layer_id: memory
+version: 1.0.0
+description: Snapshots ligeros (~1-2 KB) cross-sesión por proyecto, con startup rápido. Persistencia orchestrator-driven (sin hooks).
+scopes: [root, subsystem]
+compatible_with: ">=3.0.0,<4.0.0"
+
+provides:
+  skills:
+    - ski-memory-manager
+
+hooks_into: []
+
+depends_on: []
+
+auto_resolve_deps: true
+
+default_enabled_root: true
+default_enabled_subsystem: true
+
+platform_targets:
+  antigravity:
+    entities_dir: .agents/layers/memory/
+    context_root_inject: null
+  claude_code:
+    entities_dir: .claude/layers/memory/
+    context_root_inject:
+      file: CLAUDE.md
+      section: "## Active Layers — Memory"
+      content: |
+        - **Memory Layer activa**. Snapshots persistentes en `memory/YYYY-MM-DD-HH-MM-{project}.md` (~1-2 KB).
+        - Al iniciar sesión, se ofrece reanudar el último proyecto, cambiar, o crear nuevo.
+        - Tras cada checkpoint aprobado, el snapshot se actualiza automáticamente vía orchestrator.
+  codex:
+    entities_dir: .codex/layers/memory/
+    context_root_inject:
+      file: AGENTS.md
+      section: "## Active Layers — Memory"
+      content: |
+        - **Memory Layer activa**. Snapshots en `memory/YYYY-MM-DD-HH-MM-{project}.md`.
+        - El orchestrator invoca `ski-memory-manager save` tras cada checkpoint y `load-last` al iniciar.
+
+fallback_promote_on_disable: []
+---
+
+# Memory Layer
+
+Capa de persistencia ligera cross-sesión. Permite reanudar trabajo en cualquier proyecto sin necesidad de releer el Context Ledger completo.
+
+## Estructura del snapshot
+
+```yaml
+---
+schema_version: 1.0
+project-name: foo-system
+session: 2026-04-25-14-32
+mode: architect | express
+status: in-progress | completed | paused
+last-checkpoint: CP-S2
+checkpoints-approved: [CP-S0, CP-S1, CP-S2]
+checkpoint_decisions:
+  CP-S0: { option: A, note: "Aprobado directo" }
+  CP-S1: { option: B, note: "Ajustado: añadidos 2 triggers" }
+target-dir: exports/foo-system/
+last_session_at: 2026-04-25T14:32:00Z
+---
+
+## Session summary
+## Steps completed
+## Active state
+## Key decisions
+```
+
+## Multi-proyecto paralelo
+
+Cada proyecto tiene su propio archivo de Memory determinado por `{project-name}` en el filename. No hay colisiones; load-last es determinístico por timestamp.

@@ -1,0 +1,79 @@
+---
+layer_id: onboarding
+version: 0.1.0
+description: First-run guided tour for new users (root level) and template-driven tour for generated subsystems. Auto-invoked when no welcome marker is found in memory/. Provides discoverability and orientation as a dedicated tour rather than a menu router.
+scopes: [root, subsystem]
+compatible_with: ">=3.0.0,<4.0.0"
+
+provides:
+  workflows:
+    - wor-onboarding   # root-level tour (this layer)
+  # Future additions (post-wor-agentic-architect refactor):
+  # - wor-subsystem-tour
+  # - ski-subsystem-onboarding (template-driven, parameterized at Step 3)
+  # - tpl-onboarding
+
+hooks_into:
+  - workflow: wor-agentic-architect
+    at: session-start
+    via: wor-onboarding
+    description: On session start, if memory/welcome-shown.md is absent, the orchestrator delegates to wor-onboarding before any other action. The user can opt out by touching the marker manually.
+
+depends_on: []
+
+auto_resolve_deps: true
+
+default_enabled_root: true
+default_enabled_subsystem: true
+
+platform_targets:
+  antigravity:
+    entities_dir: .agents/layers/onboarding/
+    context_root_inject: null
+  claude_code:
+    entities_dir: .claude/layers/onboarding/
+    context_root_inject:
+      file: CLAUDE.md
+      section: "## Active Layers — Onboarding"
+      content: |
+        - **Onboarding active**. On first invocation (no `memory/welcome-shown.md` marker), `wor-onboarding` auto-runs to give a brief tour, verify your install, and offer first-step options.
+        - Manual invocation: `/wor-onboarding`. Skip the auto-tour: `touch memory/welcome-shown.md`.
+  codex:
+    entities_dir: .codex/layers/onboarding/
+    context_root_inject:
+      file: AGENTS.md
+      section: "## Active Layers — Onboarding"
+      content: |
+        - **Onboarding active**. On first invocation, run `/wor-onboarding` for a brief tour and next-step prompt. Codex does not auto-detect missing markers; the user must invoke explicitly.
+    hooks:
+      supported: false
+      degradation: "Auto-invocation on first run is not available in Codex. Run /wor-onboarding manually after install."
+
+fallback_promote_on_disable: []
+---
+
+# Onboarding Layer
+
+The "first contact" experience for new users. When absent, AiAgentArchitect still works — but new users land in `wor-agentic-architect` cold, without a guided tour of what they're looking at.
+
+## Why a layer
+
+Experienced users can suppress the auto-tour by touching the welcome marker manually:
+
+```
+touch memory/welcome-shown.md
+```
+
+This skips auto-invocation; the workflow remains explicitly callable as `/wor-onboarding`.
+
+## Components in this version (0.1.0)
+
+- **`wor-onboarding`** — root-level guided tour, 5 screens + verification + first-step prompt + welcome marker.
+
+## Components planned for a future version
+
+- **`wor-subsystem-tour`** — analogous tour for any subsystem generated with the Onboarding layer embedded. Auto-invoked on the subsystem's first use.
+- **`ski-subsystem-onboarding`** — skill that the entity builder calls during Step 3 to render a tour parameterized for the subsystem's name, agents, and use cases.
+- **`tpl-onboarding`** — template consumed by `ski-subsystem-onboarding`.
+
+These are deferred until `wor-agentic-architect` is updated to read active layers and emit the corresponding templates at Step 3.

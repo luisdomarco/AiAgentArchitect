@@ -1,0 +1,77 @@
+---
+layer_id: help-router
+version: 0.1.0
+description: Context-aware help menus that respond to project state, current phase, and active layers. Reads entities-registry.csv and the active Memory snapshot, then renders the relevant menu of next actions.
+scopes: [root, subsystem]
+compatible_with: ">=3.0.0,<4.0.0"
+
+provides:
+  skills:
+    - ski-help-router
+  scripts:
+    - build-registry  # scripts/build-registry.py — autogenerates entities-registry.csv
+  commands:
+    - help  # /help slash command (CC), invoked from chat at any time
+
+hooks_into:
+  - workflow: wor-agentic-architect
+    at: any-step
+    via: ski-help-router
+    description: When the user invokes /help during any phase, ski-help-router renders the context-aware menu of next actions filtered by active layers.
+
+depends_on: []
+
+auto_resolve_deps: true
+
+default_enabled_root: true
+default_enabled_subsystem: true
+
+platform_targets:
+  antigravity:
+    entities_dir: .agents/layers/help-router/
+    context_root_inject: null
+  claude_code:
+    entities_dir: .claude/layers/help-router/
+    context_root_inject:
+      file: CLAUDE.md
+      section: "## Active Layers — Help Router"
+      content: |
+        - **Help Router active**. Use `/help` at any time to see context-aware options based on your current phase and project state.
+        - Behind the scenes, the router reads `repository/entities-registry.csv` and the active Memory snapshot to filter options by active layers.
+    slash_commands:
+      - source: commands/help.md
+        target: .claude/commands/help.md
+  codex:
+    entities_dir: .codex/layers/help-router/
+    context_root_inject:
+      file: AGENTS.md
+      section: "## Active Layers — Help Router"
+      content: |
+        - **Help Router active** (degradation: invocation by name). Codex does not support custom slash commands; invoke `/ski-help-router` directly to see context-aware menus.
+    hooks:
+      supported: false
+      degradation: "/help is unavailable in Codex; invoke /ski-help-router directly"
+
+fallback_promote_on_disable: []
+---
+
+# Help Router Layer
+
+Context-aware help menus, the `/help` command behind them, and the script that keeps the entities registry up to date.
+
+## Components
+
+- **`ski-help-router`** — the skill that the `/help` command invokes. It loads `repository/entities-registry.csv`, the active Memory snapshot (if Memory layer is active), and `config/manifest.yaml`, then renders a menu of context-relevant options.
+- **`menus.csv`** — co-located with the skill. Defines, for each known context (e.g. `cp-s2-pending`, `mid-step`, `root-no-project`), what options to show and which require specific layers to be active.
+- **`scripts/build-registry.py`** — scans `.agents/` (including `.agents/layers/`) for entity files, parses their frontmatter, and writes `repository/entities-registry.csv`. Run it after adding/removing entities, or wire it into a hook that runs on file change.
+- **`commands/help.md`** — Claude Code slash-command shim that invokes the skill.
+
+## Why a separate layer?
+
+Discoverability is what makes a workflow feel guided. A user inside the workflow shouldn't need to remember every command — the system should *show* what's relevant now. Putting this behind a layer means a user who prefers the raw invocation flow can simply disable `help-router` and get the original behavior back.
+
+## Graceful degradation
+
+- If the Memory layer is off, the router cannot read session state. It assumes `root-no-project` context and offers the entry-point menu.
+- If `entities-registry.csv` does not exist, the router prompts the user to run `python3 .agents/layers/help-router/scripts/build-registry.py`.
+- If a menu option references a layer that is not enabled in `config/manifest.yaml`, that option is silently filtered out.

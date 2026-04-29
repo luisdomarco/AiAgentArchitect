@@ -1,0 +1,11 @@
+context,when,options,notes
+root-no-project,No active session detected,A|Start a new agentic system|/wor-agentic-architect||B|Resume the most recent project|/ski-memory-manager load-last|memory|C|Read the quick-start|open QUICKSTART.md||D|Build entities registry|python3 .agents/layers/help-router/scripts/build-registry.py|,Entry point when no Memory snapshot exists for any project
+cp-s0-pending,At CP-S0 (Input enrichment review),A|Approve and continue to S1|continue||B|Adjust the structured input|edit||C|Regenerate from scratch|regen||D|Go back|back,Standard 4-option checkpoint
+cp-s1-pending,At CP-S1 (Process discovery review),A|Approve and continue to S2|continue||B|Adjust the discovery|edit||C|Regenerate|regen||D|Go back|back||E|Inspect AS-IS diagram|describe,
+cp-s2-pending,At CP-S2 (Architecture design review),A|Approve and continue to S3|continue||B|Adjust the blueprint|edit||C|Regenerate|regen||D|Go back|back||E|See entity selection rationale|/ski-entity-selector,
+cp-s3-pending,At CP-S3-N (per-entity checkpoint),A|Approve this entity|continue||B|Adjust the entity|edit||C|Regenerate|regen||D|Go back|back,
+cp-close-pending,At CP-CLOSE (system completion),A|Approve and finalize|finalize||B|Adjust process-overview|edit||C|Export to additional platform|/ski-platform-exporter,
+mid-step,Mid-phase (between checkpoints),A|See current step content|describe||B|Pause and save state|/ski-memory-manager save|memory|C|Show ledger of this session|/ski-context-ledger read|context-ledger,Useful when the user is unsure where they are in the flow
+paused-resumable,Project paused; resumable,A|Resume from last checkpoint|continue||B|Show last checkpoint|describe||C|Discard and start fresh|/wor-agentic-architect||D|Switch to a different project|/ski-memory-manager load-other|memory,
+completed-options,Project completed,A|Start a new system|/wor-agentic-architect||B|Export to additional platform|/ski-platform-exporter||C|See README|open README.md,
+default,Fallback when context cannot be inferred,A|Start a new agentic system|/wor-agentic-architect||B|See README|open README.md,
