@@ -85,18 +85,18 @@ Analysis:
 
 **Example 3 — Hook vs Rule selection**
 
-Responsibility: _"Save session state automatically when the session ends."_
+Responsibility: _"Run linter automatically every time a file is written."_
 
 Analysis:
 
-- Does it fire on a system event? Yes — Stop.
-- Does it execute something? Yes — it triggers a memory save via ski-memory-manager.
+- Does it fire on a system event? Yes — PostToolUse:Write.
+- Does it execute something? Yes — it runs a linter script.
 - Is it event-driven? Yes — fires automatically without manual invocation.
 
-→ **HOOK** (`hok-memory-auto-save`) for the event trigger.
+→ **HOOK** (`hok-lint-on-write`) for the event trigger.
 
 Not a Rule: Rules don't execute or delegate to scripts — they passively constrain behavior.
-Note: Avoid using `type: "prompt"` hooks on high-frequency events like `PostToolUse:Write` — they interrupt every operation. Reserve prompt hooks for low-frequency events (SessionStart, Stop).
+Note: Avoid using `type: "prompt"` hooks on high-frequency events — they interrupt every operation. Reserve prompt hooks for low-frequency events (SessionStart, Stop).
 
 ---
 

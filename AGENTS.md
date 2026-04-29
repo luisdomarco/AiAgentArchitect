@@ -37,14 +37,14 @@ AiAgentArchitect Lite ships with four small layers: `context-ledger`, `memory`, 
 
 ### context-ledger
 
-- **Context Ledger Layer activa**. Trace en `context-ledger/YYYY-MM-DD-HH-MM-{project}.md`.
-- Cada step registra input + reasoning trace + output + metadata.
-- Schemas de handoff JSON en `kno-handoff-schemas`.
+- **Context Ledger active**. Trace at `context-ledger/YYYY-MM-DD-HH-MM-{project}.md`.
+- Each step records input + reasoning trace + output + metadata.
+- Handoff JSON schemas in `kno-handoff-schemas`.
 
 ### memory
 
-- **Memory Layer activa**. Snapshots en `memory/YYYY-MM-DD-HH-MM-{project}.md`.
-- El orchestrator invoca `ski-memory-manager save` tras cada checkpoint y `load-last` al iniciar.
+- **Memory Layer active**. Snapshots at `memory/YYYY-MM-DD-HH-MM-{project}.md`.
+- The orchestrator invokes `ski-memory-manager save` after each checkpoint and `load-last` at session start.
 
 ### help-router
 

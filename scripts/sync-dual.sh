@@ -63,7 +63,7 @@ Ejemplos:
   ./scripts/sync-dual.sh --auto
   ./scripts/sync-dual.sh --agents-to-claude --prune
   ./scripts/sync-dual.sh --target=exports/foo --agents-to-claude --prune
-  ./scripts/sync-dual.sh --file .agents/layers/qa/rules/rul-audit-behavior.md
+  ./scripts/sync-dual.sh --file .agents/layers/memory/skills/ski-memory-manager/SKILL.md
 EOF
     exit 0
 }

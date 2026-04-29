@@ -8,7 +8,6 @@ tags: [advisor, escalation, templates, incident-learning]
 
 - An executor agent escalates to an advisor (steps 1–6 of the Escalation protocol in `kno-agent-strategies` §2.4): the workflow loads §1 (Escalation Report) and §2 (Resolution Plan) templates.
 - An advisor consults `advisor-incidents/` for precedent (step 4): the workflow loads §3 (incident-learning format).
-- The Optimizer (CP-CLOSE) reads incident patterns: it loads §3 only.
 
 If no escalation occurs in a session, this file is never read. Per `rul-lazy-loading`.
 
@@ -106,4 +105,3 @@ Every resolved escalation is persisted in `advisor-incidents/` at the export roo
 
 - **Advisor at escalation step 4**: reads INDEX.md first, then the relevant `ADV-NNN.md` if a matching incident exists; uses its Learning/Solution as starting point.
 - **Workflow at escalation step 8**: appends new incident (new `ADV-NNN.md` + INDEX.md row).
-- **Optimizer at CP-CLOSE**: reads INDEX.md only, looks for repeated patterns, proposes system improvements (per `rul-audit-behavior`).

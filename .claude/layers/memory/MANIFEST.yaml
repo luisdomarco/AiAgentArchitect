@@ -3,7 +3,7 @@ layer_id: memory
 version: 1.0.0
 description: Snapshots ligeros (~1-2 KB) cross-sesión por proyecto, con startup rápido. Persistencia orchestrator-driven (sin hooks).
 scopes: [root, subsystem]
-compatible_with: ">=3.0.0,<4.0.0"
+compatible_with: ">=0.1.0,<1.0.0"
 
 provides:
   skills:
@@ -28,26 +28,26 @@ platform_targets:
       file: CLAUDE.md
       section: "## Active Layers — Memory"
       content: |
-        - **Memory Layer activa**. Snapshots persistentes en `memory/YYYY-MM-DD-HH-MM-{project}.md` (~1-2 KB).
-        - Al iniciar sesión, se ofrece reanudar el último proyecto, cambiar, o crear nuevo.
-        - Tras cada checkpoint aprobado, el snapshot se actualiza automáticamente vía orchestrator.
+        - **Memory Layer active**. Persistent snapshots at `memory/YYYY-MM-DD-HH-MM-{project}.md` (~1-2 KB).
+        - At session start the orchestrator offers to resume the most recent project, switch projects, or start a new one.
+        - After each approved checkpoint the snapshot is updated automatically (orchestrator-driven).
   codex:
     entities_dir: .codex/layers/memory/
     context_root_inject:
       file: AGENTS.md
       section: "## Active Layers — Memory"
       content: |
-        - **Memory Layer activa**. Snapshots en `memory/YYYY-MM-DD-HH-MM-{project}.md`.
-        - El orchestrator invoca `ski-memory-manager save` tras cada checkpoint y `load-last` al iniciar.
+        - **Memory Layer active**. Snapshots at `memory/YYYY-MM-DD-HH-MM-{project}.md`.
+        - The orchestrator invokes `ski-memory-manager save` after each checkpoint and `load-last` at session start.
 
 fallback_promote_on_disable: []
 ---
 
 # Memory Layer
 
-Capa de persistencia ligera cross-sesión. Permite reanudar trabajo en cualquier proyecto sin necesidad de releer el Context Ledger completo.
+Lightweight cross-session persistence. Lets the user resume work on any project without re-reading the full Context Ledger.
 
-## Estructura del snapshot
+## Snapshot structure
 
 ```yaml
 ---
@@ -59,8 +59,8 @@ status: in-progress | completed | paused
 last-checkpoint: CP-S2
 checkpoints-approved: [CP-S0, CP-S1, CP-S2]
 checkpoint_decisions:
-  CP-S0: { option: A, note: "Aprobado directo" }
-  CP-S1: { option: B, note: "Ajustado: añadidos 2 triggers" }
+  CP-S0: { option: A, note: "Approved as-is" }
+  CP-S1: { option: B, note: "Adjusted: added 2 triggers" }
 target-dir: exports/foo-system/
 last_session_at: 2026-04-25T14:32:00Z
 ---
@@ -71,6 +71,6 @@ last_session_at: 2026-04-25T14:32:00Z
 ## Key decisions
 ```
 
-## Multi-proyecto paralelo
+## Parallel multi-project
 
-Cada proyecto tiene su propio archivo de Memory determinado por `{project-name}` en el filename. No hay colisiones; load-last es determinístico por timestamp.
+Each project has its own Memory file keyed by `{project-name}` in the filename. No collisions; `load-last` is deterministic by timestamp.

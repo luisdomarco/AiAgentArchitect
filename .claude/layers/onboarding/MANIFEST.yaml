@@ -3,7 +3,7 @@ layer_id: onboarding
 version: 0.1.0
 description: First-run guided tour for new users (root level) and template-driven tour for generated subsystems. Auto-invoked when no welcome marker is found in memory/. Provides discoverability and orientation as a dedicated tour rather than a menu router.
 scopes: [root, subsystem]
-compatible_with: ">=3.0.0,<4.0.0"
+compatible_with: ">=0.1.0,<1.0.0"
 
 provides:
   workflows:

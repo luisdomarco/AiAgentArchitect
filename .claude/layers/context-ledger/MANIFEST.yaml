@@ -1,9 +1,9 @@
 ---
 layer_id: context-ledger
 version: 1.0.0
-description: Trace completo append-only de cada sesión, dependency state transfer entre agentes vía Context Map
+description: Append-only full session trace; dependency state transfer between agents via Context Map.
 scopes: [root, subsystem]
-compatible_with: ">=3.0.0,<4.0.0"
+compatible_with: ">=0.1.0,<1.0.0"
 
 provides:
   skills:
@@ -15,7 +15,7 @@ hooks_into:
   - workflow: wor-agentic-architect
     at: each-step
     via: ski-context-ledger
-    description: Registrar input + reasoning_trace + output + metadata por step
+    description: Record input + reasoning_trace + output + metadata per step
 
 depends_on: []
 
@@ -34,10 +34,10 @@ platform_targets:
       file: CLAUDE.md
       section: "## Active Layers — Context Ledger"
       content: |
-        - **Context Ledger Layer activa**. Trace append-only en `context-ledger/YYYY-MM-DD-HH-MM-{project}.md`.
-        - Cada step registra: input recibido, reasoning trace `<sys-eval>`, output, metadata.
-        - El Orchestrator filtra contexto vía Context Map antes de inyectar al siguiente agente.
-        - Schemas de handoff JSON definidos en `kno-handoff-schemas`.
+        - **Context Ledger active**. Append-only trace at `context-ledger/YYYY-MM-DD-HH-MM-{project}.md`.
+        - Each step records: received input, reasoning trace `<sys-eval>`, output, metadata.
+        - The orchestrator filters context via the Context Map before injecting into the next agent.
+        - Handoff JSON schemas defined in `kno-handoff-schemas`.
     hooks:
       file: .claude/settings.json
       entries: []
@@ -47,32 +47,32 @@ platform_targets:
       file: AGENTS.md
       section: "## Active Layers — Context Ledger"
       content: |
-        - **Context Ledger Layer activa**. Trace en `context-ledger/YYYY-MM-DD-HH-MM-{project}.md`.
-        - Cada step registra input + reasoning trace + output + metadata.
-        - Schemas de handoff JSON en `kno-handoff-schemas`.
+        - **Context Ledger active**. Trace at `context-ledger/YYYY-MM-DD-HH-MM-{project}.md`.
+        - Each step records input + reasoning trace + output + metadata.
+        - Handoff JSON schemas in `kno-handoff-schemas`.
     hooks:
       supported: false
-      degradation: "El registro en ledger se hace explícitamente via /ski-context-ledger write tras cada step"
+      degradation: "Ledger writes happen explicitly via /ski-context-ledger write after each step"
 
 fallback_promote_on_disable:
   - source: knowledge-base/kno-handoff-schemas.md
     target_root: .agents/knowledge-base/kno-handoff-schemas.md
-    reason: "kno-handoff-schemas define el contrato de handoff JSON usado por todos los workflows del framework, no solo por la capa Context Ledger. Si la capa se desactiva, este archivo se promueve a la raíz para que los workflows sigan teniendo acceso al contrato."
+    reason: "kno-handoff-schemas defines the handoff JSON contract used by every workflow in the framework, not only by the Context Ledger layer. If the layer is disabled, this file is promoted to root so workflows keep access to the contract."
 ---
 
 # Context Ledger Layer
 
-Capa de registro estructurado y dependency state transfer entre agentes. Es la columna vertebral de la traceability del sistema.
+Structured logging and dependency state transfer between agents. Backbone of system traceability.
 
-## Estructura del ledger
+## Ledger structure
 
-Directorio `context-ledger/` con un archivo por sesión:
+Directory `context-ledger/` with one file per session:
 
 ```
 context-ledger/YYYY-MM-DD-HH-MM-{project-name}.md
 ```
 
-Frontmatter + blocks append-only:
+Frontmatter + append-only blocks:
 
 ```markdown
 ---
@@ -91,7 +91,7 @@ last_updated: 2026-04-25T15:45:00Z
 ## [Step 0] — age-spe-input-enricher — completed
 
 ### Input received
-{contexto recibido}
+{received context}
 
 ### Reasoning Trace
 <sys-eval>...</sys-eval>
@@ -111,20 +111,20 @@ duration_ms: 4200
 
 ## Append-only
 
-Hard constraint: cada `write` añade nuevos blocks. Nunca overwrite. `last_updated` en frontmatter sí se actualiza in-place.
+Hard constraint: every `write` adds new blocks. Never overwrite. `last_updated` in frontmatter is updated in place.
 
-## Context Map (filtrado selectivo)
+## Context Map (selective filtering)
 
-El Orchestrator define en cada workflow una tabla `step destino → fuente → fields → mode`:
-- `mode=complete`: extrae full output + reasoning_trace del step anterior.
-- `mode=partial`: extrae solo fields específicos.
+The orchestrator defines, per workflow, a table `destination step → source → fields → mode`:
+- `mode=complete`: extracts full output + reasoning_trace from the previous step.
+- `mode=partial`: extracts only the specified fields.
 
-Antes de invocar Step N, se llama `ski-context-ledger read` con el Context Map y se inyecta solo el contexto necesario.
+Before invoking Step N, `ski-context-ledger read` is called with the Context Map to inject only the context that step needs.
 
-## Multi-proyecto paralelo
+## Parallel multi-project
 
-Cada proyecto tiene su propio ledger por timestamp. Sin colisiones.
+Each project has its own ledger keyed by timestamp. No collisions.
 
-## Promoción de `kno-handoff-schemas` al desactivar
+## Promotion of `kno-handoff-schemas` on disable
 
-Este knowledge-base define el contrato de handoff JSON usado por todos los workflows del framework. Si la capa `context-ledger` se desactiva, `ski-layer-embed` promociona automáticamente `kno-handoff-schemas.md` a `.agents/knowledge-base/` raíz para que los workflows sigan teniendo acceso al contrato (los handoffs siguen funcionando, solo no se persisten en ledger).
+This knowledge-base defines the handoff JSON contract used by every workflow in the framework. If the `context-ledger` layer is disabled, `ski-layer-embed` automatically promotes `kno-handoff-schemas.md` to `.agents/knowledge-base/` root so workflows keep access to the contract (handoffs keep working — they simply do not persist in a ledger).

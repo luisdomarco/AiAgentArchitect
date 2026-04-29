@@ -49,7 +49,7 @@ Before writing the file, verify:
 | Knowledge-base   | `kno-`     | `kno-brand-guidelines.md`     |
 | Resources        | `res-`     | `res-security-policies.md`    |
 | Script           | `scp-`     | `scp-lint-check.sh`           |
-| Hook             | `hok-`     | `hok-memory-auto-save.md`     |
+| Hook             | `hok-`     | `hok-validate-on-save.md`     |
 
 ---
 

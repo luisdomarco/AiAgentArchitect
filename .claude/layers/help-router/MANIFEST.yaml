@@ -3,7 +3,7 @@ layer_id: help-router
 version: 0.1.0
 description: Context-aware help menus that respond to project state, current phase, and active layers. Reads entities-registry.csv and the active Memory snapshot, then renders the relevant menu of next actions.
 scopes: [root, subsystem]
-compatible_with: ">=3.0.0,<4.0.0"
+compatible_with: ">=0.1.0,<1.0.0"
 
 provides:
   skills:

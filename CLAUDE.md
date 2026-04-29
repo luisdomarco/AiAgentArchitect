@@ -48,16 +48,16 @@ Layers self-describe via `.agents/layers/{layer-id}/MANIFEST.yaml`. Embed/unembe
 
 ### context-ledger
 
-- **Context Ledger Layer activa**. Trace append-only en `context-ledger/YYYY-MM-DD-HH-MM-{project}.md`.
-- Cada step registra: input recibido, reasoning trace `<sys-eval>`, output, metadata.
-- El Orchestrator filtra contexto vía Context Map antes de inyectar al siguiente agente.
-- Schemas de handoff JSON definidos en `kno-handoff-schemas`.
+- **Context Ledger active**. Append-only trace at `context-ledger/YYYY-MM-DD-HH-MM-{project}.md`.
+- Each step records: received input, reasoning trace `<sys-eval>`, output, metadata.
+- The orchestrator filters context via the Context Map before injecting into the next agent.
+- Handoff JSON schemas defined in `kno-handoff-schemas`.
 
 ### memory
 
-- **Memory Layer activa**. Snapshots persistentes en `memory/YYYY-MM-DD-HH-MM-{project}.md` (~1-2 KB).
-- Al iniciar sesión, se ofrece reanudar el último proyecto, cambiar, o crear nuevo.
-- Tras cada checkpoint aprobado, el snapshot se actualiza automáticamente vía orchestrator.
+- **Memory Layer active**. Persistent snapshots at `memory/YYYY-MM-DD-HH-MM-{project}.md` (~1-2 KB).
+- At session start the orchestrator offers to resume the most recent project, switch projects, or start a new one.
+- After each approved checkpoint the snapshot is updated automatically (orchestrator-driven).
 
 ### help-router
 
