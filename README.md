@@ -166,13 +166,7 @@ curl -fsSL https://raw.githubusercontent.com/luisdomarco/AiAgentArchitect/main/i
 
 Auto-installs Node/Python deps if missing, then runs the wizard with safe defaults.
 
-### 3. npx
-
-```bash
-npx aiagent-architect-lite install
-```
-
-### 4. CI / non-interactive
+### 3. CI / non-interactive
 
 ```bash
 bash install.sh --yes --layers=memory,context-ledger,help-router,onboarding --platforms=antigravity,claude-code --lang=en
