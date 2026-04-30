@@ -1,10 +1,10 @@
 {
   "name": "aiagent-architect-lite",
-  "version": "0.1.0-lite",
+  "version": "0.1.0",
   "description": "Lite preview of AiAgentArchitect: a meta-system for designing and generating agentic systems across Antigravity, Claude Code, and OpenAI Codex.",
   "type": "module",
   "bin": {
-    "aiagent-architect": "./scripts/install.mjs"
+    "aiagent-architect-lite": "./scripts/install.mjs"
   },
   "scripts": {
     "install:wizard": "node scripts/install.mjs",
@@ -20,6 +20,15 @@
     "@iarna/toml": "^2.2.5",
     "js-yaml": "^4.1.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luisdomarco/AiAgentArchitect.git"
+  },
+  "homepage": "https://github.com/luisdomarco/AiAgentArchitect#readme",
+  "bugs": {
+    "url": "https://github.com/luisdomarco/AiAgentArchitect/issues"
+  },
+  "author": "luisdomarco",
   "license": "MIT",
   "keywords": [
     "agentic-systems",
@@ -35,7 +44,9 @@
     ".codex",
     "config",
     "scripts",
+    "templates",
     "install.sh",
+    "system-overview.md",
     "*.md"
   ]
 }

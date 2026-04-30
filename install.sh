@@ -10,7 +10,7 @@
 #   bash install.sh [--yes] [--no-deps] [--help]
 #
 # Or via curl:
-#   curl -fsSL https://raw.githubusercontent.com/USER/AiAgentArchitect-v3/main/install.sh | bash -s -- --yes
+#   curl -fsSL https://raw.githubusercontent.com/luisdomarco/AiAgentArchitect/main/install.sh | bash -s -- --yes
 #
 # Flags are forwarded to scripts/install.mjs after dependency bootstrap.
 
