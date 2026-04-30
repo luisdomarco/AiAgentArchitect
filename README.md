@@ -1,12 +1,12 @@
 # AiAgentArchitect — Lite
 
-> _This is the **Lite** edition. A **Full** edition with additional layers also exists — see the [Lite vs Full](#lite-vs-full) comparison below._
-
 > **Build production-ready multi-agent systems in three structured steps.**
 
 Designing agentic systems is hard: vague requirements, no standard structure, and every implementation looks different. AiAgentArchitect solves this with a guided pipeline — from raw idea to ready-to-deploy `.md` files — using a strict entity-based architecture.
 
 **AiAgentArchitect** is a guided meta-system that interviews you, designs the architecture, and generates ready-to-deploy agent files — for **Google Antigravity**, **Claude Code**, and **OpenAI Codex** — from a single source of truth.
+
+[rookiespath.com](https://rookiespath.com/)
 
 ---
 
