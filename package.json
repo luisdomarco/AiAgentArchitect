@@ -42,7 +42,7 @@
     ".agents",
     ".claude",
     ".codex",
-    "config",
+    "config/config.base.toml",
     "scripts",
     "templates",
     "install.sh",
